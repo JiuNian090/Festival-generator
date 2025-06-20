@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <!-- 春节背景：舞狮和烟花 -->
+  <defs>
+    <radialGradient id="firework1" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+      <stop offset="0%" stop-color="#ffcc00" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#ffcc00" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="firework2" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+      <stop offset="0%" stop-color="#ff3333" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#ff3333" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="firework3" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+      <stop offset="0%" stop-color="#33ccff" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#33ccff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="800" height="600" fill="#990000" opacity="0.2"/>
+  
+  <!-- 烟花 -->
+  <g opacity="0.7">
+    <circle cx="200" cy="150" r="40" fill="url(#firework1)">
+      <animate attributeName="r" values="0;40;30" dur="2s" repeatCount="indefinite" />
+      <animate attributeName="opacity" values="0;0.7;0" dur="2s" repeatCount="indefinite" />
+    </circle>
+    <circle cx="600" cy="100" r="50" fill="url(#firework2)">
+      <animate attributeName="r" values="0;50;40" dur="2.5s" repeatCount="indefinite" begin="0.3s" />
+      <animate attributeName="opacity" values="0;0.7;0" dur="2.5s" repeatCount="indefinite" begin="0.3s" />
+    </circle>
+    <circle cx="400" cy="200" r="60" fill="url(#firework3)">
+      <animate attributeName="r" values="0;60;50" dur="3s" repeatCount="indefinite" begin="0.7s" />
+      <animate attributeName="opacity" values="0;0.7;0" dur="3s" repeatCount="indefinite" begin="0.7s" />
+    </circle>
+  </g>
+  
+  <!-- 舞狮 -->
+  <g transform="translate(350, 350)" opacity="0.8">
+    <!-- 狮子头 -->
+    <ellipse cx="0" cy="0" rx="80" ry="70" fill="#ffcc00" />
+    <ellipse cx="-25" cy="-20" rx="15" ry="20" fill="#111" />
+    <ellipse cx="25" cy="-20" rx="15" ry="20" fill="#111" />
+    <path d="M-30,20 Q0,40 30,20" stroke="#111" stroke-width="5" fill="none" />
+    
+    <!-- 舞狮的装饰 -->
+    <path d="M-80,-10 L-100,-50 L-90,-30 L-110,-40 L-85,-20 L-105,-10 L-80,-10" fill="#ff3333" />
+    <path d="M80,-10 L100,-50 L90,-30 L110,-40 L85,-20 L105,-10 L80,-10" fill="#ff3333" />
+    
+    <!-- 舞狮的身体 -->
+    <path d="M-60,40 Q0,80 60,40" stroke="#ffcc00" stroke-width="40" fill="none" />
+    
+    <!-- 动画效果 -->
+    <animateTransform attributeName="transform" type="rotate" from="-5" to="5" dur="1s" repeatCount="indefinite" additive="sum" />
+  </g>
+  
+  <!-- 中国结装饰 -->
+  <g transform="translate(100, 100)" opacity="0.6">
+    <path d="M0,0 L0,40 M-20,20 L20,20" stroke="#ff3333" stroke-width="5" />
+    <path d="M0,40 L-15,60 L0,80 L15,60 L0,40" fill="#ff3333" />
+    <path d="M0,80 L0,100" stroke="#ff3333" stroke-width="5" />
+    <circle cx="0" cy="110" r="10" fill="#ff3333" />
+  </g>
+  
+  <g transform="translate(700, 150)" opacity="0.6">
+    <path d="M0,0 L0,40 M-20,20 L20,20" stroke="#ff3333" stroke-width="5" />
+    <path d="M0,40 L-15,60 L0,80 L15,60 L0,40" fill="#ff3333" />
+    <path d="M0,80 L0,100" stroke="#ff3333" stroke-width="5" />
+    <circle cx="0" cy="110" r="10" fill="#ff3333" />
+  </g>
+  
+  <!-- 灯笼 -->
+  <g transform="translate(150, 500)" opacity="0.7">
+    <path d="M0,0 L0,20" stroke="#ffcc00" stroke-width="3" />
+    <path d="M-20,20 Q-25,60 -20,100 L20,100 Q25,60 20,20 Z" fill="#ff3333" />
+    <path d="M-20,40 L20,40 M-20,70 L20,70" stroke="#ffcc00" stroke-width="2" />
+    <path d="M0,100 L-10,110 L10,110 L0,100" fill="#ffcc00" />
+  </g>
+  
+  <g transform="translate(650, 450)" opacity="0.7">
+    <path d="M0,0 L0,20" stroke="#ffcc00" stroke-width="3" />
+    <path d="M-20,20 Q-25,60 -20,100 L20,100 Q25,60 20,20 Z" fill="#ff3333" />
+    <path d="M-20,40 L20,40 M-20,70 L20,70" stroke="#ffcc00" stroke-width="2" />
+    <path d="M0,100 L-10,110 L10,110 L0,100" fill="#ffcc00" />
+  </g>
+</svg>

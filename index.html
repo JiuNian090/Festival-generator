@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智能节日祝福语生成器</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>智能节日祝福语生成器</h1>
+            <p>为亲朋好友、师长、领导送上温馨祝福</p>
+        </header>
+
+        <main>
+            <div class="form-container fade-in">
+                <div class="form-group">
+                    <label for="festival">选择节日</label>
+                    <select id="festival" required>
+                        <option value="" disabled selected>请选择节日</option>
+                        <option value="春节">春节</option>
+                        <option value="元宵节">元宵节</option>
+                        <option value="清明节">清明节</option>
+                        <option value="端午节">端午节</option>
+                        <option value="七夕">七夕</option>
+                        <option value="中秋节">中秋节</option>
+                        <option value="重阳节">重阳节</option>
+                        <option value="元旦">元旦</option>
+                        <option value="教师节">教师节</option>
+                        <option value="国庆节">国庆节</option>
+                        <option value="母亲节">母亲节</option>
+                        <option value="父亲节">父亲节</option>
+                        <option value="儿童节">儿童节</option>
+                        <option value="其他">其他</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="other-festival-container" style="display: none;">
+                    <label for="other-festival">其他节日</label>
+                    <input type="text" id="other-festival" placeholder="请输入节日名称">
+                </div>
+
+                <div class="form-group">
+                    <label for="recipient">祝福对象</label>
+                    <select id="recipient" required>
+                        <option value="" disabled selected>请选择祝福对象</option>
+                        <option value="家人">家人</option>
+                        <option value="朋友">朋友</option>
+                        <option value="老师">老师</option>
+                        <option value="领导">领导</option>
+                        <option value="同事">同事</option>
+                        <option value="客户">客户</option>
+                        <option value="其他">其他</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="other-recipient-container" style="display: none;">
+                    <label for="other-recipient">其他祝福对象</label>
+                    <input type="text" id="other-recipient" placeholder="请输入祝福对象">
+                </div>
+
+                <div class="form-group">
+                    <label for="relationship">具体关系</label>
+                    <input type="text" id="relationship" placeholder="例如：父亲、母亲、班主任、部门经理等">
+                </div>
+
+                <div class="form-group">
+                    <label for="style">祝福风格</label>
+                    <select id="style" required>
+                        <option value="" disabled selected>请选择祝福风格</option>
+                        <option value="传统">传统经典</option>
+                        <option value="现代">现代简约</option>
+                        <option value="幽默">幽默风趣</option>
+                        <option value="文艺">文艺优雅</option>
+                        <option value="商务">商务正式</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="custom-info">个性化信息（可选）</label>
+                    <textarea id="custom-info" placeholder="添加一些个性化的信息，如特殊事件、回忆或祝愿"></textarea>
+                </div>
+
+                <button id="generate-btn" class="btn">生成祝福语 <i class="fas fa-magic"></i></button>
+                
+                <div id="loading" class="loading">
+                    <div class="loading-spinner"></div>
+                    <p>正在生成祝福语...</p>
+                </div>
+            </div>
+
+            <div class="result-container fade-in" id="result-container" style="display: none;">
+                <h2>为您生成的祝福语</h2>
+                <div class="result-box">
+                    <div id="greeting-text" class="decorative-border"></div>
+                    <div class="actions">
+                        <button id="copy-btn" class="btn-action"><i class="fas fa-copy"></i> 复制</button>
+                        <button id="regenerate-btn" class="btn-action"><i class="fas fa-sync-alt"></i> 重新生成</button>
+                        <button id="share-btn" class="btn-action"><i class="fas fa-share-alt"></i> 分享</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <div class="festival-info fade-in" id="festival-info">
+            <h3>节日知识</h3>
+            <div id="festival-description"></div>
+        </div>
+
+        <footer>
+            <p>© 2023 智能节日祝福语生成器 | <a href="#" id="about-link">关于我们</a></p>
+        </footer>
+    </div>
+
+    <!-- 模态框 -->
+    <div id="share-modal" class="modal">
+        <div class="modal-content fade-in">
+            <span class="close">&times;</span>
+            <h2>分享祝福语</h2>
+            <div class="share-options">
+                <button class="share-btn wechat"><i class="fab fa-weixin"></i> 微信</button>
+                <button class="share-btn weibo"><i class="fab fa-weibo"></i> 微博</button>
+                <button class="share-btn qq"><i class="fab fa-qq"></i> QQ</button>
+            </div>
+            <div class="qr-code" id="qr-code">
+                <!-- QR码将在这里生成 -->
+            </div>
+        </div>
+    </div>
+
+    <div id="about-modal" class="modal">
+        <div class="modal-content fade-in">
+            <span class="close">&times;</span>
+            <h2>关于我们</h2>
+            <p>智能节日祝福语生成器是一款专为中国传统节日和现代节日设计的祝福语生成工具。我们利用人工智能技术，根据不同的节日、祝福对象和关系，生成个性化、温馨的祝福语。</p>
+            <p>无论是家人、朋友、老师还是领导，都能找到最合适的祝福方式。希望我们的工具能够帮助您传递温暖与祝福。</p>
+        </div>
+    </div>
+
+    <!-- 复制成功提示 -->
+    <div id="copy-toast">
+        复制成功！
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
