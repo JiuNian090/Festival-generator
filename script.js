@@ -271,3 +271,24 @@ function showCopyToast() {
         toast.classList.remove('show');
     }, 2000);
 }
+
+// 节日选择变化时更新背景图片
+document.getElementById('festival').addEventListener('change', function() {
+    const selectedFestival = festivals.find(f => f.name === this.value);
+    if (selectedFestival && selectedFestival.imageUrl) {
+        document.body.style.backgroundImage = `linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), url('${selectedFestival.imageUrl}')`;
+    } else {
+        document.body.style.backgroundImage = '';
+    }
+});
+const festivals = [
+    { name: '春节', description: '春节，即中国农历新年，是中华民族最隆重的传统佳节。春节历史悠久，由上古时代岁首祈岁祭祀演变而来。春节期间，全国各地均有举行各种庆贺新春活动，带有浓郁的各地域特色。', imageUrl: 'https://picsum.photos/id/1035/1920/1080' },
+    { name: '元宵节', description: '元宵节，又称上元节、小正月、元夕或灯节，是中国的传统节日之一，时间为每年农历正月十五。元宵节主要有赏花灯、吃汤圆、猜灯谜、放烟花等一系列传统民俗活动。', imageUrl: 'https://picsum.photos/id/1040/1920/1080' },
+    { name: '清明节', description: '清明节，又称踏青节、行清节、三月节、祭祖节等，节期在仲春与暮春之交。清明节源自上古时代的祖先信仰与春祭礼俗，兼具自然与人文两大内涵，既是自然节气点，也是传统节日。', imageUrl: 'https://picsum.photos/id/1043/1920/1080' },
+    { name: '端午节', description: '端午节，又称端阳节、龙舟节、重午节、龙节、正阳节、天中节等，源自天象崇拜，由上古时代祭龙演变而来。扒龙舟与食粽是端午节的两大礼俗，这两大礼俗在中国自古传承，至今不辍。', imageUrl: 'https://picsum.photos/id/1053/1920/1080' },
+    { name: '七夕节', description: '七夕节，又称七巧节、七姐节、女儿节、乞巧节、七娘会、七夕祭、牛公牛婆日、巧夕等，是中国民间的传统节日。七夕节由星宿崇拜衍化而来，为传统意义上的七姐诞，因拜祭“七姐”活动在七月七晩上举行，故名“七夕”。', imageUrl: 'https://picsum.photos/id/1060/1920/1080' },
+    { name: '中秋节', description: '中秋节，又称祭月节、月光诞、月夕、秋节、仲秋节、拜月节、月娘节、月亮节、团圆节等，是中国民间的传统节日。中秋节自古便有祭月、赏月、吃月饼、玩花灯、赏桂花、饮桂花酒等民俗，流传至今，经久不息。', imageUrl: 'https://picsum.photos/id/1069/1920/1080' },
+    { name: '重阳节', description: '重阳节，是中国传统节日，节期为每年农历九月初九。“九”数在《易经》中为阳数，“九九”两阳数相重，故曰“重阳”；因日与月皆逢九，故又称为“重九”。九九归真，一元肇始，古人认为九九重阳是吉祥的日子。', imageUrl: 'https://picsum.photos/id/1080/1920/1080' },
+    { name: '冬至', description: '冬至，又称日短至、冬节、亚岁等，兼具自然与人文两大内涵，既是二十四节气中一个重要的节气，也是中国民间的传统节日。冬至是四时八节之一，被视为冬季的大节日，在古代民间有“冬至大如年”的讲法。', imageUrl: 'https://picsum.photos/id/1084/1920/1080' },
+    { name: '腊八节', description: '腊八节，即每年农历十二月初八，又称为“法宝节”“佛成道节”“成道会”等。本为佛教纪念释迦牟尼佛成道之节日，后逐渐也成为民间节日。腊八节主要流行于中国北方地区，节日习俗是喝腊八粥。', imageUrl: 'https://picsum.photos/id/1089/1920/1080' }
+];

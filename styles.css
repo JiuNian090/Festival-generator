@@ -53,9 +53,14 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: var(--light-color);
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
     color: var(--text-color);
     line-height: 1.6;
     padding: 20px;
+    transition: background-image 1s ease-in-out;
 }
 
 .container {
@@ -230,7 +235,8 @@ textarea {
 
 /* 结果容器样式 */
 .result-container {
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(10px);
     padding: 35px;
     border-radius: 12px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
