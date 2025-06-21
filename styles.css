@@ -1,47 +1,13 @@
 /* 全局样式 */
 :root {
-    /* 基础颜色 */
-    --primary-color: #e74c3c;
-    --secondary-color: #f39c12;
-    --accent-color: #3498db;
+    --chinese-red: #C62C38;
+    --golden-yellow: #D4AF37;
+    --zhuqing: #3D85C6;
+    --background-color: #f8f9fa;
     --text-color: #333;
-    --light-color: #f5f5f5;
+    --text-light: #666;
     --border-color: #ddd;
-    --success-color: #2ecc71;
-    --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    --transition: all 0.3s ease;
-    
-    /* 中国传统色彩 */
-    --chinese-red: #c02c38; /* 中国红 */
-    --zhuqing: #7c1823; /* 朱砂 */
-    --zhuhong: #ff4c00; /* 朱红 */
-    --meiguihong: #c93756; /* 玫瑰红 */
-    --qianghong: #f05654; /* 樱桃红 */
-    --tuose: #eed0d8; /* 妃色 */
-    --fenhong: #fcddd9; /* 粉红 */
-    --xiangyehong: #f07c82; /* 香叶红 */
-    --taohong: #f47983; /* 桃红 */
-    
-    --huanglu: #e2c17c; /* 黄栌 */
-    --jianghuang: #e8b004; /* 姜黄 */
-    --tuhuang: #d9a40e; /* 土黄 */
-    --jinyellow: #f7c242; /* 金色 */
-    --xinghuang: #e9bb1d; /* 杏黄 */
-    --jiaohuang: #e8d3a9; /* 缟色 */
-    
-    --qingbi: #1ba784; /* 青碧 */
-    --feicui: #3de1ad; /* 翡翠 */
-    --qinglv: #1e9167; /* 青绿 */
-    --cuilan: #a4cab6; /* 翠蓝 */
-    --bishui: #b0d5df; /* 碧水 */
-    --yuebai: #eef7f2; /* 月白 */
-    
-    --zitan: #6b5458; /* 紫檀 */
-    --qinghui: #424c50; /* 青灰 */
-    --haitanghong: #f03752; /* 海棠红 */
-    --ganglan: #0f59a4; /* 钢蓝 */
-    --yuanqing: #3b818c; /* 鸢青 */
-    --yanzhi: #9d2933; /* 胭脂 */
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
 * {
@@ -51,142 +17,115 @@
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: var(--light-color);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    line-height: 1.6;
+    color: var(--text-color);
+    background-color: var(--background-color);
+    min-height: 100vh;
+    position: relative;
+}
+
+/* 背景图片容器样式 */
+.background-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
-    background-repeat: no-repeat;
-    color: var(--text-color);
-    line-height: 1.6;
-    padding: 20px;
-    transition: background-image 1s ease-in-out;
+    z-index: -1;
+    opacity: 0.4;
+    transition: all 0.5s ease-in-out;
 }
 
+/* 节日背景动画效果 */
+.festival-background {
+    animation: fadeIn 0.8s ease-out forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(1.05);
+    }
+    to {
+        opacity: 0.4;
+        transform: scale(1);
+    }
+}
+
+/* 容器样式 */
 .container {
-    max-width: 1000px;
+    max-width: 800px;
     margin: 0 auto;
-    padding: 20px;
+    padding: 40px 20px;
+    position: relative;
+    z-index: 1;
 }
 
 header {
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 40px;
+    animation: fadeInDown 0.8s ease-out forwards;
 }
 
 header h1 {
-    color: var(--primary-color);
     font-size: 2.5rem;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-    position: relative;
-    display: inline-block;
-}
-
-header h1::before,
-header h1::after {
-    content: '✦';
-    color: var(--xinghuang);
-    position: relative;
-    top: -5px;
-    margin: 0 10px;
-    font-size: 1.5rem;
-    opacity: 0.8;
+    margin-bottom: 10px;
+    color: var(--chinese-red);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 header p {
-    color: var(--secondary-color);
     font-size: 1.1rem;
-    max-width: 600px;
-    margin: 0 auto;
-    line-height: 1.6;
+    color: var(--text-light);
 }
 
-/* 主要内容区域 */
-main {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 30px;
-}
-
-@media (min-width: 768px) {
-    main {
-        grid-template-columns: 1fr 1fr;
-    }
-}
-
-/* 表单样式 */
-.form-container {
+/* 表单容器 */
+.form-container, .result-container, .festival-info {
     background-color: white;
+    border-radius: 12px;
     padding: 30px;
-    border-radius: 10px;
+    margin-bottom: 30px;
     box-shadow: var(--shadow);
-    border: 1px solid rgba(220, 220, 220, 0.5);
-    position: relative;
-    overflow: hidden;
-}
-
-.form-container::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 5px;
-    background: linear-gradient(90deg, var(--chinese-red), var(--zhuqing), var(--qinglv), var(--qingbi), var(--tuose));
+    backdrop-filter: blur(5px);
+    background-color: rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    animation: fadeInUp 0.8s ease-out forwards;
 }
 
 .form-group {
     margin-bottom: 20px;
 }
 
-label {
+.form-group label {
     display: block;
+    font-size: 1.1rem;
     margin-bottom: 8px;
     font-weight: 500;
-    color: var(--text-color);
-    position: relative;
-    padding-left: 15px;
 }
 
-label::before {
-    content: '❖';
-    color: var(--qingbi);
-    position: absolute;
-    left: 0;
-    top: 0;
-    font-size: 0.8rem;
-}
-
-select, input, textarea {
+.form-group input, .form-group select {
     width: 100%;
-    padding: 14px 20px;
-    border: 2px solid var(--qingbi);
+    padding: 12px 15px;
+    border: 1px solid var(--border-color);
     border-radius: 8px;
-    margin-bottom: 20px;
-    font-family: inherit;
-    font-size: 1.05rem;
-    transition: all 0.3s ease;
-    background: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(3px);
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+    background-color: rgba(255, 255, 255, 0.7);
 }
 
-select:focus, input:focus, textarea:focus {
+.form-group input:focus, .form-group select:focus {
+    outline: none;
     border-color: var(--chinese-red);
-    box-shadow: 0 0 0 3px rgba(192, 44, 56, 0.1);
-    background: white;
-}
-
-select:hover, input:hover, textarea:hover {
-    border-color: #bbb;
-}
-
-textarea {
-    min-height: 100px;
-    resize: vertical;
+    box-shadow: 0 0 0 3px rgba(198, 44, 56, 0.2);
 }
 
 .btn {
-    display: inline-block;
+    position: relative;
+    z-index: 1;
     background: linear-gradient(135deg, var(--chinese-red), var(--zhuqing));
     color: white;
     text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
@@ -200,527 +139,135 @@ textarea {
     width: 100%;
     text-align: center;
     box-shadow: 0 4px 20px rgba(198, 44, 56, 0.3);
-    position: relative;
     overflow: hidden;
     letter-spacing: 1px;
-}
-
-.btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left 0.7s;
-}
-
-.btn:hover::before {
-    left: 100%;
+    
+    /* 玻璃态效果 */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    background-color: rgba(192, 44, 56, 0.85);
 }
 
 .btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 6px 25px rgba(198, 44, 56, 0.4);
 }
 
 .btn:active {
     transform: translateY(0);
+    box-shadow: 0 2px 10px rgba(198, 44, 56, 0.3);
 }
 
 .btn i {
     margin-left: 8px;
 }
 
-/* 结果容器样式 */
-.result-container {
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(10px);
-    padding: 35px;
-    border-radius: 12px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-    margin-bottom: 25px;
-    display: none;
-    border: 2px solid var(--tuose);
-    position: relative;
-    overflow: hidden;
-    backdrop-filter: blur(8px);
-}
-
-.result-container::before {
-    content: '';
-    position: absolute;
-    top: -2px;
-    left: -2px;
-    right: -2px;
-    bottom: -2px;
-    border: 2px solid rgba(192, 44, 56, 0.1);
-    border-radius: 14px;
-    z-index: -1;
-}
-
-.result-container::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 8px;
-    background: linear-gradient(90deg, var(--tuose), var(--qingbi), var(--chinese-red));
-}
-
-.result-container::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 20px;
-    right: 20px;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--qinglv), transparent);
-}
-
-.result-container h2 {
-    color: var(--primary-color);
-    margin-bottom: 20px;
-    text-align: center;
-    font-size: 1.8rem;
-}
-
-.result-box {
-    background-color: #fff9f9;
-    border: 1px solid #f8d7da;
-    border-radius: 8px;
-    padding: 20px;
-    position: relative;
-}
-
-#greeting-text {
-    font-size: 1.2rem;
-    line-height: 1.8;
-    white-space: pre-wrap;
-    margin-bottom: 25px;
-    padding: 25px;
-    background-color: rgba(248, 249, 250, 0.7);
-    border-radius: 8px;
-    position: relative;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
-    overflow: hidden;
-}
-
-#greeting-text::before {
-    content: '「';
-    position: absolute;
-    top: 5px;
-    left: 5px;
-    font-size: 2rem;
-    color: var(--chinese-red);
-    opacity: 0.2;
-    line-height: 1;
-}
-
-#greeting-text::after {
-    content: '」';
-    position: absolute;
-    bottom: 5px;
-    right: 5px;
-    font-size: 2rem;
-    color: var(--chinese-red);
-    opacity: 0.2;
-    line-height: 1;
-}
-
-/* 添加装饰性边框 */
-.decorative-border {
-    position: relative;
-}
-
-.decorative-border::before,
-.decorative-border::after {
-    content: '';
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    border-color: var(--qingbi);
-    border-style: solid;
-    pointer-events: none;
-}
-
-.decorative-border::before {
-    top: 0;
-    left: 0;
-    border-width: 2px 0 0 2px;
-}
-
-.decorative-border::after {
-    bottom: 0;
-    right: 0;
-    border-width: 0 2px 2px 0;
-}
-
-.actions {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 20px;
-}
-
-.btn-action {
-    background-color: white;
-    color: var(--text-color);
-    border: 1px solid var(--border-color);
-    padding: 8px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    transition: var(--transition);
-}
-
-.btn-action:hover {
-    background-color: #f5f5f5;
-}
-
-.btn-action i {
-    margin-right: 5px;
-}
-
-/* 节日信息样式 */
-.festival-info {
-    background-color: rgba(255, 255, 255, 0.9);
-    border-radius: 10px;
-    padding: 25px;
-    margin-bottom: 30px;
-    position: relative;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-    overflow: hidden;
-}
-
-.festival-info::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M20,20 C25,15 35,15 40,20 C45,25 45,35 40,40 C35,45 25,45 20,40 C15,35 15,25 20,20 Z" fill="%23f8d7da" opacity="0.2"/></svg>');
-    background-size: 100px 100px;
-    opacity: 0.3;
-    z-index: -1;
-}
-
-.festival-info h3 {
-    color: var(--chinese-red);
-    font-size: 1.5rem;
-    margin-bottom: 15px;
-    padding-bottom: 10px;
-    border-bottom: 1px dashed var(--qinglv);
-    position: relative;
-}
-
-.festival-info h3::after {
-    content: '✽';
-    position: absolute;
-    right: 0;
-    top: 0;
-    color: var(--tuose);
-    opacity: 0.7;
-}
-
-.festival-info p {
-    line-height: 1.8;
-    color: #333;
-    text-align: justify;
-}
-
-/* 页脚样式 */
-footer {
-    text-align: center;
-    margin-top: 50px;
-    padding: 20px 0;
-    color: #777;
-    border-top: 1px solid var(--border-color);
-}
-
-footer a {
-    color: var(--accent-color);
-    text-decoration: none;
-}
-
-footer a:hover {
-    text-decoration: underline;
-}
-
-/* 模态框样式 */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    opacity: 1;
-    transition: opacity 0.3s ease;
-    overflow: auto;
-}
-
-.modal-content {
-    background-color: white;
-    margin: 10% auto;
-    padding: 30px;
-    border-radius: 8px;
-    width: 80%;
-    max-width: 500px;
-    position: relative;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    background-image: linear-gradient(to bottom, var(--chinese-red) 2px, transparent 2px);
-}
-
-.close {
-    position: absolute;
-    right: 15px;
-    top: 10px;
-    font-size: 24px;
-    cursor: pointer;
-    color: var(--chinese-red);
-    transition: color 0.2s ease, transform 0.2s ease;
-}
-
-.close:hover {
-    color: var(--zhuqing);
-    transform: scale(1.1);
-}
-
-.share-options {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin: 20px 0;
-}
-
-.share-btn {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    color: white;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: var(--transition);
-}
-
-.share-btn.wechat {
-    background-color: #07C160;
-}
-
-.share-btn.weibo {
-    background-color: #E6162D;
-}
-
-.share-btn.qq {
-    background-color: #12B7F5;
-}
-
-.share-btn:hover {
-    opacity: 0.9;
-}
-
-.qr-code {
-    text-align: center;
-    margin-top: 20px;
-}
-
-/* 响应式调整 */
-@media (max-width: 768px) {
-    header h1 {
-        font-size: 2rem;
-    }
-    
-    .form-container, .result-container {
-        padding: 20px;
-    }
-    
-    .actions {
-        flex-direction: column;
-    }
-    
-    .btn-action {
-        width: 100%;
-    }
-    
-    .modal-content {
-        margin: 20% auto;
-        padding: 20px;
-    }
-    
-    .main-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .form-container, .result-container {
-        border-radius: 10px;
-        margin-bottom: 20px;
-    }
-    
-    .form-group {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    
-    .form-group label {
-        margin-bottom: 5px;
-    }
-    
-    .form-group input, .form-group select, .form-group textarea {
-        width: 100%;
-    }
-    
-    .greeting-text {
-        color: var(--text-color);
-        background-color: rgba(255, 255, 255, 0.95);
-        padding: 15px;
-        border-radius: 8px;
-        border: 1px solid rgba(0,0,0,0.1);
-        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        line-height: 1.8;
-        font-size: 1.1rem;
-        text-align: left;
-        white-space: pre-wrap;
-        word-wrap: break-word;
-        position: relative;
-        min-height: 100px; /* 确保有足够的高度 */
-    }
-    
-    .festival-info h3 {
-        font-size: 1.3rem;
-    }
-}
-
-/* 大屏幕设备优化 */
-@media (min-width: 1200px) {
-    .container {
-        max-width: 1280px;
-    }
-    
-    .main-grid {
-        grid-gap: 50px;
-    }
-    
-    .greeting-text {
-        font-size: 2rem;
-        line-height: 1.8;
-        color: rgba(0, 0, 0, 0.85);
-        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        background: rgba(255, 255, 255, 0.95);
-    }
-    
-    .festival-info h3 {
-        font-size: 1.8rem;
-        margin-bottom: 1.5rem;
-    }
-    
-    .btn {
-        font-size: 1.2rem;
-        padding: 18px 35px;
-        box-shadow: 0 6px 24px rgba(198, 44, 56, 0.4);
-    }
-}
-
-/* 动画效果 */
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-.fade-in {
-    animation: fadeIn 0.5s ease-in-out;
-}
-
-/* 加载动画 */
+/* 加载状态 */
 .loading {
     display: none;
-    text-align: center;
-    margin: 30px 0;
-    position: relative;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 0;
 }
 
 .loading-spinner {
-    position: relative;
-    width: 60px;
-    height: 60px;
-    margin: 0 auto;
-}
-
-.loading-spinner::before,
-.loading-spinner::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-left-color: var(--chinese-red);
     border-radius: 50%;
-    border: 3px solid transparent;
-}
-
-.loading-spinner::before {
-    border-top-color: var(--chinese-red);
-    border-right-color: var(--qingbi);
-    border-bottom-color: var(--tuose);
-    animation: spin 1.5s linear infinite;
-}
-
-.loading-spinner::after {
-    border-top-color: var(--zhuqing);
-    border-left-color: var(--qinglv);
-    border-bottom-color: var(--xinghuang);
-    animation: spin 1s ease-in-out infinite reverse;
+    animation: spin 1s linear infinite;
+    margin-bottom: 15px;
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
-/* 复制成功提示 */
-#copy-toast {
-    visibility: hidden;
-    min-width: 250px;
-    margin-left: -125px;
-    background-color: rgba(255, 255, 255, 0.95);
+/* 结果容器 */
+.result-container {
+    display: none;
+}
+
+.result-container h2 {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
     color: var(--chinese-red);
-    text-align: center;
+}
+
+.result-content {
+    font-size: 1.2rem;
+    line-height: 1.8;
+    padding: 20px;
     border-radius: 8px;
-    padding: 16px;
-    position: fixed;
-    z-index: 1;
-    left: 50%;
-    bottom: 30px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    border: 1px solid rgba(0, 0, 0, 0.1);
+    background-color: rgba(245, 245, 245, 0.8);
+    margin-bottom: 25px;
+    backdrop-filter: blur(5px);
+}
+
+.result-actions {
+    display: flex;
+    gap: 15px;
+}
+
+/* 节日信息 */
+.festival-info {
+    display: none;
+}
+
+.festival-info h2 {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+    color: var(--chinese-red);
+}
+
+.festival-info p {
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+}
+
+.festival-tags {
+    margin-bottom: 20px;
+}
+
+.tag {
+    display: inline-block;
+    padding: 8px 15px;
+    background-color: var(--chinese-red);
+    color: white;
+    border-radius: 50px;
+    font-size: 1rem;
     font-weight: 500;
 }
 
-#copy-toast::before {
-    content: '✓';
+.festival-keywords h3 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+.keywords-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.keyword {
     display: inline-block;
-    margin-right: 8px;
+    padding: 6px 12px;
+    background-color: rgba(198, 44, 56, 0.1);
     color: var(--chinese-red);
-    font-weight: bold;
+    border-radius: 20px;
+    font-size: 0.9rem;
 }
 
-#copy-toast.show {
-    visibility: visible;
-    animation: toast-fadein 0.5s, toast-fadeout 0.5s 1.5s;
+/* 错误样式 */
+.error {
+    border-color: #e74c3c !important;
 }
 
-@keyframes toast-fadein {
-    from {bottom: 0; opacity: 0; transform: translateY(20px);}
-    to {bottom: 30px; opacity: 1; transform: translateY(0);}
-}
-
-@keyframes toast-fadeout {
-    from {bottom: 30px; opacity: 1; transform: translateY(0);}
-    to {bottom: 0; opacity: 0; transform: translateY(20px);}
-}
+.error-message {
+    color: #e74c3c;
+    font-size: 0.9rem;}
