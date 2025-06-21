@@ -497,3 +497,25 @@ button::after {
 .result-container:hover {
   transform: translateY(-5px);
 }
+/* 新增AI交互样式 */
+.ai-container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+#ai-input {
+  width: 100%;
+  height: 120px;
+  margin-bottom: 1rem;
+}
+
+.relation-select {
+  width: 200px;
+  padding: 8px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
