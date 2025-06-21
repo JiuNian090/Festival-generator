@@ -25,26 +25,17 @@ const blessingTemplates = {
     '家人': [
       '在这春意盎然的新年里，愿{{relationship}}健康长寿，万事如意，阖家幸福安康！新年快乐！',
       '辞旧迎新之际，祝愿{{relationship}}新年快乐，身体健康，平安喜乐，福寿绵长！'
-    ]
+    ],
+    // 其他关系类型模板...
   }
 };
 // 应改为
-// 由于无法重新声明块范围变量，这里直接修改原有对象
-// 清空原有对象内容
-Object.keys(blessingTemplates).forEach(key => delete blessingTemplates[key]);
-// 重新赋值新的初始内容
-Object.assign(blessingTemplates), {
+const blessingTemplates = {
   // 保持原有结构
-// 原代码可能存在输入错误，这里将“/fix”修正为“)”，但由于选择内容仅“};”，推测无实际修正内容，保持原样
-}
+};
 
 // 页面加载完成后执行
 document.addEventListener('DOMContentLoaded', function() {
-
-    // 关系选择器事件绑定
-    document.getElementById('relationship').addEventListener('change', function() {
-        generateBlessing();
-    });
     // 关系选择器事件绑定
     document.getElementById('relationship').addEventListener('change', function() {
         generateBlessing();
@@ -230,7 +221,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-
 function updateFestivalInfo(festival) {
     if (festivalInfo[festival]) {
         const description = festivalInfo[festival].description;
@@ -250,20 +240,28 @@ function updateFestivalInfo(festival) {
 }
 
 async function generateGreeting(festival, recipient, relationship, style, customInfo) {
-  // 根据节日和关系获取合适的祝福模板
-  const templates = blessingTemplates[festival]?.[relationship] || [];
+  // 加载本地AI模型
+  const model = await tf.loadLayersModel('models/festival-model.json');
   
-  if (templates.length === 0) {
-    // 如果没有找到匹配的模板，使用通用模板
-    return `在这个${festival}里，祝愿${recipient}节日快乐，万事如意！`;
-  }
+  // 构建特征向量
+  const features = {
+    festival: festivalInfo[festival]?.keywords || [],
+    relationship: relationship,
+    style: style
+  };
   
-  // 随机选择一个模板
-  const template = templates[Math.floor(Math.random() * templates.length)];
-  
-  // 替换模板中的占位符
-  return template.replace(/{{relationship}}/g, relationship)
-                 .replace(/{{recipient}}/g, recipient);
+  // 使用模型生成祝福语
+  const prediction = model.predict(tf.tensor([encodeFeatures(features)]));
+  return formatPrediction(prediction.dataSync());
+}
+
+function encodeFeatures(features) {
+  // 特征编码逻辑
+  return [
+    ...features.festival.map(k => k.length),
+    features.relationship.length,
+    features.style === '传统' ? 1 : 0
+  ];
 }
 
 function showWithFadeIn(element) {
@@ -302,3 +300,18 @@ const festivals = [
     { name: '冬至', description: '冬至，又称日短至、冬节、亚岁等，兼具自然与人文两大内涵，既是二十四节气中一个重要的节气，也是中国民间的传统节日。冬至是四时八节之一，被视为冬季的大节日，在古代民间有“冬至大如年”的讲法。', imageUrl: 'https://picsum.photos/id/1084/1920/1080' },
     { name: '腊八节', description: '腊八节，即每年农历十二月初八，又称为“法宝节”“佛成道节”“成道会”等。本为佛教纪念释迦牟尼佛成道之节日，后逐渐也成为民间节日。腊八节主要流行于中国北方地区，节日习俗是喝腊八粥。', imageUrl: 'https://picsum.photos/id/1089/1920/1080' }
 ];
+
+// 使用TensorFlow.js预训练模型
+async function loadModel() {
+  const model = await tf.loadLayersModel('https://tfhub.dev/google/tfjs-model/universal-sentence-encoder/1');
+  return model;
+}
+
+// 文本分析函数
+async function analyzeText() {
+  const inputText = document.getElementById('ai-input').value;
+  const model = await loadModel();
+  const embedding = await model.embed(inputText);
+  const result = `AI分析完成，特征维度：${embedding.shape}`;
+  document.getElementById('ai-result').innerText = result;
+}
