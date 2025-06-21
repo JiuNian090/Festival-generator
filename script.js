@@ -188,6 +188,22 @@ document.addEventListener('DOMContentLoaded', function() {
     shareBtn.addEventListener('click', function() {
         showWithFadeIn(shareModal);
     });
+
+    // 微信分享
+    document.getElementById('weixin-share').addEventListener('click', function() {
+        const wechatQrcode = document.getElementById('wechat-qrcode');
+        const qrcodeContainer = document.getElementById('qrcode-container');
+        const shareOptions = document.querySelector('.share-options');
+
+        // 显示二维码容器，隐藏分享选项
+        wechatQrcode.style.display = 'block';
+        shareOptions.style.display = 'none';
+
+        // 生成当前页面URL的二维码
+        const currentUrl = window.location.href;
+        const qrcodeUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(currentUrl)}&size=160x160`;
+        qrcodeContainer.innerHTML = `<img src="${qrcodeUrl}" alt="微信分享二维码">`;
+    });
     
     // 关于链接点击事件
     aboutLink.addEventListener('click', function(e) {
