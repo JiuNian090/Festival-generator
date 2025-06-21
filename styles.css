@@ -51,148 +51,27 @@
 }
 
 body {
-    font-family: 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--light-color);
+    color: var(--text-color);
     line-height: 1.6;
-    color: var(--text-color);
-    background-color: #f9f9f9;
-    background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M50 50 L55 45 L50 40 L45 45 Z" fill="%23f8d7da" opacity="0.3"/></svg>');
-    transition: background-color 0.8s ease, background-image 0.8s ease;
-}
-
-/* 节日背景样式 */
-body.festival-spring-festival {
-    background-color: var(--chinese-red);
-    background-image: url('images/spring-festival.svg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-}
-
-body.festival-lantern-festival {
-    background-color: var(--zhuqing);
-    background-image: url('images/lantern-festival.svg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    /* color: #fff; */
-    color: #fff;
-}
-
-body.festival-qingming-festival {
-    background-color: var(--qinglv);
-    background-image: url('images/qingming-festival.svg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    /* color: #fff; */
-    color: #fff;
-}
-
-body.festival-dragon-boat-festival {
-    background-color: var(--qingbi);
-    background-image: url('images/dragon-boat-festival.svg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    /* color: #fff; */
-    color: #fff;
-}
-
-body.festival-qixi-festival {
-    background-color: var(--meihong);
-    background-image: url('images/qixi-festival.svg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    /* color: #fff; */
-    color: #fff;
-}
-
-body.festival-mid-autumn-festival {
-    background-color: var(--yuebai);
-    background-image: url('images/mid-autumn-festival.svg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    /* color: var(--text-color); */
-    color: var(--text-color);
-}
-
-body.festival-double-ninth-festival {
-    background-color: var(--xinghuang);
-    background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M20,20 L30,30 M40,40 L50,50 M60,60 L70,70 M80,80 L90,90 M20,80 L30,70 M40,60 L50,50 M60,40 L70,30 M80,20 L90,10" stroke="%23d9a40e" stroke-width="2" opacity="0.2"/></svg>');
-    color: var(--text-color);
-}
-
-body.festival-new-year {
-    background-color: var(--bishui);
-    background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect x="20" y="20" width="10" height="10" fill="%230f59a4" opacity="0.2"/><rect x="50" y="50" width="10" height="10" fill="%230f59a4" opacity="0.2"/><rect x="70" y="30" width="10" height="10" fill="%230f59a4" opacity="0.2"/><rect x="30" y="70" width="10" height="10" fill="%230f59a4" opacity="0.2"/></svg>');
-    color: var(--text-color);
-}
-
-body.festival-teachers-day {
-    background-color: var(--ganglan);
-    background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M30,30 L40,20 L50,30 L40,40 Z M70,70 L80,60 L90,70 L80,80 Z" fill="%23b0d5df" opacity="0.2"/></svg>');
-    color: #fff;
-}
-
-body.festival-national-day {
-    background-color: var(--chinese-red);
-    background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M20,20 L25,15 L30,20 L25,25 Z M40,40 L45,35 L50,40 L45,45 Z M60,60 L65,55 L70,60 L65,65 Z M80,80 L85,75 L90,80 L85,85 Z" fill="%23f7c242" opacity="0.2"/></svg>');
-    color: #fff;
-}
-
-body.festival-mothers-day {
-    background-color: var(--meihong);
-    background-image: url('images/mothers-day.svg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    /* color: #fff; */
-    color: #fff;
-}
-
-body.festival-fathers-day {
-    background-color: var(--qinghui);
-    background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect x="25" y="25" width="20" height="20" rx="2" fill="%233b818c" opacity="0.2"/><rect x="55" y="55" width="20" height="20" rx="2" fill="%233b818c" opacity="0.2"/></svg>');
-    color: #fff;
-}
-
-body.festival-childrens-day {
-    background-color: var(--feicui);
-    background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="25" cy="25" r="10" fill="%23f05654" opacity="0.2"/><circle cx="75" cy="75" r="10" fill="%23f7c242" opacity="0.2"/><circle cx="75" cy="25" r="10" fill="%23a4cab6" opacity="0.2"/><circle cx="25" cy="75" r="10" fill="%23f47983" opacity="0.2"/></svg>');
-    color: var(--text-color);
+    padding: 20px;
 }
 
 .container {
-    max-width: 1200px;
+    max-width: 1000px;
     margin: 0 auto;
     padding: 20px;
 }
 
-/* 头部样式 */
 header {
     text-align: center;
     margin-bottom: 30px;
-    position: relative;
-    padding: 20px 0;
-}
-
-header::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 60%;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--qinglv), var(--chinese-red), var(--qinglv), transparent);
 }
 
 header h1 {
-    color: var(--chinese-red);
-    margin-bottom: 15px;
-    font-size: 2.2rem;
+    color: var(--primary-color);
+    font-size: 2.5rem;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
     position: relative;
     display: inline-block;
@@ -292,12 +171,6 @@ select:focus, input:focus, textarea:focus {
     background: white;
 }
 
-select:focus, input:focus, textarea:focus {
-    outline: none;
-    border-color: var(--qingbi);
-    box-shadow: 0 0 0 3px rgba(0, 150, 136, 0.1);
-}
-
 select:hover, input:hover, textarea:hover {
     border-color: #bbb;
 }
@@ -310,7 +183,7 @@ textarea {
 .btn {
     display: inline-block;
     background: linear-gradient(135deg, var(--chinese-red), var(--zhuqing));
-    color: #333;
+    color: white;
     text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
     border: none;
     padding: 12px 24px;
@@ -553,18 +426,6 @@ textarea {
     text-align: justify;
 }
 
-.festival-info h3 {
-    color: var(--secondary-color);
-    margin-bottom: 15px;
-    font-size: 1.5rem;
-}
-
-#festival-description {
-    font-size: 1rem;
-    line-height: 1.6;
-    color: #666;
-}
-
 /* 页脚样式 */
 footer {
     text-align: center;
@@ -708,28 +569,22 @@ footer a:hover {
     .form-group input, .form-group select, .form-group textarea {
         width: 100%;
     }
- @media (max-width: 768px) {
+    
     .greeting-text {
         color: var(--text-color);
         background-color: rgba(255, 255, 255, 0.95);
         padding: 15px;
-    border-radius: 8px;
-    border: 1px solid rgba(0,0,0,0.1);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    line-height: 1.8;
-    font-size: 1.1rem;
-    text-align: left;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    position: relative;
-    min-height: 100px; /* 确保有足够的高度 */
-    font-size: 1.4rem;
-    line-height: 1.8;
-    color: rgba(0, 0, 0, 0.9);
-    background: linear-gradient(to right, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1));
-    padding: 15px;
-    border-radius: 8px;
-}
+        border-radius: 8px;
+        border: 1px solid rgba(0,0,0,0.1);
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        line-height: 1.8;
+        font-size: 1.1rem;
+        text-align: left;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        position: relative;
+        min-height: 100px; /* 确保有足够的高度 */
+    }
     
     .festival-info h3 {
         font-size: 1.3rem;
@@ -751,7 +606,7 @@ footer a:hover {
         line-height: 1.8;
         color: rgba(0, 0, 0, 0.85);
         text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    background: rgba(255, 255, 255, 0.95);
+        background: rgba(255, 255, 255, 0.95);
     }
     
     .festival-info h3 {
@@ -822,16 +677,6 @@ footer a:hover {
     100% { transform: rotate(360deg); }
 }
 
-/* 添加页面过渡效果 */
-.fade-in {
-    animation: fadeIn 0.5s ease-in-out;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
 /* 复制成功提示 */
 #copy-toast {
     visibility: hidden;
@@ -872,430 +717,4 @@ footer a:hover {
 @keyframes toast-fadeout {
     from {bottom: 30px; opacity: 1; transform: translateY(0);}
     to {bottom: 0; opacity: 0; transform: translateY(20px);}
-}
-
-/* 下拉菜单图标 */
-.select-wrapper {
-  position: relative;
-}
-
-.select-wrapper::after {
-  content: '';
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 24px;
-  height: 24px;
-  background-size: contain;
-  background-repeat: no-repeat;
-}
-
-option[value="春节"] { background-image: url('images/spring-festival.svg'); }
-option[value="中秋"] { background-image: url('images/mid-autumn-festival.svg'); }
-
-/* 文化标签样式 */
-.culture-tag {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  padding: 8px 15px;
-  border-radius: 20px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: transform 0.3s ease;
-}
-
-.culture-tag:hover {
-  transform: scale(1.05);
-}
-
-.spring-tag {
-  background: linear-gradient(145deg, #d92b2b, #ff6b6b);
-  color: #fff;
-}
-
-.btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left 0.7s;
-}
-
-.btn:hover::before {
-    left: 100%;
-}
-
-.btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
-}
-
-.btn:active {
-    transform: translateY(0);
-}
-
-.btn i {
-    margin-left: 8px;
-}
-
-/* 节日信息样式 */
-.festival-info {
-    background-color: rgba(255, 255, 255, 0.9);
-    border-radius: 10px;
-    padding: 25px;
-    margin-bottom: 30px;
-    position: relative;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-    overflow: hidden;
-}
-
-.festival-info::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M20,20 C25,15 35,15 40,20 C45,25 45,35 40,40 C35,45 25,45 20,40 C15,35 15,25 20,20 Z" fill="%23f8d7da" opacity="0.2"/></svg>');
-    background-size: 100px 100px;
-    opacity: 0.3;
-    z-index: -1;
-}
-
-.festival-info h3 {
-    color: var(--chinese-red);
-    font-size: 1.5rem;
-    margin-bottom: 15px;
-    padding-bottom: 10px;
-    border-bottom: 1px dashed var(--qinglv);
-    position: relative;
-}
-
-.festival-info h3::after {
-    content: '✽';
-    position: absolute;
-    right: 0;
-    top: 0;
-    color: var(--tuose);
-    opacity: 0.7;
-}
-
-.festival-info p {
-    line-height: 1.8;
-    color: #333;
-    text-align: justify;
-}
-
-.festival-info h3 {
-    color: var(--secondary-color);
-    margin-bottom: 15px;
-    font-size: 1.5rem;
-}
-
-#festival-description {
-    font-size: 1rem;
-    line-height: 1.6;
-    color: #666;
-}
-
-/* 页脚样式 */
-footer {
-    text-align: center;
-    margin-top: 50px;
-    padding: 20px 0;
-    color: #777;
-    border-top: 1px solid var(--border-color);
-}
-
-footer a {
-    color: var(--accent-color);
-    text-decoration: none;
-}
-
-footer a:hover {
-    text-decoration: underline;
-}
-
-/* 模态框样式 */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    opacity: 1;
-    transition: opacity 0.3s ease;
-    overflow: auto;
-}
-
-.modal-content {
-    background-color: white;
-    margin: 10% auto;
-    padding: 30px;
-    border-radius: 8px;
-    width: 80%;
-    max-width: 500px;
-    position: relative;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    background-image: linear-gradient(to bottom, var(--chinese-red) 2px, transparent 2px);
-}
-
-.close {
-    position: absolute;
-    right: 15px;
-    top: 10px;
-    font-size: 24px;
-    cursor: pointer;
-    color: var(--chinese-red);
-    transition: color 0.2s ease, transform 0.2s ease;
-}
-
-.close:hover {
-    color: var(--zhuqing);
-    transform: scale(1.1);
-}
-
-.share-options {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin: 20px 0;
-}
-
-.share-btn {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    color: white;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: var(--transition);
-}
-
-.share-btn.wechat {
-    background-color: #07C160;
-}
-
-.share-btn.weibo {
-    background-color: #E6162D;
-}
-
-.share-btn.qq {
-    background-color: #12B7F5;
-}
-
-.share-btn:hover {
-    opacity: 0.9;
-}
-
-.qr-code {
-    text-align: center;
-    margin-top: 20px;
-}
-
-/* 响应式调整 */
-@media (max-width: 768px) {
-    header h1 {
-        font-size: 2rem;
-    }
-    
-    .form-container, .result-container {
-        padding: 20px;
-    }
-    
-    .actions {
-        flex-direction: column;
-    }
-    
-    .btn-action {
-        width: 100%;
-    }
-    
-    .modal-content {
-        margin: 20% auto;
-        padding: 20px;
-    }
-    
-    .main-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .form-container, .result-container {
-        border-radius: 10px;
-        margin-bottom: 20px;
-    }
-    
-    .form-group {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    
-    .form-group label {
-        margin-bottom: 5px;
-    }
-    
-    .form-group input, .form-group select, .form-group textarea {
-        width: 100%;
-    }
-    
-    .greeting-text {
-    font-size: 1.4rem;
-    line-height: 1.8;
-    color: rgba(0, 0, 0, 0.9);
-    background: linear-gradient(to right, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1));
-    padding: 15px;
-    border-radius: 8px;
-}
-    
-    .festival-info h3 {
-        font-size: 1.3rem;
-    }
-}
-
-/* 大屏幕设备优化 */
-@media (min-width: 1200px) {
-    .container {
-        max-width: 1280px;
-    }
-    
-    .main-grid {
-        grid-gap: 50px;
-    }
-    
-    .greeting-text {
-        font-size: 2rem;
-        line-height: 1.8;
-        color: rgba(0, 0, 0, 0.85);
-        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    background: rgba(255, 255, 255, 0.95);
-    }
-    
-    .festival-info h3 {
-        font-size: 1.8rem;
-        margin-bottom: 1.5rem;
-    }
-    
-    .btn {
-        font-size: 1.2rem;
-        padding: 18px 35px;
-        box-shadow: 0 6px 24px rgba(198, 44, 56, 0.4);
-    }
-}
-
-/* 动画效果 */
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-.fade-in {
-    animation: fadeIn 0.5s ease-in-out;
-}
-
-/* 加载动画 */
-.loading {
-    display: none;
-    text-align: center;
-    margin: 30px 0;
-    position: relative;
-}
-
-.loading-spinner {
-    position: relative;
-    width: 60px;
-    height: 60px;
-    margin: 0 auto;
-}
-
-.loading-spinner::before,
-.loading-spinner::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    border: 3px solid transparent;
-}
-
-.loading-spinner::before {
-    border-top-color: var(--chinese-red);
-    border-right-color: var(--qingbi);
-    border-bottom-color: var(--tuose);
-    animation: spin 1.5s linear infinite;
-}
-
-.loading-spinner::after {
-    border-top-color: var(--zhuqing);
-    border-left-color: var(--qinglv);
-    border-bottom-color: var(--xinghuang);
-    animation: spin 1s ease-in-out infinite reverse;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-/* 添加页面过渡效果 */
-.fade-in {
-    animation: fadeIn 0.5s ease-in-out;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* 复制成功提示 */
-#copy-toast {
-    visibility: hidden;
-    min-width: 250px;
-    margin-left: -125px;
-    background-color: rgba(255, 255, 255, 0.95);
-    color: var(--chinese-red);
-    text-align: center;
-    border-radius: 8px;
-    padding: 16px;
-    position: fixed;
-    z-index: 1;
-    left: 50%;
-    bottom: 30px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    font-weight: 500;
-}
-
-#copy-toast::before {
-    content: '✓';
-    display: inline-block;
-    margin-right: 8px;
-    color: var(--chinese-red);
-    font-weight: bold;
-}
-
-#copy-toast.show {
-    visibility: visible;
-    animation: toast-fadein 0.5s, toast-fadeout 0.5s 1.5s;
-}
-
-@keyframes toast-fadein {
-    from {bottom: 0; opacity: 0; transform: translateY(20px);}
-    to {bottom: 30px; opacity: 1; transform: translateY(0);}
-}
-
-@keyframes toast-fadeout {
-    from {bottom: 30px; opacity: 1; transform: translateY(0);}
-    to {bottom: 0; opacity: 0; transform: translateY(20px);}
-}
 }

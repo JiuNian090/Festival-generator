@@ -221,203 +221,53 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// 节日名称到CSS类名的映射
-const festivalToClassMap = {
-    '春节': 'spring-festival',
-    '元宵节': 'lantern-festival',
-    '清明节': 'qingming-festival',
-    '端午节': 'dragon-boat-festival',
-    '七夕': 'qixi-festival',
-    '中秋节': 'mid-autumn-festival',
-    '重阳节': 'double-ninth-festival',
-    '元旦': 'new-year',
-    '教师节': 'teachers-day',
-    '国庆节': 'national-day',
-    '母亲节': 'mothers-day',
-    '父亲节': 'fathers-day',
-    '儿童节': 'childrens-day'
-};
-
-// 更新节日信息和背景
 function updateFestivalInfo(festival) {
-    const festivalDescription = document.getElementById('festival-description');
-    const festivalInfoContainer = document.getElementById('festival-info');
-    
-    // 移除所有节日相关的类
-    document.body.classList.forEach(className => {
-        if (className.startsWith('festival-')) {
-            document.body.classList.remove(className);
-        }
-    });
-    
-    // 添加当前节日的类
-    if (festival !== '其他' && festivalToClassMap[festival]) {
-        document.body.classList.add(`festival-${festivalToClassMap[festival]}`);
-    }
-    
     if (festivalInfo[festival]) {
-        festivalDescription.textContent = festivalInfo[festival].description;
-        festivalInfoContainer.style.display = 'block';
+        const description = festivalInfo[festival].description;
+        const tag = festivalInfo[festival].tag;
+        const keywords = festivalInfo[festival].keywords.join(', ');
+
+        const infoHTML = `
+            <p><strong>节日描述:</strong> ${description}</p>
+            <p><strong>文化标签:</strong> ${tag}</p>
+            <p><strong>关键词:</strong> ${keywords}</p>
+        `;
+
+        document.getElementById('festival-description').innerHTML = infoHTML;
     } else {
-        festivalInfoContainer.style.display = 'none';
+        document.getElementById('festival-description').innerHTML = '';
     }
 }
 
-// 显示复制成功提示
+async function generateGreeting(festival, recipient, relationship, style, customInfo) {
+    // 简单的模拟生成逻辑，实际可替换为真实的AI调用
+    const templates = greetingTemplates[festival] && greetingTemplates[festival][recipient];
+    if (templates) {
+        const randomIndex = Math.floor(Math.random() * templates.length);
+        let greeting = templates[randomIndex].replace('{{relationship}}', relationship);
+
+        if (customInfo) {
+            greeting += ` ${customInfo}`;
+        }
+
+        return greeting;
+    }
+
+    return '暂时无法生成合适的祝福语，请选择其他选项。';
+}
+
+function showWithFadeIn(element) {
+    element.style.display = 'block';
+    element.style.opacity = '0';
+    setTimeout(() => {
+        element.style.opacity = '1';
+    }, 100);
+}
+
 function showCopyToast() {
     const toast = document.getElementById('copy-toast');
     toast.classList.add('show');
-    setTimeout(function() {
+    setTimeout(() => {
         toast.classList.remove('show');
     }, 2000);
-}
-
-// 初始化页面
-function initPage() {
-    // 默认选择春节，触发背景变化
-    if (festivalSelect.value) {
-        updateFestivalInfo(festivalSelect.value);
-    }
-}
-
-// 初始化页面
-initPage();
-
-// 生成祝福语函数
-async function generateGreeting(festival, recipient, relationship, style, customInfo) {
-    // 首先尝试使用模板生成
-    if (greetingTemplates[festival] && greetingTemplates[festival][recipient]) {
-        const templates = greetingTemplates[festival][recipient];
-        let template = templates[Math.floor(Math.random() * templates.length)];
-        
-        // 替换关系词
-        template = template.replace(/\{\{relationship\}\}/g, relationship);
-        
-        return template;
-    }
-    
-    // 如果没有对应的模板，使用AI生成
-    try {
-        // 构建提示词
-        let prompt = `请生成一条${festival}祝福语，祝福对象是${recipient}`;
-        if (relationship) {
-            prompt += `（具体关系：${relationship}）`;
-        }
-        prompt += `，风格要${style}`;
-        if (customInfo) {
-            prompt += `，并包含以下个性化信息：${customInfo}`;
-        }
-        
-        // 使用免费的AI API生成祝福语
-        // 这里使用模拟的AI生成结果
-        return await simulateAIGeneration(festival, recipient, relationship, style, customInfo);
-    } catch (error) {
-        console.error('生成祝福语失败：', error);
-        return '很抱歉，生成祝福语时出现了问题，请重试。';
-    }
-}
-
-// 显示元素并添加淡入效果
-function showWithFadeIn(element) {
-    element.style.opacity = '0';
-    element.style.display = 'block';
-    setTimeout(() => {
-        element.style.opacity = '1';
-    }, 50);
-}
-
-// 模拟AI生成祝福语
-async function simulateAIGeneration(festival, recipient, relationship, style, customInfo) {
-    // 模拟API请求延迟
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    // 获取节日关键词
-    const keywords = festivalInfo[festival] ? festivalInfo[festival].keywords : ['祝福', '快乐', '幸福'];
-    
-    // 根据不同风格生成不同的祝福语
-    let greeting = '';
-    const randomKeyword = keywords[Math.floor(Math.random() * keywords.length)];
-    
-    switch (style) {
-        case '传统':
-            greeting = `值此${festival}来临之际，恭祝${relationship}${randomKeyword}满溢，幸福安康！`;
-            if (festival === '春节') {
-                greeting += '新年纳余庆，嘉节号长春。祝您及家人新春快乐，万事如意！';
-            } else if (festival === '中秋节') {
-                greeting += '但愿人长久，千里共婵娟。祝您中秋团圆，月圆人圆！';
-            }
-            break;
-        case '现代':
-            greeting = `${festival}快乐！愿${relationship}在这特别的日子里，收获满满的幸福与快乐！`;
-            if (customInfo) {
-                greeting += `${customInfo}，愿美好常伴您左右！`;
-            }
-            break;
-        case '幽默':
-            greeting = `${festival}到啦！${relationship}，准备好接收我满满的祝福了吗？祝您${randomKeyword}爆棚，笑口常开！`;
-            if (festival === '春节') {
-                greeting += '愿您的钱包鼓得像猪，快乐肥得流油！';
-            } else if (festival === '中秋节') {
-                greeting += '月饼吃不胖，快乐长不断！';
-            }
-            break;
-        case '文艺':
-            greeting = `${festival}时节，思绪如诗。愿${relationship}如${randomKeyword}般美好，岁月静好，安然喜乐。`;
-            if (customInfo) {
-                greeting += `${customInfo}，愿时光不负，岁月如歌。`;
-            }
-            break;
-        case '商务':
-            greeting = `值此${festival}之际，向${relationship}致以诚挚的问候和美好的祝福！祝愿合作愉快，共创辉煌！`;
-            if (customInfo) {
-                greeting += `${customInfo}，期待与您再创佳绩！`;
-            }
-            break;
-        default:
-            greeting = `${festival}快乐！祝${relationship}幸福安康，万事如意！`;
-    }
-    
-    return greeting;
-}
-
-// 添加一个简单的QR码生成功能（仅作为示例，实际项目中可以使用专业的QR码生成库）
-document.querySelectorAll('.share-btn').forEach(function(button) {
-    button.addEventListener('click', function() {
-        const qrCode = document.getElementById('qr-code');
-        qrCode.innerHTML = '<p>二维码生成中...</p>';
-        
-        // 在实际项目中，这里可以调用QR码生成API
-        setTimeout(function() {
-            qrCode.innerHTML = '<p>扫描二维码分享祝福语</p><div style="width:150px;height:150px;background-color:#f5f5f5;margin:10px auto;display:flex;align-items:center;justify-content:center;">QR码示例</div>';
-        }, 1000);
-    });
-});
-
-// 在下拉选项生成时添加图标
-function populateFestivalOptions() {
-    const select = document.getElementById('festival');
-    select.innerHTML = '<option value="" disabled selected>请选择节日</option>' + 
-        Object.keys(festivalToClassMap).map(festival => {
-            return `<option value="${festival}" data-icon="images/${festivalToClassMap[festival]}.svg">
-                    ${festival} <img src="images/${festivalToClassMap[festival]}.svg" class="option-icon">
-                </option>`;
-        }).join('');
-}
-
-// 生成祝福语后添加文化标签
-function showCultureTag(festival) {
-    const tag = document.createElement('div');
-    tag.className = `culture-tag ${festivalToClassMap[festival]}-tag`;
-    tag.innerHTML = `${festivalInfo[festival].tag} <i class="fas fa-info-circle"></i>`;
-    tag.onclick = () => showCulturePopup(festival);
-    resultContainer.prepend(tag);
-}
-
-// 节日知识弹窗
-function showCulturePopup(festival) {
-    const popup = document.createElement('div');
-    popup.className = 'culture-popup';
-    popup.innerHTML = `<h4>${festival}文化知识</h4>
-        <p>${festivalInfo[festival].description}</p>`;
-    document.body.appendChild(popup);
 }
