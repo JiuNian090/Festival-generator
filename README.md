@@ -43,6 +43,30 @@
 2. 打开index.html文件
 3. 开始使用智能节日祝福语生成器
 
+## 部署指南
+
+### Cloudflare Pages部署
+1. 将项目推送到GitHub仓库
+2. 登录[Cloudflare控制台](https://dash.cloudflare.com/)
+3. 进入**Workers 和 Pages** > **创建应用程序** > **Pages** > **连接到Git**
+4. 选择你的GitHub仓库
+5. 配置构建设置：
+   - 框架预设：静态站点
+   - 构建命令：留空
+   - 构建输出目录：`.`
+6. 点击**保存并部署**
+7. 部署完成后通过`your-project.pages.dev`访问
+
+## 项目结构
+
+```
+├── LICENSE           # 许可证文件
+├── README.md         # 项目说明文档
+├── index.html        # 主页面
+├── script.js         # 交互逻辑
+└── styles.css        # 样式文件
+```
+
 ## 贡献
 
 欢迎提交问题和功能建议，共同改进这个项目！
