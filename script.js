@@ -44,43 +44,43 @@ document.addEventListener('DOMContentLoaded', function () {
             description: '春节，即农历新年，是中国最重要的传统节日。源自殷商时期岁首祈岁祭祀，传承至今包含扫尘、守岁、拜年、贴春联等习俗，承载着团圆和睦的文化内涵。',
             tag: '团圆安康',
             keywords: ['福', '春联', '鞭炮', '红包', '年夜饭', '拜年'],
-            background: 'https://example.com/chunjie.jpg'
+            background: 'https://example.cn/chunjie.jpg'
         },
         '元宵节': {
             description: '元宵节，又称上元节、小正月、元夕或灯节，时间为每年农历正月十五。正月是农历的元月，古人称"夜"为"宵"，正月十五是一年中第一个月圆之夜，所以称正月十五为"元宵节"。',
             tag: '张灯结彩',
             keywords: ['汤圆', '花灯', '猜灯谜', '赏月'],
-            background: 'https://example.com/yuanxiao.jpg'
+            background: 'https://example.cn/yuanxiao.jpg'
         },
         '清明节': {
             description: '清明节源自上古春祭，兼具自然节气与人文节日内涵。扫墓祭祖与踏青郊游的节俗传统，体现中国人对生命循环的哲学思考。',
             tag: '慎终追远',
             keywords: ['祭扫', '踏青', '插柳', '寒食', '思念', '重生'],
-            background: 'https://example.com/qingming.jpg'
+            background: 'https://example.cn/qingming.jpg'
         },
         '端午节': {
-            description: '端午节，又称端阳节、龙舟节、重午节、重五节、天中节等，日期在每年农历五月初五，是集拜神祭祖、祈福辟邪、欢庆娱乐和饮食为一体的民俗大节。',
+            description: '端午节，又称端阳节、龙舟节、重午节、重五节、天中节等，日期在每年农历五月初五，是集拜神祭祖、祈福辟邪、欢庆娱乐和饮食一体化的民俗大节。',
             tag: '龙舟竞渡',
             keywords: ['粽子', '龙舟', '艾草', '雄黄', '屈原'],
-            background: 'https://example.com/duanwu.jpg'
+            background: 'https://example.cn/duanwu.jpg'
         },
         '七夕': {
             description: '七夕节，又称七巧节、七姐节、女儿节、乞巧节、七娘会、七夕祭、牛公牛婆日、巧夕等，是中国民间的传统节日。七夕节由星宿崇拜衍化而来，为传统意义上的七姐诞，因拜祭"七姐"活动在七月七晩上举行，故名"七夕"。',
             tag: '浪漫爱情',
             keywords: ['牛郎', '织女', '银河', '乞巧', '爱情'],
-            background: 'https://example.com/qixi.jpg'
+            background: 'https://example.cn/qixi.jpg'
         },
         '中秋节': {
             description: '中秋节源自天象崇拜，盛行于唐宋。祭月、赏月、吃月饼、玩花灯等习俗，承载着中国人对家庭团圆、生活美满的精神寄托。',
             tag: '花好月圆',
             keywords: ['月饼', '玉兔', '嫦娥', '赏月', '团圆', '思念'],
-            background: 'https://example.com/zhongqiu.jpg'
+            background: 'https://example.cn/zhongqiu.jpg'
         },
         '重阳节': {
             description: '重阳节，是中国民间传统节日，节期在每年农历九月初九。"九"数在《易经》中为阳数，"九九"两阳数相重，故曰"重阳"；因日与月皆逢九，故又称为"重九"。九九归真，一元肇始，古人认为九九重阳是吉祥的日子。古时民间在重阳节有登高祈福、拜神祭祖及饮宴祈寿等习俗。传承至今，又添加了敬老等内涵。',
             tag: '登高敬老',
             keywords: ['登高', '茱萸', '菊花', '敬老', '长寿'],
-            background: 'https://example.com/chongyang.jpg'
+            background: 'https://example.cn/chongyang.jpg'
         }
     };
 
