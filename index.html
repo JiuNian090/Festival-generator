@@ -59,12 +59,8 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="relationship">关系描述</label>
-                    <select id="relationship" class="relation-select">
-                        <option value="家人">家人</option>
-                        <option value="子女">子女</option>
-                        <option value="朋友">朋友</option>
-                    </select>
+                    <label for="relationship">关系描述（称呼/昵称）</label>
+                    <input type="text" id="relationship" placeholder="例如：爸爸、李老师、张总、亲爱的朋友等">
                 </div>
 
                 <div class="form-group">
@@ -217,6 +213,7 @@
             const recipientSelect = document.getElementById('recipient');
             const otherRecipientContainer = document.getElementById('other-recipient-container');
             const otherRecipientInput = document.getElementById('other-recipient');
+            const relationshipInput = document.getElementById('relationship');
             const generateBtn = document.getElementById('generate-btn');
             const loading = document.getElementById('loading');
             const resultContainer = document.getElementById('result-container');
@@ -436,7 +433,7 @@
             function generateGreeting() {
                 const festival = festivalSelect.value === '其他' ? otherFestivalInput.value.trim() : festivalSelect.value;
                 const recipient = recipientSelect.value === '其他' ? otherRecipientInput.value : recipientSelect.value;
-                const relationship = document.getElementById('relationship').value || '';
+                const relationship = relationshipInput.value.trim();
                 const tone = document.getElementById('tone').value;
                 const length = document.getElementById('length').value;
                 const keywords = document.getElementById('keywords').value.split(',').map(k => k.trim()).filter(k => k);
@@ -445,18 +442,107 @@
                 const templates = {
                     short: {
                         温馨: {
+                            家人: `${festival}到了，愿您健康长寿，幸福安康！`,
                             父母: `${festival}到了，愿您健康长寿，幸福安康！`,
                             子女: `宝贝，${festival}快乐！愿你无忧无虑，茁壮成长！`,
-                            朋友: `祝你${festival}开心，一切顺遂！`
+                            朋友: `祝你${festival}开心，一切顺遂！`,
+                            老师: `敬爱的老师，${festival}快乐！感谢您的辛勤付出！`,
+                            领导: `尊敬的领导，${festival}快乐！感谢您的指导和关怀！`,
+                            同事: `亲爱的同事，${festival}快乐！愿我们合作愉快，共创佳绩！`,
+                            客户: `尊敬的客户，${festival}快乐！感谢您的支持与信任！`,
+                            长辈: `尊敬的长辈，${festival}快乐！祝您福寿安康，万事胜意！`,
+                            晚辈: `亲爱的${recipient}，${festival}快乐！愿你前程似锦，不负韶华！`
+                        },
+                        幽默: {
+                            朋友: `嘿！${festival}到啦！别忘了出来嗨皮，不然小心我上门堵你！`,
+                            家人: `家人们，${festival}快乐！今年的红包准备好了吗？哈哈！`
+                        },
+                        正式: {
+                            领导: `值此${festival}之际，谨向您致以最诚挚的问候和衷心的祝福！`,
+                            客户: `尊敬的客户，在${festival}来临之际，我们衷心感谢您一直以来的支持与信任！`
+                        },
+                        深情: {
+                            父母: `亲爱的爸爸妈妈，${festival}到了。感谢你们的养育之恩，愿你们健康长寿，幸福永远！`,
+                            朋友: `亲爱的朋友，${festival}快乐！感谢你一直以来的陪伴与支持，愿我们的友谊长存！`
+                        },
+                        激励: {
+                            晚辈: `亲爱的${recipient}，${festival}到了。愿你在新的一年里，努力拼搏，实现自己的梦想！`,
+                            同事: `各位同事，${festival}快乐！愿我们在新的一年里，携手共进，创造更加辉煌的业绩！`
+                        }
+                    },
+                    medium: {
+                        温馨: {
+                            家人: `${festival}的钟声已经敲响，在这个充满喜庆和团圆的时刻，我想对您说一声："${relationship}，${festival}快乐！"愿您在新的一年里，身体健康，心情愉快，家庭和睦，事事如意。无论我身在何处，心中永远牵挂着您，愿您的生活充满阳光和温暖，每一天都过得幸福美满。`,
+                            朋友: `亲爱的${relationship}，${festival}到了！时光匆匆，转眼间我们已经相识了这么久。在这个特别的日子里，我想对你说一声："谢谢！"感谢你在我困难的时候给予我帮助和支持，感谢你在我开心的时候与我分享快乐。愿你在新的一年里，事业有成，家庭幸福，身体健康，万事如意。无论未来的路有多么艰难，我都会一直在你身边，与你共同面对。`,
+                            老师: `敬爱的${relationship}，${festival}快乐！在这个特别的日子里，我想对您说一声："您辛苦了！"感谢您在我成长的道路上给予我知识和智慧，感谢您在我迷茫的时候给予我指导和帮助。您的教诲如明灯照亮我前行的道路，您的关怀如春风温暖我幼小的心灵。愿您在新的一年里，身体健康，工作顺利，家庭幸福，桃李满天下。`,
+                            领导: `尊敬的${relationship}，值此${festival}来临之际，我想对您说一声："感谢您！"感谢您在工作中给予我的指导和帮助，感谢您在生活中给予我的关心和照顾。您的领导能力和人格魅力让我敬佩不已，您的工作态度和敬业精神让我深受鼓舞。愿您在新的一年里，身体健康，工作顺利，家庭幸福，事业蒸蒸日上。`,
+                            同事: `亲爱的${relationship}，${festival}快乐！在过去的一年里，我们一起奋斗，一起拼搏，共同完成了许多艰巨的任务。在这个过程中，我看到了你的努力和付出，也看到了你的才华和能力。感谢你在工作中给予我的帮助和支持，感谢你在生活中给予我的关心和照顾。愿我们在新的一年里，继续携手共进，共同创造更加美好的未来。`,
+                            客户: `尊敬的${relationship}，在${festival}来临之际，我们怀着无比感激的心情，向您致以最诚挚的问候和最衷心的祝福！感谢您一直以来对我们的信任和支持，感谢您在我们成长的道路上给予我们的帮助和鼓励。我们将始终秉承"客户至上"的服务理念，不断提升服务质量，为您提供更加优质、高效的服务。愿您在新的一年里，身体健康，工作顺利，家庭幸福，万事如意！`
+                        }
+                    },
+                    long: {
+                        温馨: {
+                            家人: `${relationship}，${festival}的脚步越来越近了，空气中弥漫着喜庆的气息。每当这个时候，我总会想起您的笑容，想起您对我的关爱和呵护。在我的记忆中，您总是那么勤劳，那么善良，那么坚强。为了这个家，您付出了太多太多，牺牲了自己的青春和梦想。您的爱是无私的，是伟大的，是我这辈子都无法报答的。在这个特别的日子里，我想对您说一声："${relationship}，${festival}快乐！"愿您在新的一年里，身体健康，心情愉快，家庭和睦，事事如意。无论我身在何处，心中永远牵挂着您，愿您的生活充满阳光和温暖，每一天都过得幸福美满。希望在新的一年里，我能有更多的时间陪伴您，让您感受到我的爱和关怀。也希望您能多注意身体，不要太累了，您的健康就是我们最大的幸福。最后，再次祝愿您${festival}快乐，福寿安康，万事如意！`,
+                            朋友: `亲爱的${relationship}，时光荏苒，转眼间我们已经相识了这么多年。从最初的陌生到现在的无话不谈，我们一起经历了许多欢笑和泪水，也一起见证了彼此的成长和变化。在我的心中，你不仅仅是我的朋友，更是我的亲人，是我生命中不可或缺的一部分。每当我遇到困难和挫折时，你总是第一个出现在我身边，给我鼓励和支持；每当我取得成绩和进步时，你总是比我还要高兴，为我感到骄傲和自豪。你的真诚和善良让我深受感动，你的乐观和坚强也一直激励着我不断前进。${festival}到了，在这个充满喜庆和团圆的时刻，我想对你说一声："谢谢你！"感谢你一直以来对我的信任和支持，感谢你在我生命中扮演的重要角色。愿你在新的一年里，事业有成，家庭幸福，身体健康，万事如意。无论未来的路有多么漫长和艰难，我都会一直在你身边，与你共同面对，共同分享生活中的喜怒哀乐。最后，再次祝你${festival}快乐，心想事成，一切顺利！`,
+                            老师: `敬爱的${relationship}，当我提起笔来给您写这封信时，心中充满了感激和敬意。在我的成长过程中，您是对我影响最大的人之一。您不仅传授给我知识和技能，更教会了我如何做人，如何面对生活中的挑战和困难。您的教诲如明灯照亮我前行的道路，您的关怀如春风温暖我幼小的心灵。记得有一次，我在学习上遇到了困难，情绪非常低落。是您，耐心地给我讲解题目，鼓励我不要放弃，要相信自己的能力。在您的帮助下，我终于克服了困难，取得了进步。那一刻，我深深地感受到了您对我的关爱和期望。${festival}到了，在这个特别的日子里，我想对您说一声："您辛苦了！"感谢您为我们付出的辛勤劳动，感谢您对我们的关心和爱护。您的工作虽然平凡，但却伟大；您的付出虽然默默无闻，但却影响深远。愿您在新的一年里，身体健康，工作顺利，家庭幸福，桃李满天下。您的学生将永远铭记您的教诲，努力学习，将来成为对社会有用的人，不辜负您的期望。最后，再次祝您${festival}快乐，万事胜意！`
                         }
                     }
                 };
 
-                let greeting = templates[length][tone][relationship] || `在${festival}，给${recipient}送上最美好的祝福！`;
+                // 确定祝福语模板
+                let template = templates[length][tone][recipient] || 
+                              templates[length][tone]['家人'] || 
+                              `${festival}到了，给${recipient}送上最美好的祝福！`;
 
+                // 替换模板中的变量
+                let greeting = template;
+
+                // 如果关系描述不为空，在祝福语前添加称呼
+                if (relationship) {
+                    // 确定合适的称呼前缀
+                    let prefix = '';
+                    if (recipient === '家人') {
+                        prefix = '亲爱的';
+                    } else if (recipient === '朋友') {
+                        prefix = '亲爱的';
+                    } else if (recipient === '老师') {
+                        prefix = '敬爱的';
+                    } else if (recipient === '领导') {
+                        prefix = '尊敬的';
+                    } else if (recipient === '同事') {
+                        prefix = '亲爱的';
+                    } else if (recipient === '客户') {
+                        prefix = '尊敬的';
+                    } else if (recipient === '长辈') {
+                        prefix = '尊敬的';
+                    } else if (recipient === '晚辈') {
+                        prefix = '亲爱的';
+                    } else {
+                        prefix = '亲爱的';
+                    }
+
+                    // 格式化称呼
+                    let formattedRelationship = relationship;
+                    // 如果关系描述以"的"结尾，可能是修饰词，需要调整
+                    if (relationship.endsWith('的')) {
+                        formattedRelationship = relationship + recipient;
+                    }
+
+                    // 在祝福语前添加称呼
+                    greeting = `${prefix}${formattedRelationship}，${greeting}`;
+                }
+
+                // 如果有关键词，插入到祝福语中
                 if (keywords.length > 0) {
                     const keywordStr = keywords.join('、');
-                    greeting = greeting.replace('，', `，${keywordStr}，`);
+                    // 根据祝福语长度选择合适的插入位置
+                    if (length === 'short') {
+                        greeting = greeting.replace('，', `，${keywordStr}，`);
+                    } else if (length === 'medium') {
+                        greeting = greeting.replace('。', `，${keywordStr}。`);
+                    } else {
+                        greeting = greeting.replace('，', `，${keywordStr}，`);
+                    }
                 }
 
                 return greeting;
@@ -477,3 +563,4 @@
     </script>
 </body>
 
+</html>
