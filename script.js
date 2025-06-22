@@ -27,7 +27,17 @@ document.addEventListener('DOMContentLoaded', function () {
     const wechatQrcodeContainer = document.getElementById('wechat-qrcode');
     const qrcodeContainer = document.getElementById('qrcode-container');
     const shareToast = document.getElementById('share-toast');
-
+    
+    // API设置相关元素
+    const apiSettingsBtn = document.getElementById('api-settings-btn');
+    const apiSettingsModal = document.getElementById('api-settings-modal');
+    const apiSettingsCloseBtn = document.querySelector('#api-settings-modal .close');
+    const apiProviderSelect = document.getElementById('api-provider');
+    const apiKeyInput = document.getElementById('api-key');
+    const saveApiSettingsBtn = document.getElementById('save-api-settings');
+    const apiSettingsStatus = document.getElementById('api-settings-status');
+    const resetApiSettingsBtn = document.getElementById('reset-api-settings');
+    
     // 节日信息数据，包含背景图片URL
     const festivalInfo = {
         '春节': {
@@ -73,6 +83,41 @@ document.addEventListener('DOMContentLoaded', function () {
             background: 'https://example.com/chongyang.jpg'
         }
     };
+
+    // AI配置 - 默认配置，将被环境变量和用户设置覆盖
+    const DEFAULT_AI_CONFIG = {
+        openai: {
+            enabled: false,
+            endpoint: 'https://api.openai.com/v1/chat/completions',
+            model: 'gpt-3.5-turbo',
+            apiKey: 'YOUR_OPENAI_API_KEY'
+        },
+        anthropic: {
+            enabled: false,
+            endpoint: 'https://api.anthropic.com/v1/complete',
+            model: 'claude-2',
+            apiKey: 'YOUR_ANTHROPIC_API_KEY'
+        },
+        deepseek: {
+            enabled: true,
+            endpoint: 'https://api.deepseek.com/v1/chat/completions',
+            model: 'deepseek-chat',
+            apiKey: 'YOUR_DEEPSEEK_API_KEY'
+        },
+        defaultProvider: 'deepseek'
+    };
+    
+    // 初始化AI配置
+    let AI_CONFIG = JSON.parse(JSON.stringify(DEFAULT_AI_CONFIG));
+    
+    // 从环境变量加载API配置
+    loadApiConfigFromEnv();
+    
+    // 从本地存储加载用户自定义API配置
+    loadCustomApiConfig();
+    
+    // 更新API设置UI
+    updateApiSettingsUI();
 
     // 添加淡入效果
     document.querySelectorAll('.fade-in').forEach(element => {
@@ -159,18 +204,21 @@ document.addEventListener('DOMContentLoaded', function () {
         // 显示加载状态
         showLoading(true);
 
-        // 模拟API调用延迟
-        setTimeout(() => {
-            // 生成祝福语
-            const greeting = generateGreeting();
-
+        // 调用AI生成祝福语
+        generateGreetingWithAI().then(greeting => {
             // 显示结果
             resultContent.textContent = greeting;
             resultContainer.style.display = 'block';
 
             // 隐藏加载状态
             showLoading(false);
-        }, 1500);
+        }).catch(error => {
+            console.error('AI生成祝福语失败:', error);
+            // 显示错误信息
+            resultContent.textContent = '抱歉，祝福语生成失败。请检查您的网络连接或API密钥是否正确。';
+            resultContainer.style.display = 'block';
+            showLoading(false);
+        });
     });
 
     // 复制按钮点击事件
@@ -284,6 +332,22 @@ document.addEventListener('DOMContentLoaded', function () {
             clearError(document.getElementById('length'));
         }
 
+        // 验证AI配置
+        let aiProviderEnabled = false;
+        for (const provider in AI_CONFIG) {
+            if (AI_CONFIG.hasOwnProperty(provider) && provider !== 'defaultProvider') {
+                if (AI_CONFIG[provider].enabled && AI_CONFIG[provider].apiKey && AI_CONFIG[provider].apiKey !== 'YOUR_API_KEY') {
+                    aiProviderEnabled = true;
+                    break;
+                }
+            }
+        }
+
+        if (!aiProviderEnabled) {
+            isValid = false;
+            alert('请在API设置中配置至少一个AI提供商的API密钥，或在Cloudflare Pages环境变量中配置。');
+        }
+
         return isValid;
     }
 
@@ -314,123 +378,280 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // 生成祝福语（实际应用中应调用API）
-    function generateGreeting() {
+    // 从环境变量加载API配置
+    function loadApiConfigFromEnv() {
+        if (typeof CLOUDFLARE_VARS !== 'undefined') {
+            if (CLOUDFLARE_VARS.OPENAI_API_KEY) {
+                AI_CONFIG.openai.apiKey = CLOUDFLARE_VARS.OPENAI_API_KEY;
+                AI_CONFIG.openai.enabled = true;
+            }
+            if (CLOUDFLARE_VARS.ANTHROPIC_API_KEY) {
+                AI_CONFIG.anthropic.apiKey = CLOUDFLARE_VARS.ANTHROPIC_API_KEY;
+                AI_CONFIG.anthropic.enabled = true;
+            }
+            if (CLOUDFLARE_VARS.DEEPSEEK_API_KEY) {
+                AI_CONFIG.deepseek.apiKey = CLOUDFLARE_VARS.DEEPSEEK_API_KEY;
+                AI_CONFIG.deepseek.enabled = true;
+            }
+        }
+    }
+    
+    // 从本地存储加载用户自定义API配置
+    function loadCustomApiConfig() {
+        try {
+            const customConfig = localStorage.getItem('ai_custom_config');
+            if (customConfig) {
+                const parsedConfig = JSON.parse(customConfig);
+                
+                // 只应用用户在UI中配置的提供商
+                for (const provider in parsedConfig) {
+                    if (parsedConfig.hasOwnProperty(provider) && provider !== 'defaultProvider') {
+                        if (parsedConfig[provider].enabled && parsedConfig[provider].apiKey) {
+                            AI_CONFIG[provider].apiKey = parsedConfig[provider].apiKey;
+                            AI_CONFIG[provider].enabled = true;
+                        }
+                    }
+                }
+                
+                // 如果用户在UI中设置了默认提供商，则更新
+                if (parsedConfig.defaultProvider && AI_CONFIG[parsedConfig.defaultProvider]) {
+                    AI_CONFIG.defaultProvider = parsedConfig.defaultProvider;
+                }
+            }
+        } catch (error) {
+            console.error('Failed to load custom API config:', error);
+        }
+    }
+    
+    // 保存用户自定义API配置到本地存储
+    function saveCustomApiConfig() {
+        try {
+            localStorage.setItem('ai_custom_config', JSON.stringify(AI_CONFIG));
+            return true;
+        } catch (error) {
+            console.error('Failed to save custom API config:', error);
+            return false;
+        }
+    }
+    
+    // 更新API设置UI
+    function updateApiSettingsUI() {
+        // 设置当前选中的提供商
+        apiProviderSelect.value = AI_CONFIG.defaultProvider;
+        
+        // 设置API密钥输入框
+        const currentProvider = AI_CONFIG.defaultProvider;
+        if (AI_CONFIG[currentProvider].apiKey && AI_CONFIG[currentProvider].apiKey !== 'YOUR_API_KEY') {
+            // 显示部分API密钥（前4位和后4位）
+            const apiKey = AI_CONFIG[currentProvider].apiKey;
+            apiKeyInput.value = apiKey.substring(0, 4) + '••••••••' + apiKey.substring(apiKey.length - 4);
+        } else {
+            apiKeyInput.value = '';
+        }
+        
+        // 更新状态显示
+        updateApiStatus();
+    }
+    
+    // 更新API状态显示
+    function updateApiStatus() {
+        const currentProvider = AI_CONFIG.defaultProvider;
+        
+        if (AI_CONFIG[currentProvider].apiKey && AI_CONFIG[currentProvider].apiKey !== 'YOUR_API_KEY') {
+            apiSettingsStatus.innerHTML = `<span class="status success">已配置</span>`;
+        } else {
+            apiSettingsStatus.innerHTML = `<span class="status error">未配置</span>`;
+        }
+    }
+    
+    // 重置API设置
+    function resetApiSettings() {
+        // 重置为默认配置
+        AI_CONFIG = JSON.parse(JSON.stringify(DEFAULT_AI_CONFIG));
+        
+        // 从环境变量重新加载配置
+        loadApiConfigFromEnv();
+        
+        // 清除本地存储中的自定义配置
+        localStorage.removeItem('ai_custom_config');
+        
+        // 更新UI
+        updateApiSettingsUI();
+        
+        // 显示重置成功消息
+        showApiSettingsMessage('API设置已重置为默认值', 'success');
+    }
+    
+    // 显示API设置消息
+    function showApiSettingsMessage(message, type = 'info') {
+        const messageElement = document.createElement('div');
+        messageElement.className = `api-settings-message ${type}`;
+        messageElement.textContent = message;
+        
+        const container = document.querySelector('#api-settings-modal .modal-content');
+        container.appendChild(messageElement);
+        
+        setTimeout(() => {
+            messageElement.classList.add('fade-out');
+            setTimeout(() => {
+                messageElement.remove();
+            }, 300);
+        }, 3000);
+    }
+
+    // 使用AI生成祝福语
+    async function generateGreetingWithAI() {
         const festival = festivalSelect.value === '其他' ? otherFestivalInput.value.trim() : festivalSelect.value;
         const recipient = recipientSelect.value === '其他' ? otherRecipientInput.value : recipientSelect.value;
         const relationship = relationshipInput.value.trim();
         const tone = document.getElementById('tone').value;
         const length = document.getElementById('length').value;
         const keywords = document.getElementById('keywords').value.split(',').map(k => k.trim()).filter(k => k);
-
-        // 祝福语模板库（实际应用中应更丰富）
-        const templates = {
-            short: {
-                温馨: {
-                    家人: `${festival}到了，愿您健康长寿，幸福安康！`,
-                    父母: `${festival}到了，愿您健康长寿，幸福安康！`,
-                    子女: `宝贝，${festival}快乐！愿你无忧无虑，茁壮成长！`,
-                    朋友: `祝你${festival}开心，一切顺遂！`,
-                    老师: `敬爱的老师，${festival}快乐！感谢您的辛勤付出！`,
-                    领导: `尊敬的领导，${festival}快乐！感谢您的指导和关怀！`,
-                    同事: `亲爱的同事，${festival}快乐！愿我们合作愉快，共创佳绩！`,
-                    客户: `尊敬的客户，${festival}快乐！感谢您的支持与信任！`,
-                    长辈: `尊敬的长辈，${festival}快乐！祝您福寿安康，万事胜意！`,
-                    晚辈: `亲爱的${recipient}，${festival}快乐！愿你前程似锦，不负韶华！`
-                },
-                幽默: {
-                    朋友: `嘿！${festival}到啦！别忘了出来嗨皮，不然小心我上门堵你！`,
-                    家人: `家人们，${festival}快乐！今年的红包准备好了吗？哈哈！`
-                },
-                正式: {
-                    领导: `值此${festival}之际，谨向您致以最诚挚的问候和衷心的祝福！`,
-                    客户: `尊敬的客户，在${festival}来临之际，我们衷心感谢您一直以来的支持与信任！`
-                },
-                深情: {
-                    父母: `亲爱的爸爸妈妈，${festival}到了。感谢你们的养育之恩，愿你们健康长寿，幸福永远！`,
-                    朋友: `亲爱的朋友，${festival}快乐！感谢你一直以来的陪伴与支持，愿我们的友谊长存！`
-                },
-                激励: {
-                    晚辈: `亲爱的${recipient}，${festival}到了。愿你在新的一年里，努力拼搏，实现自己的梦想！`,
-                    同事: `各位同事，${festival}快乐！愿我们在新的一年里，携手共进，创造更加辉煌的业绩！`
-                }
-            },
-            medium: {
-                温馨: {
-                    家人: `${festival}的钟声已经敲响，在这个充满喜庆和团圆的时刻，我想对您说一声："${relationship}，${festival}快乐！"愿您在新的一年里，身体健康，心情愉快，家庭和睦，事事如意。无论我身在何处，心中永远牵挂着您，愿您的生活充满阳光和温暖，每一天都过得幸福美满。`,
-                    朋友: `亲爱的${relationship}，${festival}到了！时光匆匆，转眼间我们已经相识了这么久。在这个特别的日子里，我想对你说一声："谢谢！"感谢你在我困难的时候给予我帮助和支持，感谢你在我开心的时候与我分享快乐。愿你在新的一年里，事业有成，家庭幸福，身体健康，万事如意。无论未来的路有多么艰难，我都会一直在你身边，与你共同面对。`,
-                    老师: `敬爱的${relationship}，${festival}快乐！在这个特别的日子里，我想对您说一声："您辛苦了！"感谢您在我成长的道路上给予我知识和智慧，感谢您在我迷茫的时候给予我指导和帮助。您的教诲如明灯照亮我前行的道路，您的关怀如春风温暖我幼小的心灵。愿您在新的一年里，身体健康，工作顺利，家庭幸福，桃李满天下。`,
-                    领导: `尊敬的${relationship}，值此${festival}来临之际，我想对您说一声："感谢您！"感谢您在工作中给予我的指导和帮助，感谢您在生活中给予我的关心和照顾。您的领导能力和人格魅力让我敬佩不已，您的工作态度和敬业精神让我深受鼓舞。愿您在新的一年里，身体健康，工作顺利，家庭幸福，事业蒸蒸日上。`,
-                    同事: `亲爱的${relationship}，${festival}快乐！在过去的一年里，我们一起奋斗，一起拼搏，共同完成了许多艰巨的任务。在这个过程中，我看到了你的努力和付出，也看到了你的才华和能力。感谢你在工作中给予我的帮助和支持，感谢你在生活中给予我的关心和照顾。愿我们在新的一年里，继续携手共进，共同创造更加美好的未来。`,
-                    客户: `尊敬的${relationship}，在${festival}来临之际，我们怀着无比感激的心情，向您致以最诚挚的问候和最衷心的祝福！感谢您一直以来对我们的信任和支持，感谢您在我们成长的道路上给予我们的帮助和鼓励。我们将始终秉承"客户至上"的服务理念，不断提升服务质量，为您提供更加优质、高效的服务。愿您在新的一年里，身体健康，工作顺利，家庭幸福，万事如意！`
-                }
-            },
-            long: {
-                温馨: {
-                    家人: `${relationship}，${festival}的脚步越来越近了，空气中弥漫着喜庆的气息。每当这个时候，我总会想起您的笑容，想起您对我的关爱和呵护。在我的记忆中，您总是那么勤劳，那么善良，那么坚强。为了这个家，您付出了太多太多，牺牲了自己的青春和梦想。您的爱是无私的，是伟大的，是我这辈子都无法报答的。在这个特别的日子里，我想对您说一声："${relationship}，${festival}快乐！"愿您在新的一年里，身体健康，心情愉快，家庭和睦，事事如意。无论我身在何处，心中永远牵挂着您，愿您的生活充满阳光和温暖，每一天都过得幸福美满。希望在新的一年里，我能有更多的时间陪伴您，让您感受到我的爱和关怀。也希望您能多注意身体，不要太累了，您的健康就是我们最大的幸福。最后，再次祝愿您${festival}快乐，福寿安康，万事如意！`,
-                    朋友: `亲爱的${relationship}，时光荏苒，转眼间我们已经相识了这么多年。从最初的陌生到现在的无话不谈，我们一起经历了许多欢笑和泪水，也一起见证了彼此的成长和变化。在我的心中，你不仅仅是我的朋友，更是我的亲人，是我生命中不可或缺的一部分。每当我遇到困难和挫折时，你总是第一个出现在我身边，给我鼓励和支持；每当我取得成绩和进步时，你总是比我还要高兴，为我感到骄傲和自豪。你的真诚和善良让我深受感动，你的乐观和坚强也一直激励着我不断前进。${festival}到了，在这个充满喜庆和团圆的时刻，我想对你说一声："谢谢你！"感谢你一直以来对我的信任和支持，感谢你在我生命中扮演的重要角色。愿你在新的一年里，事业有成，家庭幸福，身体健康，万事如意。无论未来的路有多么漫长和艰难，我都会一直在你身边，与你共同面对，共同分享生活中的喜怒哀乐。最后，再次祝你${festival}快乐，心想事成，一切顺利！`,
-                    老师: `敬爱的${relationship}，当我提起笔来给您写这封信时，心中充满了感激和敬意。在我的成长过程中，您是对我影响最大的人之一。您不仅传授给我知识和技能，更教会了我如何做人，如何面对生活中的挑战和困难。您的教诲如明灯照亮我前行的道路，您的关怀如春风温暖我幼小的心灵。记得有一次，我在学习上遇到了困难，情绪非常低落。是您，耐心地给我讲解题目，鼓励我不要放弃，要相信自己的能力。在您的帮助下，我终于克服了困难，取得了进步。那一刻，我深深地感受到了您对我的关爱和期望。${festival}到了，在这个特别的日子里，我想对您说一声："您辛苦了！"感谢您为我们付出的辛勤劳动，感谢您对我们的关心和爱护。您的工作虽然平凡，但却伟大；您的付出虽然默默无闻，但却影响深远。愿您在新的一年里，身体健康，工作顺利，家庭幸福，桃李满天下。您的学生将永远铭记您的教诲，努力学习，将来成为对社会有用的人，不辜负您的期望。最后，再次祝您${festival}快乐，万事胜意！`
-                }
-            }
-        };
-
-        // 确定祝福语模板
-        let template = templates[length][tone][recipient] || 
-                      templates[length][tone]['家人'] || 
-                      `${festival}到了，给${recipient}送上最美好的祝福！`;
-
-        // 替换模板中的变量
-        let greeting = template;
-
-        // 如果关系描述不为空，在祝福语前添加称呼
-        if (relationship) {
-            // 确定合适的称呼前缀
-            let prefix = '';
-            if (recipient === '家人') {
-                prefix = '亲爱的';
-            } else if (recipient === '朋友') {
-                prefix = '亲爱的';
-            } else if (recipient === '老师') {
-                prefix = '敬爱的';
-            } else if (recipient === '领导') {
-                prefix = '尊敬的';
-            } else if (recipient === '同事') {
-                prefix = '亲爱的';
-            } else if (recipient === '客户') {
-                prefix = '尊敬的';
-            } else if (recipient === '长辈') {
-                prefix = '尊敬的';
-            } else if (recipient === '晚辈') {
-                prefix = '亲爱的';
-            } else {
-                prefix = '亲爱的';
-            }
-
-            // 格式化称呼
-            let formattedRelationship = relationship;
-            // 如果关系描述以"的"结尾，可能是修饰词，需要调整
-            if (relationship.endsWith('的')) {
-                formattedRelationship = relationship + recipient;
-            }
-
-            // 在祝福语前添加称呼
-            greeting = `${prefix}${formattedRelationship}，${greeting}`;
+        
+        // 确定祝福语长度要求
+        let lengthRequirement = '';
+        if (length === 'short') {
+            lengthRequirement = '10-20字左右的简短祝福语';
+        } else if (length === 'medium') {
+            lengthRequirement = '30-50字左右的中等长度祝福语';
+        } else if (length === 'long') {
+            lengthRequirement = '80-120字左右的较长祝福语';
         }
-
-        // 如果有关键词，插入到祝福语中
+        
+        // 构建提示词
+        let prompt = `请为${relationship || recipient}生成一段适合${festival}的${tone}风格的${lengthRequirement}`;
+        
         if (keywords.length > 0) {
-            const keywordStr = keywords.join('、');
-            // 根据祝福语长度选择合适的插入位置
-            if (length === 'short') {
-                greeting = greeting.replace('，', `，${keywordStr}，`);
-            } else if (length === 'medium') {
-                greeting = greeting.replace('。', `，${keywordStr}。`);
-            } else {
-                greeting = greeting.replace('，', `，${keywordStr}，`);
+            prompt += `，并包含以下关键词：${keywords.join('、')}`;
+        }
+        
+        prompt += `。祝福语需要以${relationship || recipient}的称呼开头，如"亲爱的${relationship || recipient}，"或"敬爱的${relationship || recipient}，"等。`;
+        
+        // 选择AI提供商
+        let selectedProvider = AI_CONFIG.defaultProvider;
+        if (!AI_CONFIG[selectedProvider].enabled || !AI_CONFIG[selectedProvider].apiKey || AI_CONFIG[selectedProvider].apiKey === 'YOUR_API_KEY') {
+            // 尝试找到第一个可用的提供商
+            for (const provider in AI_CONFIG) {
+                if (AI_CONFIG.hasOwnProperty(provider) && provider !== 'defaultProvider') {
+                    if (AI_CONFIG[provider].enabled && AI_CONFIG[provider].apiKey && AI_CONFIG[provider].apiKey !== 'YOUR_API_KEY') {
+                        selectedProvider = provider;
+                        break;
+                    }
+                }
             }
         }
+        
+        // 如果没有可用的提供商，抛出错误
+        if (!AI_CONFIG[selectedProvider].enabled || !AI_CONFIG[selectedProvider].apiKey || AI_CONFIG[selectedProvider].apiKey === 'YOUR_API_KEY') {
+            throw new Error('没有可用的AI提供商，请在API设置中配置API密钥，或在Cloudflare Pages环境变量中配置。');
+        }
+        
+        // 根据选择的提供商调用相应的API
+        if (selectedProvider === 'openai') {
+            return callOpenAIAPI(prompt);
+        } else if (selectedProvider === 'anthropic') {
+            return callAnthropicAPI(prompt);
+        } else if (selectedProvider === 'deepseek') {
+            return callDeepSeekAPI(prompt);
+        } else {
+            throw new Error(`不支持的AI提供商: ${selectedProvider}`);
+        }
+    }
 
-        return greeting;
+    // 调用OpenAI API
+    async function callOpenAIAPI(prompt) {
+        const response = await fetch(AI_CONFIG.openai.endpoint, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${AI_CONFIG.openai.apiKey}`
+            },
+            body: JSON.stringify({
+                model: AI_CONFIG.openai.model,
+                messages: [
+                    {
+                        role: 'system',
+                        content: '你是一个专业的祝福语生成助手，擅长根据不同的节日、祝福对象和风格生成恰当、温馨的祝福语。'
+                    },
+                    {
+                        role: 'user',
+                        content: prompt
+                    }
+                ],
+                temperature: 0.7, // 控制随机性，0-1之间，值越高越随机
+                max_tokens: 200,
+                n: 1
+            })
+        });
+        
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(`OpenAI API错误: ${errorData.error?.message || '未知错误'}`);
+        }
+        
+        const data = await response.json();
+        return data.choices[0].message.content.trim();
+    }
+
+    // 调用Anthropic API
+    async function callAnthropicAPI(prompt) {
+        const response = await fetch(AI_CONFIG.anthropic.endpoint, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-API-Key': AI_CONFIG.anthropic.apiKey
+            },
+            body: JSON.stringify({
+                prompt: `Human: ${prompt}\n\nAssistant:`,
+                model: AI_CONFIG.anthropic.model,
+                max_tokens_to_sample: 200,
+                temperature: 0.7,
+                stop_sequences: ['Human:']
+            })
+        });
+        
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(`Anthropic API错误: ${errorData.detail || '未知错误'}`);
+        }
+        
+        const data = await response.json();
+        return data.completion.trim();
+    }
+
+    // 调用DeepSeek API
+    async function callDeepSeekAPI(prompt) {
+        const response = await fetch(AI_CONFIG.deepseek.endpoint, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${AI_CONFIG.deepseek.apiKey}`
+            },
+            body: JSON.stringify({
+                model: AI_CONFIG.deepseek.model,
+                messages: [
+                    {
+                        role: 'system',
+                        content: '你是一个专业的祝福语生成助手，擅长根据不同的节日、祝福对象和风格生成恰当、温馨的祝福语。你的回答应该符合中文表达习惯，情感真挚，富有创意。'
+                    },
+                    {
+                        role: 'user',
+                        content: prompt
+                    }
+                ],
+                temperature: 0.8, // 略微提高随机性
+                max_tokens: 200,
+                n: 1
+            })
+        });
+        
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(`DeepSeek API错误: ${errorData.error?.message || '未知错误'}`);
+        }
+        
+        const data = await response.json();
+        return data.choices[0].message.content.trim();
     }
 
     // 初始检查
@@ -438,37 +659,69 @@ document.addEventListener('DOMContentLoaded', function () {
         updateFestivalInfo(festivalSelect.value);
         updateFestivalBackground(festivalSelect.value);
     }
-
-    // AI分析功能
-    document.getElementById('ai-input').addEventListener('input', function() {
-        // 简单示例：根据输入内容改变按钮状态
-        const inputText = this.value.trim();
-        document.querySelector('.ai-container button').disabled = !inputText;
+    
+    // API设置模态框事件处理
+    apiSettingsBtn.addEventListener('click', function() {
+        apiSettingsModal.style.display = 'flex';
+        updateApiSettingsUI();
     });
-
-    // AI分析按钮点击事件
-    document.querySelector('.ai-container button').addEventListener('click', function() {
-        const inputText = document.getElementById('ai-input').value.trim();
-        if (!inputText) return;
-
-        // 显示加载状态
-        const aiResult = document.getElementById('ai-result');
-        aiResult.textContent = '正在分析中...';
-
-        // 模拟AI分析延迟
-        setTimeout(() => {
-            // 在实际应用中，这里应该调用真实的AI API
-            // 这里仅作示例，返回一些简单的分析结果
-            const sentiment = Math.random() > 0.5 ? '积极' : '消极';
-            const length = inputText.length;
-            const wordCount = inputText.split(/\s+/).filter(word => word).length;
-            
-            aiResult.innerHTML = `
-                <p>情感分析: <span class="${sentiment === '积极' ? 'text-green-500' : 'text-red-500'}">${sentiment}</span></p>
-                <p>文本长度: ${length} 字符</p>
-                <p>词数: ${wordCount} 个词</p>
-                <p>祝福语建议: 这是一段${sentiment}的文本，适合作为${recipientSelect.value || '朋友'}的祝福语。</p>
-            `;
-        }, 1500);
+    
+    apiSettingsCloseBtn.addEventListener('click', function() {
+        apiSettingsModal.style.display = 'none';
+    });
+    
+    apiSettingsModal.addEventListener('click', function(e) {
+        if (e.target === apiSettingsModal) {
+            apiSettingsModal.style.display = 'none';
+        }
+    });
+    
+    // API提供商选择变化事件
+    apiProviderSelect.addEventListener('change', function() {
+        updateApiSettingsUI();
+    });
+    
+    // 保存API设置
+    saveApiSettingsBtn.addEventListener('click', function() {
+        const provider = apiProviderSelect.value;
+        let apiKey = apiKeyInput.value.trim();
+        
+        // 验证API密钥格式
+        if (!apiKey) {
+            showApiSettingsMessage('请输入API密钥', 'error');
+            return;
+        }
+        
+        // 如果输入的是部分显示的API密钥（如"sk-••••••••"），保持原有密钥不变
+        if (apiKey.includes('••••')) {
+            if (AI_CONFIG[provider].apiKey && AI_CONFIG[provider].apiKey !== 'YOUR_API_KEY') {
+                // 使用已保存的完整API密钥
+                apiKey = AI_CONFIG[provider].apiKey;
+            } else {
+                showApiSettingsMessage('请输入完整的API密钥', 'error');
+                return;
+            }
+        }
+        
+        // 更新配置
+        AI_CONFIG[provider].apiKey = apiKey;
+        AI_CONFIG[provider].enabled = true;
+        AI_CONFIG.defaultProvider = provider;
+        
+        // 保存到本地存储
+        if (saveCustomApiConfig()) {
+            // 更新UI
+            updateApiSettingsUI();
+            showApiSettingsMessage('API设置已保存', 'success');
+        } else {
+            showApiSettingsMessage('保存API设置失败', 'error');
+        }
+    });
+    
+    // 重置API设置
+    resetApiSettingsBtn.addEventListener('click', function() {
+        if (confirm('确定要重置API设置吗？这将删除所有自定义配置并恢复默认值。')) {
+            resetApiSettings();
+        }
     });
 });

@@ -1,566 +1,609 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>智能节日祝福语生成器</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
-
-<body>
-    <!-- 背景图片容器 -->
-    <div id="background-container" class="background-container"></div>
-
-    <div class="container">
-        <header>
-            <h1>智能节日祝福语生成器</h1>
-            <p>为亲朋好友、师长、领导送上温馨祝福</p>
-        </header>
-
-        <main>
-            <div class="form-container fade-in">
-                <div class="form-group">
-                    <label for="festival">选择节日</label>
-                    <select id="festival" required>
-                        <option value="" disabled selected>请选择节日</option>
-                        <option value="春节">春节</option>
-                        <option value="元宵节">元宵节</option>
-                        <option value="清明节">清明节</option>
-                        <option value="端午节">端午节</option>
-                        <option value="七夕">七夕</option>
-                        <option value="中秋节">中秋节</option>
-                        <option value="重阳节">重阳节</option>
-                        <option value="其他">其他</option>
-                    </select>
-                    <div id="other-festival-container" style="display: none;">
-                        <input type="text" id="other-festival" placeholder="请输入其他节日名称">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="recipient">祝福对象</label>
-                    <select id="recipient" required>
-                        <option value="" disabled selected>请选择祝福对象</option>
-                        <option value="家人">家人</option>
-                        <option value="朋友">朋友</option>
-                        <option value="老师">老师</option>
-                        <option value="领导">领导</option>
-                        <option value="同事">同事</option>
-                        <option value="客户">客户</option>
-                        <option value="长辈">长辈</option>
-                        <option value="晚辈">晚辈</option>
-                        <option value="其他">其他</option>
-                    </select>
-                    <div id="other-recipient-container" style="display: none;">
-                        <input type="text" id="other-recipient" placeholder="请输入其他祝福对象">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="relationship">关系描述（称呼/昵称）</label>
-                    <input type="text" id="relationship" placeholder="例如：爸爸、李老师、张总、亲爱的朋友等">
-                </div>
-
-                <div class="form-group">
-                    <label for="tone">祝福语气</label>
-                    <select id="tone" required>
-                        <option value="" disabled selected>请选择祝福语气</option>
-                        <option value="温馨">温馨</option>
-                        <option value="幽默">幽默</option>
-                        <option value="正式">正式</option>
-                        <option value="深情">深情</option>
-                        <option value="激励">激励</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="length">祝福语长度</label>
-                    <select id="length" required>
-                        <option value="" disabled selected>请选择祝福语长度</option>
-                        <option value="short">简短（10 - 20字）</option>
-                        <option value="medium">中等（30 - 50字）</option>
-                        <option value="long">较长（80 - 120字）</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="keywords">关键词（选填）</label>
-                    <input type="text" id="keywords" placeholder="例如：健康、幸福、事业有成，多个关键词用逗号分隔">
-                </div>
-
-                <button id="generate-btn" class="btn">生成祝福语 <i class="fas fa-magic"></i></button>
-
-                <div id="loading" class="loading">
-                    <div class="loading-spinner"></div>
-                    <p>正在生成祝福语...</p>
-                </div>
-            </div>
-
-            <div class="result-container fade-in" id="result-container" style="display: none;">
-                <h2>生成的祝福语</h2>
-                <div class="result-content" id="result-content"></div>
-                <div class="result-actions">
-                    <button id="copy-btn" class="btn"><i class="fas fa-copy"></i> 复制</button>
-                    <button id="share-btn" class="btn"><i class="fas fa-share-alt"></i> 分享</button>
-                    <button id="regenerate-btn" class="btn"><i class="fas fa-redo"></i> 重新生成</button>
-                </div>
-            </div>
-
-            <div class="festival-info fade-in" id="festival-info" style="display: none;">
-                <h2 id="festival-title"></h2>
-                <p id="festival-description"></p>
-                <div class="festival-tags">
-                    <span class="tag" id="festival-tag"></span>
-                </div>
-                <div class="festival-keywords" id="festival-keywords">
-                    <h3>相关关键词：</h3>
-                    <div class="keywords-list"></div>
-                </div>
-            </div>
-        </main>
-
-        <footer>
-            <p>© 2023 智能节日祝福语生成器 | 设计与开发</p>
-            <div class="social-links">
-                <a href="#" aria-label="微信"><i class="fab fa-weixin"></i></a>
-                <a href="#" aria-label="微博"><i class="fab fa-weibo"></i></a>
-                <a href="#" aria-label="邮箱"><i class="fas fa-envelope"></i></a>
-            </div>
-        </footer>
-    </div>
-
-    <!-- 分享模态框 -->
-    <div id="share-modal" class="modal">
-        <div class="modal-content fade-in">
-            <span class="close">&times;</span>
-            <h2>分享祝福语</h2>
-            <div class="share-options">
-                <button class="share-btn weixin" id="weixin-share"><i class="fab fa-weixin"></i> 微信</button>
-                <button class="share-btn weibo" id="weibo-share"><i class="fab fa-weibo"></i> 微博</button>
-                <button class="share-btn qq" id="qq-share"><i class="fab fa-qq"></i> QQ</button>
-                <button class="share-btn link" id="link-share"><i class="fas fa-link"></i> 复制链接</button>
-            </div>
-            <div id="wechat-qrcode" class="wechat-qrcode" style="display: none;">
-                <p>请使用微信扫描二维码分享</p>
-                <div id="qrcode-container"></div>
-            </div>
-            <div id="share-toast" class="toast">分享链接已复制到剪贴板</div>
-        </div>
-    </div>
-
-    <!-- 添加AI交互区域 -->
-    <div class="ai-container">
-        <textarea id="ai-input" placeholder="输入文本进行分析..."></textarea>
-        <button onclick="analyzeText()">AI分析</button>
-        <div id="ai-result"></div>
-    </div>
-
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind 配置 -->
     <script>
-        // 节日信息数据，包含背景图片URL
-        const festivalInfo = {
-            '春节': {
-                description: '春节，即农历新年，是中国最重要的传统节日。源自殷商时期岁首祈岁祭祀，传承至今包含扫尘、守岁、拜年、贴春联等习俗，承载着团圆和睦的文化内涵。',
-                tag: '团圆安康',
-                keywords: ['福', '春联', '鞭炮', '红包', '年夜饭', '拜年'],
-                background: 'https://example.com/chunjie.jpg'
-            },
-            '元宵节': {
-                description: '元宵节，又称上元节、小正月、元夕或灯节，时间为每年农历正月十五。正月是农历的元月，古人称“夜”为“宵”，正月十五是一年中第一个月圆之夜，所以称正月十五为“元宵节”。',
-                tag: '张灯结彩',
-                keywords: ['汤圆', '花灯', '猜灯谜', '赏月'],
-                background: 'https://example.com/yuanxiao.jpg'
-            },
-            '清明节': {
-                description: '清明节源自上古春祭，兼具自然节气与人文节日内涵。扫墓祭祖与踏青郊游的节俗传统，体现中国人对生命循环的哲学思考。',
-                tag: '慎终追远',
-                keywords: ['祭扫', '踏青', '插柳', '寒食', '思念', '重生'],
-                background: 'https://example.com/qingming.jpg'
-            },
-            '端午节': {
-                description: '端午节，又称端阳节、龙舟节、重午节、重五节、天中节等，日期在每年农历五月初五，是集拜神祭祖、祈福辟邪、欢庆娱乐和饮食为一体的民俗大节。',
-                tag: '龙舟竞渡',
-                keywords: ['粽子', '龙舟', '艾草', '雄黄', '屈原'],
-                background: 'https://example.com/duanwu.jpg'
-            },
-            '七夕': {
-                description: '七夕节，又称七巧节、七姐节、女儿节、乞巧节、七娘会、七夕祭、牛公牛婆日、巧夕等，是中国民间的传统节日。七夕节由星宿崇拜衍化而来，为传统意义上的七姐诞，因拜祭“七姐”活动在七月七晩上举行，故名“七夕”。',
-                tag: '浪漫爱情',
-                keywords: ['牛郎', '织女', '银河', '乞巧', '爱情'],
-                background: 'https://example.com/qixi.jpg'
-            },
-            '中秋节': {
-                description: '中秋节源自天象崇拜，盛行于唐宋。祭月、赏月、吃月饼、玩花灯等习俗，承载着中国人对家庭团圆、生活美满的精神寄托。',
-                tag: '花好月圆',
-                keywords: ['月饼', '玉兔', '嫦娥', '赏月', '团圆', '思念'],
-                background: 'https://example.com/zhongqiu.jpg'
-            },
-            '重阳节': {
-                description: '重阳节，是中国民间传统节日，节期在每年农历九月初九。“九”数在《易经》中为阳数，“九九”两阳数相重，故曰“重阳”；因日与月皆逢九，故又称为“重九”。九九归真，一元肇始，古人认为九九重阳是吉祥的日子。古时民间在重阳节有登高祈福、拜神祭祖及饮宴祈寿等习俗。传承至今，又添加了敬老等内涵。',
-                tag: '登高敬老',
-                keywords: ['登高', '茱萸', '菊花', '敬老', '长寿'],
-                background: 'https://example.com/chongyang.jpg'
-            }
-        };
-
-        // 页面加载完成后执行
-        document.addEventListener('DOMContentLoaded', function () {
-            // 获取元素
-            const festivalSelect = document.getElementById('festival');
-            const otherFestivalContainer = document.getElementById('other-festival-container');
-            const otherFestivalInput = document.getElementById('other-festival');
-            const recipientSelect = document.getElementById('recipient');
-            const otherRecipientContainer = document.getElementById('other-recipient-container');
-            const otherRecipientInput = document.getElementById('other-recipient');
-            const relationshipInput = document.getElementById('relationship');
-            const generateBtn = document.getElementById('generate-btn');
-            const loading = document.getElementById('loading');
-            const resultContainer = document.getElementById('result-container');
-            const resultContent = document.getElementById('result-content');
-            const copyBtn = document.getElementById('copy-btn');
-            const regenerateBtn = document.getElementById('regenerate-btn');
-            const festivalTitle = document.getElementById('festival-title');
-            const festivalDescription = document.getElementById('festival-description');
-            const festivalTag = document.getElementById('festival-tag');
-            const festivalKeywords = document.getElementById('festival-keywords');
-            const keywordsList = festivalKeywords.querySelector('.keywords-list');
-            const backgroundContainer = document.getElementById('background-container');
-            const shareBtn = document.getElementById('share-btn');
-            const shareModal = document.getElementById('share-modal');
-            const closeBtn = document.querySelector('.close');
-
-            // 添加淡入效果
-            document.querySelectorAll('.fade-in').forEach(element => {
-                if (element.style.display !== 'none') {
-                    element.style.opacity = '0';
-                    setTimeout(() => {
-                        element.style.opacity = '1';
-                    }, 100);
-                }
-            });
-
-            // 处理其他节日输入框显示逻辑
-            festivalSelect.addEventListener('change', function () {
-                if (this.value === '其他') {
-                    otherFestivalContainer.style.display = 'block';
-                    // 恢复默认背景
-                    backgroundContainer.style.backgroundImage = '';
-                    backgroundContainer.classList.remove('festival-background');
-                } else {
-                    otherFestivalContainer.style.display = 'none';
-                    // 显示节日信息
-                    updateFestivalInfo(this.value);
-                    // 更新背景图片
-                    updateFestivalBackground(this.value);
-                }
-            });
-
-            // 处理其他祝福对象输入框显示逻辑
-            recipientSelect.addEventListener('change', function () {
-                if (this.value === '其他') {
-                    otherRecipientContainer.style.display = 'block';
-                } else {
-                    otherRecipientContainer.style.display = 'none';
-                }
-            });
-
-            // 更新节日信息
-            function updateFestivalInfo(festival) {
-                if (festivalInfo[festival]) {
-                    festivalTitle.textContent = festival;
-                    festivalDescription.textContent = festivalInfo[festival].description;
-                    festivalTag.textContent = festivalInfo[festival].tag;
-
-                    // 清空关键词列表
-                    keywordsList.innerHTML = '';
-
-                    // 添加关键词
-                    festivalInfo[festival].keywords.forEach(keyword => {
-                        const span = document.createElement('span');
-                        span.className = 'keyword';
-                        span.textContent = keyword;
-                        keywordsList.appendChild(span);
-                    });
-
-                    // 显示节日信息
-                    document.getElementById('festival-info').style.display = 'block';
-                } else {
-                    // 隐藏节日信息
-                    document.getElementById('festival-info').style.display = 'none';
-                }
-            }
-
-            // 更新节日背景
-            function updateFestivalBackground(festival) {
-                if (festivalInfo[festival] && festivalInfo[festival].background) {
-                    // 添加背景图片
-                    backgroundContainer.style.backgroundImage = `url(${festivalInfo[festival].background})`;
-                    // 添加动画类
-                    backgroundContainer.classList.add('festival-background');
-                } else {
-                    // 恢复默认背景
-                    backgroundContainer.style.backgroundImage = '';
-                    backgroundContainer.classList.remove('festival-background');
-                }
-            }
-
-            // 生成祝福语按钮点击事件
-            generateBtn.addEventListener('click', function () {
-                // 验证表单
-                if (!validateForm()) {
-                    return;
-                }
-
-                // 显示加载状态
-                showLoading(true);
-
-                // 模拟API调用延迟
-                setTimeout(() => {
-                    // 生成祝福语
-                    const greeting = generateGreeting();
-
-                    // 显示结果
-                    resultContent.textContent = greeting;
-                    resultContainer.style.display = 'block';
-
-                    // 隐藏加载状态
-                    showLoading(false);
-                }, 1500);
-            });
-
-            // 复制按钮点击事件
-            copyBtn.addEventListener('click', function () {
-                const textToCopy = resultContent.textContent;
-                navigator.clipboard.writeText(textToCopy).then(() => {
-                    // 显示复制成功提示
-                    const originalText = copyBtn.innerHTML;
-                    copyBtn.innerHTML = '<i class="fas fa-check"></i> 已复制';
-                    setTimeout(() => {
-                        copyBtn.innerHTML = originalText;
-                    }, 2000);
-                });
-            });
-
-            // 重新生成按钮点击事件
-            regenerateBtn.addEventListener('click', function () {
-                generateBtn.click();
-            });
-
-            // 分享按钮点击事件
-            shareBtn.addEventListener('click', function () {
-                shareModal.style.display = 'flex';
-            });
-
-            // 关闭模态框
-            closeBtn.addEventListener('click', function () {
-                shareModal.style.display = 'none';
-            });
-
-            // 显示/隐藏加载状态
-            function showLoading(show) {
-                loading.style.display = show ? 'flex' : 'none';
-                generateBtn.disabled = show;
-            }
-
-            // 验证表单
-            function validateForm() {
-                let isValid = true;
-
-                // 验证节日
-                if (!festivalSelect.value || (festivalSelect.value === '其他' && !otherFestivalInput.value.trim())) {
-                    isValid = false;
-                    showError(festivalSelect, '请选择或输入节日');
-                } else {
-                    clearError(festivalSelect);
-                }
-
-                // 验证祝福对象
-                if (!recipientSelect.value || (recipientSelect.value === '其他' && !otherRecipientInput.value.trim())) {
-                    isValid = false;
-                    showError(recipientSelect, '请选择或输入祝福对象');
-                } else {
-                    clearError(recipientSelect);
-                }
-
-                // 验证祝福语气
-                if (!document.getElementById('tone').value) {
-                    isValid = false;
-                    showError(document.getElementById('tone'), '请选择祝福语气');
-                } else {
-                    clearError(document.getElementById('tone'));
-                }
-
-                // 验证祝福语长度
-                if (!document.getElementById('length').value) {
-                    isValid = false;
-                    showError(document.getElementById('length'), '请选择祝福语长度');
-                } else {
-                    clearError(document.getElementById('length'));
-                }
-
-                return isValid;
-            }
-
-            // 显示错误提示
-            function showError(element, message) {
-                // 添加错误样式
-                element.classList.add('error');
-
-                // 检查是否已存在错误提示元素
-                let errorElement = element.nextElementSibling;
-                if (!errorElement || !errorElement.classList.contains('error-message')) {
-                    errorElement = document.createElement('div');
-                    errorElement.className = 'error-message';
-                    element.parentNode.insertBefore(errorElement, element.nextSibling);
-                }
-
-                errorElement.textContent = message;
-            }
-
-            // 清除错误提示
-            function clearError(element) {
-                element.classList.remove('error');
-
-                // 移除错误提示元素
-                const errorElement = element.nextElementSibling;
-                if (errorElement && errorElement.classList.contains('error-message')) {
-                    errorElement.remove();
-                }
-            }
-
-            // 生成祝福语（实际应用中应调用API）
-            function generateGreeting() {
-                const festival = festivalSelect.value === '其他' ? otherFestivalInput.value.trim() : festivalSelect.value;
-                const recipient = recipientSelect.value === '其他' ? otherRecipientInput.value : recipientSelect.value;
-                const relationship = relationshipInput.value.trim();
-                const tone = document.getElementById('tone').value;
-                const length = document.getElementById('length').value;
-                const keywords = document.getElementById('keywords').value.split(',').map(k => k.trim()).filter(k => k);
-
-                // 祝福语模板库（实际应用中应更丰富）
-                const templates = {
-                    short: {
-                        温馨: {
-                            家人: `${festival}到了，愿您健康长寿，幸福安康！`,
-                            父母: `${festival}到了，愿您健康长寿，幸福安康！`,
-                            子女: `宝贝，${festival}快乐！愿你无忧无虑，茁壮成长！`,
-                            朋友: `祝你${festival}开心，一切顺遂！`,
-                            老师: `敬爱的老师，${festival}快乐！感谢您的辛勤付出！`,
-                            领导: `尊敬的领导，${festival}快乐！感谢您的指导和关怀！`,
-                            同事: `亲爱的同事，${festival}快乐！愿我们合作愉快，共创佳绩！`,
-                            客户: `尊敬的客户，${festival}快乐！感谢您的支持与信任！`,
-                            长辈: `尊敬的长辈，${festival}快乐！祝您福寿安康，万事胜意！`,
-                            晚辈: `亲爱的${recipient}，${festival}快乐！愿你前程似锦，不负韶华！`
-                        },
-                        幽默: {
-                            朋友: `嘿！${festival}到啦！别忘了出来嗨皮，不然小心我上门堵你！`,
-                            家人: `家人们，${festival}快乐！今年的红包准备好了吗？哈哈！`
-                        },
-                        正式: {
-                            领导: `值此${festival}之际，谨向您致以最诚挚的问候和衷心的祝福！`,
-                            客户: `尊敬的客户，在${festival}来临之际，我们衷心感谢您一直以来的支持与信任！`
-                        },
-                        深情: {
-                            父母: `亲爱的爸爸妈妈，${festival}到了。感谢你们的养育之恩，愿你们健康长寿，幸福永远！`,
-                            朋友: `亲爱的朋友，${festival}快乐！感谢你一直以来的陪伴与支持，愿我们的友谊长存！`
-                        },
-                        激励: {
-                            晚辈: `亲爱的${recipient}，${festival}到了。愿你在新的一年里，努力拼搏，实现自己的梦想！`,
-                            同事: `各位同事，${festival}快乐！愿我们在新的一年里，携手共进，创造更加辉煌的业绩！`
-                        }
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        secondary: '#FF7D00',
+                        success: '#00B42A',
+                        danger: '#F53F3F',
+                        warning: '#FF7D00',
+                        info: '#86909C',
+                        light: '#F2F3F5',
+                        dark: '#1D2129',
                     },
-                    medium: {
-                        温馨: {
-                            家人: `${festival}的钟声已经敲响，在这个充满喜庆和团圆的时刻，我想对您说一声："${relationship}，${festival}快乐！"愿您在新的一年里，身体健康，心情愉快，家庭和睦，事事如意。无论我身在何处，心中永远牵挂着您，愿您的生活充满阳光和温暖，每一天都过得幸福美满。`,
-                            朋友: `亲爱的${relationship}，${festival}到了！时光匆匆，转眼间我们已经相识了这么久。在这个特别的日子里，我想对你说一声："谢谢！"感谢你在我困难的时候给予我帮助和支持，感谢你在我开心的时候与我分享快乐。愿你在新的一年里，事业有成，家庭幸福，身体健康，万事如意。无论未来的路有多么艰难，我都会一直在你身边，与你共同面对。`,
-                            老师: `敬爱的${relationship}，${festival}快乐！在这个特别的日子里，我想对您说一声："您辛苦了！"感谢您在我成长的道路上给予我知识和智慧，感谢您在我迷茫的时候给予我指导和帮助。您的教诲如明灯照亮我前行的道路，您的关怀如春风温暖我幼小的心灵。愿您在新的一年里，身体健康，工作顺利，家庭幸福，桃李满天下。`,
-                            领导: `尊敬的${relationship}，值此${festival}来临之际，我想对您说一声："感谢您！"感谢您在工作中给予我的指导和帮助，感谢您在生活中给予我的关心和照顾。您的领导能力和人格魅力让我敬佩不已，您的工作态度和敬业精神让我深受鼓舞。愿您在新的一年里，身体健康，工作顺利，家庭幸福，事业蒸蒸日上。`,
-                            同事: `亲爱的${relationship}，${festival}快乐！在过去的一年里，我们一起奋斗，一起拼搏，共同完成了许多艰巨的任务。在这个过程中，我看到了你的努力和付出，也看到了你的才华和能力。感谢你在工作中给予我的帮助和支持，感谢你在生活中给予我的关心和照顾。愿我们在新的一年里，继续携手共进，共同创造更加美好的未来。`,
-                            客户: `尊敬的${relationship}，在${festival}来临之际，我们怀着无比感激的心情，向您致以最诚挚的问候和最衷心的祝福！感谢您一直以来对我们的信任和支持，感谢您在我们成长的道路上给予我们的帮助和鼓励。我们将始终秉承"客户至上"的服务理念，不断提升服务质量，为您提供更加优质、高效的服务。愿您在新的一年里，身体健康，工作顺利，家庭幸福，万事如意！`
-                        }
+                    fontFamily: {
+                        inter: ['Inter', 'sans-serif'],
                     },
-                    long: {
-                        温馨: {
-                            家人: `${relationship}，${festival}的脚步越来越近了，空气中弥漫着喜庆的气息。每当这个时候，我总会想起您的笑容，想起您对我的关爱和呵护。在我的记忆中，您总是那么勤劳，那么善良，那么坚强。为了这个家，您付出了太多太多，牺牲了自己的青春和梦想。您的爱是无私的，是伟大的，是我这辈子都无法报答的。在这个特别的日子里，我想对您说一声："${relationship}，${festival}快乐！"愿您在新的一年里，身体健康，心情愉快，家庭和睦，事事如意。无论我身在何处，心中永远牵挂着您，愿您的生活充满阳光和温暖，每一天都过得幸福美满。希望在新的一年里，我能有更多的时间陪伴您，让您感受到我的爱和关怀。也希望您能多注意身体，不要太累了，您的健康就是我们最大的幸福。最后，再次祝愿您${festival}快乐，福寿安康，万事如意！`,
-                            朋友: `亲爱的${relationship}，时光荏苒，转眼间我们已经相识了这么多年。从最初的陌生到现在的无话不谈，我们一起经历了许多欢笑和泪水，也一起见证了彼此的成长和变化。在我的心中，你不仅仅是我的朋友，更是我的亲人，是我生命中不可或缺的一部分。每当我遇到困难和挫折时，你总是第一个出现在我身边，给我鼓励和支持；每当我取得成绩和进步时，你总是比我还要高兴，为我感到骄傲和自豪。你的真诚和善良让我深受感动，你的乐观和坚强也一直激励着我不断前进。${festival}到了，在这个充满喜庆和团圆的时刻，我想对你说一声："谢谢你！"感谢你一直以来对我的信任和支持，感谢你在我生命中扮演的重要角色。愿你在新的一年里，事业有成，家庭幸福，身体健康，万事如意。无论未来的路有多么漫长和艰难，我都会一直在你身边，与你共同面对，共同分享生活中的喜怒哀乐。最后，再次祝你${festival}快乐，心想事成，一切顺利！`,
-                            老师: `敬爱的${relationship}，当我提起笔来给您写这封信时，心中充满了感激和敬意。在我的成长过程中，您是对我影响最大的人之一。您不仅传授给我知识和技能，更教会了我如何做人，如何面对生活中的挑战和困难。您的教诲如明灯照亮我前行的道路，您的关怀如春风温暖我幼小的心灵。记得有一次，我在学习上遇到了困难，情绪非常低落。是您，耐心地给我讲解题目，鼓励我不要放弃，要相信自己的能力。在您的帮助下，我终于克服了困难，取得了进步。那一刻，我深深地感受到了您对我的关爱和期望。${festival}到了，在这个特别的日子里，我想对您说一声："您辛苦了！"感谢您为我们付出的辛勤劳动，感谢您对我们的关心和爱护。您的工作虽然平凡，但却伟大；您的付出虽然默默无闻，但却影响深远。愿您在新的一年里，身体健康，工作顺利，家庭幸福，桃李满天下。您的学生将永远铭记您的教诲，努力学习，将来成为对社会有用的人，不辜负您的期望。最后，再次祝您${festival}快乐，万事胜意！`
-                        }
-                    }
-                };
-
-                // 确定祝福语模板
-                let template = templates[length][tone][recipient] || 
-                              templates[length][tone]['家人'] || 
-                              `${festival}到了，给${recipient}送上最美好的祝福！`;
-
-                // 替换模板中的变量
-                let greeting = template;
-
-                // 如果关系描述不为空，在祝福语前添加称呼
-                if (relationship) {
-                    // 确定合适的称呼前缀
-                    let prefix = '';
-                    if (recipient === '家人') {
-                        prefix = '亲爱的';
-                    } else if (recipient === '朋友') {
-                        prefix = '亲爱的';
-                    } else if (recipient === '老师') {
-                        prefix = '敬爱的';
-                    } else if (recipient === '领导') {
-                        prefix = '尊敬的';
-                    } else if (recipient === '同事') {
-                        prefix = '亲爱的';
-                    } else if (recipient === '客户') {
-                        prefix = '尊敬的';
-                    } else if (recipient === '长辈') {
-                        prefix = '尊敬的';
-                    } else if (recipient === '晚辈') {
-                        prefix = '亲爱的';
-                    } else {
-                        prefix = '亲爱的';
-                    }
-
-                    // 格式化称呼
-                    let formattedRelationship = relationship;
-                    // 如果关系描述以"的"结尾，可能是修饰词，需要调整
-                    if (relationship.endsWith('的')) {
-                        formattedRelationship = relationship + recipient;
-                    }
-
-                    // 在祝福语前添加称呼
-                    greeting = `${prefix}${formattedRelationship}，${greeting}`;
                 }
-
-                // 如果有关键词，插入到祝福语中
-                if (keywords.length > 0) {
-                    const keywordStr = keywords.join('、');
-                    // 根据祝福语长度选择合适的插入位置
-                    if (length === 'short') {
-                        greeting = greeting.replace('，', `，${keywordStr}，`);
-                    } else if (length === 'medium') {
-                        greeting = greeting.replace('。', `，${keywordStr}。`);
-                    } else {
-                        greeting = greeting.replace('，', `，${keywordStr}，`);
-                    }
-                }
-
-                return greeting;
             }
-
-            // 初始检查
-            if (festivalSelect.value && festivalSelect.value !== '其他') {
-                updateFestivalInfo(festivalSelect.value);
-                updateFestivalBackground(festivalSelect.value);
-            }
-        });
-
-        function analyzeText() {
-            // 这里可以添加AI分析的逻辑
-            const inputText = document.getElementById('ai-input').value;
-            document.getElementById('ai-result').textContent = `你输入的文本是：${inputText}`;
         }
     </script>
+    
+    <!-- 自定义工具类 -->
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .text-shadow {
+                text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+            .text-shadow-lg {
+                text-shadow: 0 4px 8px rgba(0,0,0,0.12), 0 2px 4px rgba(0,0,0,0.08);
+            }
+            .bg-blur {
+                backdrop-filter: blur(8px);
+            }
+            .animate-float {
+                animation: float 6s ease-in-out infinite;
+            }
+            @keyframes float {
+                0% { transform: translateY(0px); }
+                50% { transform: translateY(-20px); }
+                100% { transform: translateY(0px); }
+            }
+            .animate-pulse-slow {
+                animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+            }
+        }
+    </style>
+    
+    <!-- 全局样式 -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+        
+        .keyword {
+            display: inline-block;
+            padding: 4px 12px;
+            margin: 4px;
+            background-color: rgba(22, 93, 255, 0.1);
+            color: #165DFF;
+            border-radius: 999px;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+        
+        .keyword:hover {
+            background-color: rgba(22, 93, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .result-card {
+            transition: all 0.3s ease;
+        }
+        
+        .result-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .btn-primary {
+            background-color: #165DFF;
+            color: white;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-primary:hover {
+            background-color: #0E42CC;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background-color: #FF7D00;
+            color: white;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #D96B00;
+            transform: translateY(-2px);
+        }
+        
+        .btn-outline {
+            border: 1px solid #165DFF;
+            color: #165DFF;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-outline:hover {
+            background-color: rgba(22, 93, 255, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 50;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            transition: opacity 0.3s ease;
+        }
+        
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            animation: modal-fade-in 0.3s ease;
+        }
+        
+        @keyframes modal-fade-in {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            transition: color 0.2s ease;
+        }
+        
+        .close:hover,
+        .close:focus {
+            color: #F53F3F;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        
+        .toast {
+            visibility: hidden;
+            min-width: 250px;
+            margin-left: -125px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 8px;
+            padding: 16px;
+            position: fixed;
+            z-index: 100;
+            left: 50%;
+            bottom: 30px;
+            transition: visibility 0s, opacity 0.5s linear;
+        }
+        
+        .toast.show {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        .toast.hide {
+            visibility: hidden;
+            opacity: 0;
+        }
+        
+        .api-settings-message {
+            padding: 10px 15px;
+            margin: 10px 0;
+            border-radius: 6px;
+            font-size: 14px;
+            animation: fade-in 0.3s ease;
+        }
+        
+        .api-settings-message.success {
+            background-color: rgba(0, 180, 42, 0.1);
+            color: #00B42A;
+        }
+        
+        .api-settings-message.error {
+            background-color: rgba(245, 63, 63, 0.1);
+            color: #F53F3F;
+        }
+        
+        .api-settings-message.info {
+            background-color: rgba(134, 144, 156, 0.1);
+            color: #86909C;
+        }
+        
+        .api-settings-message.fade-out {
+            animation: fade-out 0.3s ease forwards;
+        }
+        
+        @keyframes fade-in {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes fade-out {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(-10px); }
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .status.success {
+            background-color: rgba(0, 180, 42, 0.1);
+            color: #00B42A;
+        }
+        
+        .status.error {
+            background-color: rgba(245, 63, 63, 0.1);
+            color: #F53F3F;
+        }
+        
+        .status.warning {
+            background-color: rgba(255, 125, 0, 0.1);
+            color: #FF7D00;
+        }
+        
+        .festival-background {
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            transition: background-image 0.5s ease;
+            position: relative;
+        }
+        
+        .festival-background::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.3);
+            z-index: 0;
+        }
+        
+        .festival-background > * {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .input-error {
+            border-color: #F53F3F;
+            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+        }
+        
+        @keyframes shake {
+            10%, 90% { transform: translateX(-1px); }
+            20%, 80% { transform: translateX(2px); }
+            30%, 50%, 70% { transform: translateX(-4px); }
+            40%, 60% { transform: translateX(4px); }
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .modal-content {
+                margin: 5% auto;
+                width: 95%;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-50 min-h-screen">
+    <!-- 背景装饰 -->
+    <div class="fixed inset-0 -z-10 overflow-hidden">
+        <div class="absolute top-0 left-0 w-96 h-96 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+        <div class="absolute top-0 right-0 w-96 h-96 bg-indigo-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+        <div class="absolute bottom-0 left-1/4 w-96 h-96 bg-purple-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
+    </div>
+    
+    <!-- 导航栏 -->
+    <nav class="sticky top-0 z-40 bg-white/80 backdrop-blur-md shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <i class="fa fa-gift text-primary text-2xl mr-2"></i>
+                        <span class="text-xl font-bold text-gray-900">祝福语生成器</span>
+                    </div>
+                </div>
+                <div class="flex items-center">
+                    <button id="api-settings-btn" class="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors duration-150">
+                        <i class="fa fa-cog mr-2"></i>
+                        <span>API设置</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- 主容器 -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- 头部区域 -->
+        <header class="text-center mb-12">
+            <h1 class="text-[clamp(2rem,5vw,3.5rem)] font-bold text-gray-900 mb-4 leading-tight">
+                智能节日<span class="text-primary">祝福语</span>生成器
+            </h1>
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                只需简单几步，即可为您的亲友生成个性化、富有创意的节日祝福语
+            </p>
+        </header>
+        
+        <!-- 内容区域 -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- 左侧表单区域 -->
+            <div class="lg:col-span-2 bg-white rounded-2xl shadow-lg p-6 md:p-8 transition-all duration-300 hover:shadow-xl">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                    <i class="fa fa-pencil-square-o text-primary mr-2"></i>
+                    自定义祝福语
+                </h2>
+                
+                <form id="greeting-form" class="space-y-6">
+                    <!-- 节日选择 -->
+                    <div class="space-y-2">
+                        <label for="festival" class="block text-sm font-medium text-gray-700">选择节日</label>
+                        <div class="relative">
+                            <select id="festival" name="festival" class="block w-full pl-3 pr-10 py-3 text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-lg transition-colors duration-150">
+                                <option value="">请选择节日</option>
+                                <option value="春节">春节</option>
+                                <option value="元宵节">元宵节</option>
+                                <option value="清明节">清明节</option>
+                                <option value="端午节">端午节</option>
+                                <option value="七夕">七夕</option>
+                                <option value="中秋节">中秋节</option>
+                                <option value="重阳节">重阳节</option>
+                                <option value="其他">其他节日</option>
+                            </select>
+                            <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                                <i class="fa fa-chevron-down text-gray-400"></i>
+                            </div>
+                        </div>
+                        <div id="other-festival-container" class="hidden mt-2">
+                            <input type="text" id="other-festival" name="other-festival" placeholder="请输入其他节日名称" class="block w-full pl-3 pr-10 py-3 text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-lg transition-colors duration-150">
+                        </div>
+                    </div>
+                    
+                    <!-- 祝福对象 -->
+                    <div class="space-y-2">
+                        <label for="recipient" class="block text-sm font-medium text-gray-700">祝福对象</label>
+                        <div class="relative">
+                            <select id="recipient" name="recipient" class="block w-full pl-3 pr-10 py-3 text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-lg transition-colors duration-150">
+                                <option value="">请选择祝福对象</option>
+                                <option value="父母">父母</option>
+                                <option value="伴侣">伴侣</option>
+                                <option value="朋友">朋友</option>
+                                <option value="老师">老师</option>
+                                <option value="同学">同学</option>
+                                <option value="同事">同事</option>
+                                <option value="领导">领导</option>
+                                <option value="其他">其他</option>
+                            </select>
+                            <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                                <i class="fa fa-chevron-down text-gray-400"></i>
+                            </div>
+                        </div>
+                        <div id="other-recipient-container" class="hidden mt-2">
+                            <input type="text" id="other-recipient" name="other-recipient" placeholder="请输入其他祝福对象" class="block w-full pl-3 pr-10 py-3 text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-lg transition-colors duration-150">
+                        </div>
+                    </div>
+                    
+                    <!-- 关系描述 -->
+                    <div class="space-y-2">
+                        <label for="relationship" class="block text-sm font-medium text-gray-700">关系描述 (可选)</label>
+                        <input type="text" id="relationship" name="relationship" placeholder="例如：亲爱的爸爸、敬爱的老师" class="block w-full pl-3 pr-10 py-3 text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-lg transition-colors duration-150">
+                    </div>
+                    
+                    <!-- 祝福语气 -->
+                    <div class="space-y-2">
+                        <label for="tone" class="block text-sm font-medium text-gray-700">祝福语气</label>
+                        <div class="relative">
+                            <select id="tone" name="tone" class="block w-full pl-3 pr-10 py-3 text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-lg transition-colors duration-150">
+                                <option value="">请选择祝福语气</option>
+                                <option value="温馨">温馨</option>
+                                <option value="幽默">幽默</option>
+                                <option value="正式">正式</option>
+                                <option value="深情">深情</option>
+                                <option value="励志">励志</option>
+                                <option value="活泼">活泼</option>
+                            </select>
+                            <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                                <i class="fa fa-chevron-down text-gray-400"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 祝福语长度 -->
+                    <div class="space-y-2">
+                        <label for="length" class="block text-sm font-medium text-gray-700">祝福语长度</label>
+                        <div class="relative">
+                            <select id="length" name="length" class="block w-full pl-3 pr-10 py-3 text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-lg transition-colors duration-150">
+                                <option value="">请选择祝福语长度</option>
+                                <option value="short">简短 (10-20字)</option>
+                                <option value="medium">中等 (30-50字)</option>
+                                <option value="long">较长 (80-120字)</option>
+                            </select>
+                            <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                                <i class="fa fa-chevron-down text-gray-400"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 关键词 -->
+                    <div class="space-y-2">
+                        <label for="keywords" class="block text-sm font-medium text-gray-700">关键词 (可选)</label>
+                        <input type="text" id="keywords" name="keywords" placeholder="例如：健康、快乐、平安 (多个关键词用逗号分隔)" class="block w-full pl-3 pr-10 py-3 text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-lg transition-colors duration-150">
+                    </div>
+                    
+                    <!-- 生成按钮 -->
+                    <div class="pt-2">
+                        <button type="button" id="generate-btn" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-base font-medium text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all duration-200 transform hover:scale-[1.02]">
+                            <i class="fa fa-magic mr-2"></i>
+                            生成祝福语
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- 右侧结果区域 -->
+            <div class="lg:col-span-1 space-y-6">
+                <!-- 节日信息卡片 -->
+                <div id="festival-info" class="bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl">
+                    <div id="background-container" class="h-48 festival-background flex items-center justify-center">
+                        <h2 id="festival-title" class="text-3xl font-bold text-white text-shadow-lg"></h2>
+                    </div>
+                    <div class="p-6">
+                        <p id="festival-description" class="text-gray-700 mb-4"></p>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-sm font-medium text-gray-500">节日标签</span>
+                            <span id="festival-tag" class="text-sm font-medium text-primary"></span>
+                        </div>
+                        <div id="festival-keywords">
+                            <h3 class="text-sm font-medium text-gray-500 mb-2">推荐关键词</h3>
+                            <div class="keywords-list"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 结果卡片 -->
+                <div id="result-container" class="bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl hidden">
+                    <div class="p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                            <i class="fa fa-heart text-primary mr-2"></i>
+                            生成的祝福语
+                        </h3>
+                        <div class="bg-gray-50 rounded-lg p-4 mb-4">
+                            <p id="result-content" class="text-gray-800 leading-relaxed"></p>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button id="copy-btn" class="flex-1 flex justify-center py-2 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all duration-200">
+                                <i class="fa fa-copy mr-1"></i>
+                                复制
+                            </button>
+                            <button id="regenerate-btn" class="flex-1 flex justify-center py-2 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-secondary hover:bg-secondary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary transition-all duration-200">
+                                <i class="fa fa-refresh mr-1"></i>
+                                重新生成
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 分享按钮 -->
+                <div class="hidden" id="share-container">
+                    <button id="share-btn" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-base font-medium text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all duration-200">
+                        <i class="fa fa-share-alt mr-2"></i>
+                        分享祝福语
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- 加载中模态框 -->
+    <div id="loading" class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm hidden">
+        <div class="bg-white rounded-xl p-8 max-w-md w-full mx-4 text-center">
+            <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary mb-4"></div>
+            <h3 class="text-lg font-medium text-gray-900 mb-2">正在生成祝福语...</h3>
+            <p class="text-gray-500">请稍候，AI正在为您创作专属祝福语...</p>
+        </div>
+    </div>
+    
+    <!-- 分享模态框 -->
+    <div id="share-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 class="text-xl font-bold text-gray-900 mb-4">分享祝福语</h2>
+            <p class="text-gray-600 mb-6">选择您想分享的方式</p>
+            
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <button id="weixin-share" class="flex flex-col items-center justify-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors duration-150">
+                    <i class="fa fa-weixin text-green-600 text-3xl mb-2"></i>
+                    <span class="text-sm font-medium text-gray-700">微信</span>
+                </button>
+                <button id="weibo-share" class="flex flex-col items-center justify-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors duration-150">
+                    <i class="fa fa-weibo text-red-500 text-3xl mb-2"></i>
+                    <span class="text-sm font-medium text-gray-700">微博</span>
+                </button>
+                <button id="qq-share" class="flex flex-col items-center justify-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors duration-150">
+                    <i class="fa fa-qq text-blue-500 text-3xl mb-2"></i>
+                    <span class="text-sm font-medium text-gray-700">QQ</span>
+                </button>
+                <button id="link-share" class="flex flex-col items-center justify-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors duration-150">
+                    <i class="fa fa-link text-gray-600 text-3xl mb-2"></i>
+                    <span class="text-sm font-medium text-gray-700">复制链接</span>
+                </button>
+            </div>
+            
+            <div id="wechat-qrcode-container" class="hidden">
+                <h3 class="text-md font-medium text-gray-700 mb-3">微信扫码分享</h3>
+                <div id="qrcode-container" class="flex justify-center p-4 bg-gray-50 rounded-lg mb-4">
+                    <!-- 二维码将在这里生成 -->
+                </div>
+                <p class="text-sm text-gray-500">请使用微信扫描上方二维码</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- API设置模态框 -->
+    <div id="api-settings-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 class="text-xl font-bold text-gray-900 mb-4">AI API设置</h2>
+            <p class="text-gray-600 mb-6">配置您想使用的AI提供商和API密钥</p>
+            
+            <div class="space-y-4">
+                <div class="space-y-2">
+                    <label for="api-provider" class="block text-sm font-medium text-gray-700">选择AI提供商</label>
+                    <div class="relative">
+                        <select id="api-provider" name="api-provider" class="block w-full pl-3 pr-10 py-3 text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-lg transition-colors duration-150">
+                            <option value="deepseek">DeepSeek</option>
+                            <option value="openai">OpenAI</option>
+                            <option value="anthropic">Anthropic</option>
+                        </select>
+                        <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                            <i class="fa fa-chevron-down text-gray-400"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="space-y-2">
+                    <label for="api-key" class="block text-sm font-medium text-gray-700">API密钥</label>
+                    <div class="flex items-center">
+                        <input type="text" id="api-key" name="api-key" placeholder="输入您的API密钥" class="flex-1 block w-full pl-3 pr-10 py-3 text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-lg transition-colors duration-150">
+                        <div id="api-settings-status" class="ml-2"></div>
+                    </div>
+                </div>
+                
+                <div class="pt-2 flex space-x-2">
+                    <button id="save-api-settings" class="flex-1 flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-base font-medium text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all duration-200">
+                        <i class="fa fa-save mr-2"></i>
+                        保存设置
+                    </button>
+                    <button id="reset-api-settings" class="flex-1 flex justify-center py-3 px-4 border border-gray-300 rounded-lg shadow-sm text-base font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 transition-all duration-200">
+                        <i class="fa fa-refresh mr-2"></i>
+                        重置
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 提示消息 -->
+    <div id="share-toast" class="toast"></div>
+    
+    <!-- JavaScript -->
+    <script src="script.js"></script>
 </body>
-
-</html>
