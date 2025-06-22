@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>智能节日祝福语生成器</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
 </head>
+
 <body>
     <!-- 背景图片容器 -->
     <div id="background-container" class="background-container"></div>
-    
+
     <div class="container">
         <header>
             <h1>智能节日祝福语生成器</h1>
@@ -31,44 +32,38 @@
                         <option value="七夕">七夕</option>
                         <option value="中秋节">中秋节</option>
                         <option value="重阳节">重阳节</option>
-                        <option value="元旦">元旦</option>
-                        <option value="教师节">教师节</option>
-                        <option value="国庆节">国庆节</option>
-                        <option value="母亲节">母亲节</option>
-                        <option value="父亲节">父亲节</option>
-                        <option value="儿童节">儿童节</option>
                         <option value="其他">其他</option>
                     </select>
-                </div>
-
-                <div class="form-group" id="other-festival-container" style="display: none;">
-                    <label for="other-festival">其他节日</label>
-                    <input type="text" id="other-festival" placeholder="请输入节日名称">
+                    <div id="other-festival-container" style="display: none;">
+                        <input type="text" id="other-festival" placeholder="请输入其他节日名称">
+                    </div>
                 </div>
 
                 <div class="form-group">
                     <label for="recipient">祝福对象</label>
                     <select id="recipient" required>
                         <option value="" disabled selected>请选择祝福对象</option>
-                        <option value="父母">父母</option>
-                        <option value="子女">子女</option>
-                        <option value="配偶">配偶</option>
+                        <option value="家人">家人</option>
                         <option value="朋友">朋友</option>
                         <option value="老师">老师</option>
-                        <option value="同事">同事</option>
                         <option value="领导">领导</option>
+                        <option value="同事">同事</option>
                         <option value="客户">客户</option>
                         <option value="长辈">长辈</option>
                         <option value="晚辈">晚辈</option>
+                        <option value="其他">其他</option>
                     </select>
+                    <div id="other-recipient-container" style="display: none;">
+                        <input type="text" id="other-recipient" placeholder="请输入其他祝福对象">
+                    </div>
                 </div>
 
                 <div class="form-group">
                     <label for="relationship">关系描述</label>
                     <select id="relationship" class="relation-select">
-                      <option value="家人">家人</option>
-                      <option value="子女">子女</option>
-                      <option value="朋友">朋友</option>
+                        <option value="家人">家人</option>
+                        <option value="子女">子女</option>
+                        <option value="朋友">朋友</option>
                     </select>
                 </div>
 
@@ -88,9 +83,9 @@
                     <label for="length">祝福语长度</label>
                     <select id="length" required>
                         <option value="" disabled selected>请选择祝福语长度</option>
-                        <option value="short">简短（10-20字）</option>
-                        <option value="medium">中等（30-50字）</option>
-                        <option value="long">较长（80-120字）</option>
+                        <option value="short">简短（10 - 20字）</option>
+                        <option value="medium">中等（30 - 50字）</option>
+                        <option value="long">较长（80 - 120字）</option>
                     </select>
                 </div>
 
@@ -100,7 +95,7 @@
                 </div>
 
                 <button id="generate-btn" class="btn">生成祝福语 <i class="fas fa-magic"></i></button>
-                
+
                 <div id="loading" class="loading">
                     <div class="loading-spinner"></div>
                     <p>正在生成祝福语...</p>
@@ -140,396 +135,6 @@
         </footer>
     </div>
 
-    <script>
-        // 节日信息数据，包含背景图片URL
-        const festivalInfo = {
-            '春节': {
-                description: '春节，即农历新年，是中国最重要的传统节日。源自殷商时期岁首祈岁祭祀，传承至今包含扫尘、守岁、拜年、贴春联等习俗，承载着团圆和睦的文化内涵。',
-                tag: '团圆安康',
-                keywords: ['福', '春联', '鞭炮', '红包', '年夜饭', '拜年'],
-                background: 'https://picsum.photos/id/1035/1920/1080' // 喜庆的春节背景图片
-            },
-            '元宵节': {
-                description: '元宵节，又称上元节、小正月、元夕或灯节，为每年农历正月十五日，是中国春节年俗中最后一个重要节令。',
-                tag: '张灯结彩',
-                keywords: ['汤圆', '花灯', '灯谜', '舞龙', '舞狮', '踩高跷'],
-                background: 'https://picsum.photos/id/1038/1920/1080' // 元宵节花灯背景
-            },
-            '清明节': {
-                description: '清明节源自上古春祭，兼具自然节气与人文节日内涵。扫墓祭祖与踏青郊游的节俗传统，体现中国人对生命循环的哲学思考。',
-                tag: '慎终追远',
-                keywords: ['祭扫', '踏青', '插柳', '寒食', '思念', '重生'],
-                background: 'https://picsum.photos/id/1036/1920/1080' // 春季踏青背景
-            },
-            '端午节': {
-                description: '端午节起源于中国古代，最初为古代百越地区崇拜龙图腾的部族举行图腾祭祀的节日。后因战国时期的楚国诗人屈原在五月初五跳汨罗江自尽，人们亦将端午节作为纪念屈原的节日。',
-                tag: '龙舟竞渡',
-                keywords: ['粽子', '龙舟', '艾草', '香囊', '屈原', '雄黄'],
-                background: 'https://picsum.photos/id/1037/1920/1080' // 传统龙舟背景
-            },
-            '七夕': {
-                description: '七夕节，又称七巧节、七姐节、女儿节、乞巧节、七娘会、七夕祭、牛公牛婆日、巧夕等，是中国民间的传统节日。',
-                tag: '牛郎织女',
-                keywords: ['鹊桥', '乞巧', '爱情', '银河', '织女星', '牛郎星'],
-                background: 'https://picsum.photos/id/1023/1920/1080' // 星空夜景背景
-            },
-            '中秋节': {
-                description: '中秋节源自天象崇拜，盛行于唐宋。祭月、赏月、吃月饼、玩花灯等习俗，承载着中国人对家庭团圆、生活美满的精神寄托。',
-                tag: '花好月圆',
-                keywords: ['月饼', '玉兔', '嫦娥', '赏月', '团圆', '思念'],
-                background: 'https://picsum.photos/id/1039/1920/1080' // 明月背景
-            },
-            '重阳节': {
-                description: '重阳节，是中国民间传统节日，节期在每年农历九月初九。九数在《易经》中为阳数，九九两阳数相重，故曰"重阳"；因日与月皆逢九，故又称为"重九"。',
-                tag: '登高望远',
-                keywords: ['登高', '茱萸', '菊花', '敬老', '长寿', '思乡'],
-                background: 'https://picsum.photos/id/1043/1920/1080' // 秋季山景背景
-            },
-            '元旦': {
-                description: '元旦，即公历的1月1日，是世界多数国家通称的"新年"。元，谓"始"，凡数之始称为"元"；旦，谓"日"；"元旦"即"初始之日"的意思。',
-                tag: '辞旧迎新',
-                keywords: ['新年', '庆祝', '烟花', '日历', '倒计时', '愿望'],
-                background: 'https://picsum.photos/id/1055/1920/1080' // 新年烟花背景
-            },
-            '教师节': {
-                description: '教师节，旨在肯定教师为教育事业所做的贡献。在中国近现代史上，多次以不同的日期作为过教师节。直至1985年，第六届全国人大九次会议通过了国务院关于建立教师节的议案，才真正确定了1985年9月10日为中国第一个教师节。',
-                tag: '感恩师恩',
-                keywords: ['教师', '教育', '感谢', '知识', '黑板', '粉笔'],
-                background: 'https://picsum.photos/id/1060/1920/1080' // 教室黑板背景
-            },
-            '国庆节': {
-                description: '国庆节是由一个国家制定的用来纪念国家本身的法定假日。它们通常是这个国家的独立、宪法的签署、元首诞辰或其他有重大纪念意义的周年纪念日；也有些是这个国家守护神的圣人节。',
-                tag: '举国同庆',
-                keywords: ['国旗', '庆典', '阅兵', '烟花', '爱国', '团结'],
-                background: 'https://picsum.photos/id/1067/1920/1080' // 国庆庆典背景
-            },
-            '母亲节': {
-                description: '母亲节（Mother\'s Day），是一个感谢母亲的节日。现代的母亲节起源于美国，是每年5月的第二个星期日。母亲们在这一天通常会收到礼物，康乃馨被视为献给母亲的花，而中国的母亲花是萱草花，又叫忘忧草。',
-                tag: '母爱无疆',
-                keywords: ['母亲', '感恩', '礼物', '拥抱', '关爱', '康乃馨'],
-                background: 'https://picsum.photos/id/1074/1920/1080' // 温馨家庭背景
-            },
-            '父亲节': {
-                description: '父亲节（Father\'s Day），顾名思义是感恩父亲的节日。约始于二十世纪初，起源于美国，现已广泛流传于世界各地，节日日期因地域而存在差异。最广泛的日期在每年6月的第三个星期日，世界上有52个国家和地区是在这一天过父亲节。',
-                tag: '父爱如山',
-                keywords: ['父亲', '感恩', '力量', '榜样', '尊重', '领带'],
-                background: 'https://picsum.photos/id/1076/1920/1080' // 父子互动背景
-            },
-            '儿童节': {
-                description: '国际儿童节（又称儿童节，International Children\'s Day）定于每年的6月1日。为了悼念1942年6月10日的利迪策惨案和全世界所有在战争中死难的儿童，反对虐杀和毒害儿童，以及保障儿童权利。',
-                tag: '童真童趣',
-                keywords: ['儿童', '玩具', '游戏', '欢笑', '礼物', '气球'],
-                background: 'https://picsum.photos/id/1083/1920/1080' // 儿童乐园背景
-            }
-        };
-
-        // 页面加载完成后执行
-        document.addEventListener('DOMContentLoaded', function() {
-            // 获取元素
-            const festivalSelect = document.getElementById('festival');
-            const otherFestivalContainer = document.getElementById('other-festival-container');
-            const otherFestivalInput = document.getElementById('other-festival');
-            const generateBtn = document.getElementById('generate-btn');
-            const loading = document.getElementById('loading');
-            const resultContainer = document.getElementById('result-container');
-            const resultContent = document.getElementById('result-content');
-            const copyBtn = document.getElementById('copy-btn');
-            const regenerateBtn = document.getElementById('regenerate-btn');
-            const festivalTitle = document.getElementById('festival-title');
-            const festivalDescription = document.getElementById('festival-description');
-            const festivalTag = document.getElementById('festival-tag');
-            const festivalKeywords = document.getElementById('festival-keywords');
-            const keywordsList = festivalKeywords.querySelector('.keywords-list');
-            const backgroundContainer = document.getElementById('background-container');
-            
-            // 处理其他节日输入框显示逻辑
-            festivalSelect.addEventListener('change', function() {
-                if (this.value === '其他') {
-                    otherFestivalContainer.style.display = 'block';
-                    // 恢复默认背景
-                    backgroundContainer.style.backgroundImage = '';
-                    backgroundContainer.classList.remove('festival-background');
-                } else {
-                    otherFestivalContainer.style.display = 'none';
-                    // 显示节日信息
-                    updateFestivalInfo(this.value);
-                    // 更新背景图片
-                    updateFestivalBackground(this.value);
-                }
-            });
-            
-            // 更新节日背景
-            function updateFestivalBackground(festival) {
-                if (festivalInfo[festival] && festivalInfo[festival].background) {
-                    // 添加背景图片
-                    backgroundContainer.style.backgroundImage = `url(${festivalInfo[festival].background})`;
-                    // 添加动画类
-                    backgroundContainer.classList.add('festival-background');
-                } else {
-                    // 恢复默认背景
-                    backgroundContainer.style.backgroundImage = '';
-                    backgroundContainer.classList.remove('festival-background');
-                }
-            }
-            
-            // 更新节日信息
-            function updateFestivalInfo(festival) {
-                if (festivalInfo[festival]) {
-                    festivalTitle.textContent = festival;
-                    festivalDescription.textContent = festivalInfo[festival].description;
-                    festivalTag.textContent = festivalInfo[festival].tag;
-                    
-                    // 清空关键词列表
-                    keywordsList.innerHTML = '';
-                    
-                    // 添加关键词
-                    festivalInfo[festival].keywords.forEach(keyword => {
-                        const span = document.createElement('span');
-                        span.className = 'keyword';
-                        span.textContent = keyword;
-                        keywordsList.appendChild(span);
-                    });
-                    
-                    // 显示节日信息
-                    document.getElementById('festival-info').style.display = 'block';
-                } else {
-                    // 隐藏节日信息
-                    document.getElementById('festival-info').style.display = 'none';
-                }
-            }
-            
-            // 生成祝福语按钮点击事件
-            generateBtn.addEventListener('click', function() {
-                // 验证表单
-                if (!validateForm()) {
-                    return;
-                }
-                
-                // 显示加载状态
-                showLoading(true);
-                
-                // 模拟API调用延迟
-                setTimeout(() => {
-                    // 生成祝福语
-                    const greeting = generateGreeting();
-                    
-                    // 显示结果
-                    resultContent.textContent = greeting;
-                    resultContainer.style.display = 'block';
-                    
-                    // 隐藏加载状态
-                    showLoading(false);
-                }, 1500);
-            });
-            
-            // 复制按钮点击事件
-            copyBtn.addEventListener('click', function() {
-                const textToCopy = resultContent.textContent;
-                navigator.clipboard.writeText(textToCopy).then(() => {
-                    // 显示复制成功提示
-                    const originalText = copyBtn.innerHTML;
-                    copyBtn.innerHTML = '<i class="fas fa-check"></i> 已复制';
-                    
-                    setTimeout(() => {
-                        copyBtn.innerHTML = originalText;
-                    }, 2000);
-                });
-            });
-            
-            // 重新生成按钮点击事件
-            regenerateBtn.addEventListener('click', function() {
-                generateBtn.click();
-            });
-            
-            // 显示/隐藏加载状态
-            function showLoading(show) {
-                loading.style.display = show ? 'flex' : 'none';
-                generateBtn.disabled = show;
-            }
-            
-            // 验证表单
-            function validateForm() {
-                let isValid = true;
-                
-                // 验证节日
-                if (!festivalSelect.value || (festivalSelect.value === '其他' && !otherFestivalInput.value.trim())) {
-                    isValid = false;
-                    showError(festivalSelect, '请选择或输入节日');
-                } else {
-                    clearError(festivalSelect);
-                }
-                
-                // 验证祝福对象
-                if (!document.getElementById('recipient').value) {
-                    isValid = false;
-                    showError(document.getElementById('recipient'), '请选择祝福对象');
-                } else {
-                    clearError(document.getElementById('recipient'));
-                }
-                
-                // 验证祝福语气
-                if (!document.getElementById('tone').value) {
-                    isValid = false;
-                    showError(document.getElementById('tone'), '请选择祝福语气');
-                } else {
-                    clearError(document.getElementById('tone'));
-                }
-                
-                // 验证祝福语长度
-                if (!document.getElementById('length').value) {
-                    isValid = false;
-                    showError(document.getElementById('length'), '请选择祝福语长度');
-                } else {
-                    clearError(document.getElementById('length'));
-                }
-                
-                return isValid;
-            }
-            
-            // 显示错误提示
-            function showError(element, message) {
-                // 添加错误样式
-                element.classList.add('error');
-                
-                // 检查是否已存在错误提示元素
-                let errorElement = element.nextElementSibling;
-                if (!errorElement || !errorElement.classList.contains('error-message')) {
-                    errorElement = document.createElement('div');
-                    errorElement.className = 'error-message';
-                    element.parentNode.insertBefore(errorElement, element.nextSibling);
-                }
-                
-                errorElement.textContent = message;
-            }
-            
-            // 清除错误提示
-            function clearError(element) {
-                element.classList.remove('error');
-                
-                // 移除错误提示元素
-                const errorElement = element.nextElementSibling;
-                if (errorElement && errorElement.classList.contains('error-message')) {
-                    errorElement.remove();
-                }
-            }
-            
-            // 生成祝福语（实际应用中应调用API）
-            function generateGreeting() {
-                const festival = festivalSelect.value === '其他' ? otherFestivalInput.value.trim() : festivalSelect.value;
-                const recipient = document.getElementById('recipient').value;
-                const relationship = document.getElementById('relationship').value || '';
-                const tone = document.getElementById('tone').value;
-                const length = document.getElementById('length').value;
-                const keywords = document.getElementById('keywords').value.split(',').map(k => k.trim()).filter(k => k);
-                
-                // 祝福语模板库（实际应用中应更丰富）
-                const templates = {
-                    short: {
-                        温馨: {
-                            父母: `${festival}到了，愿您健康长寿，幸福安康！`,
-                            子女: `宝贝，${festival}快乐！愿你无忧无虑，茁壮成长！`,
-                            配偶: `亲爱的，${festival}快乐！有你相伴，每一天都是节日。`,
-                            朋友: `愿${festival}的喜庆带给你一整年的好运！朋友，节日快乐！`,
-                            老师: `敬爱的老师，${festival}快乐！感谢您的教导，祝您一切顺利！`,
-                            同事: `值此${festival}之际，祝工作顺利，事业有成！`,
-                            领导: `尊敬的领导，${festival}快乐！感谢您的指导，祝您万事胜意！`,
-                            客户: `感谢您的支持，${festival}快乐！期待未来继续合作！`,
-                            长辈: `敬爱的${relationship}，${festival}快乐！祝您福寿安康！`,
-                            晚辈: `亲爱的${relationship}，${festival}快乐！愿你前程似锦！`
-                        },
-                        幽默: {
-                            父母: `老爸老妈，${festival}别太累啦！多休息，少操心，不然我会担心的！`,
-                            子女: `小宝贝，${festival}到了！记得收礼物，别忘了给我个拥抱哦！`,
-                            配偶: `亲爱的，${festival}快乐！今年的礼物准备好了吗？没有的话我可就不客气了！`,
-                            朋友: `嘿，朋友！${festival}快乐！别忘了请我吃饭，不然我可记仇了！`,
-                            老师: `老师，${festival}快乐！感谢您当年的教导，不然我现在可能还在迷路呢！`,
-                            同事: `各位同事，${festival}快乐！明年咱们继续并肩作战，争取把业绩翻番！`,
-                            领导: `领导，${festival}快乐！感谢您的英明领导，让我们有机会在这里“艰苦奋斗”！`,
-                            客户: `尊敬的客户，${festival}快乐！感谢您的支持，我们会继续努力，让您满意！`,
-                            长辈: `${relationship}，${festival}快乐！祝您越活越年轻，永远像我们的偶像！`,
-                            晚辈: `嘿，${relationship}！${festival}快乐！好好努力，将来记得罩着我哦！`
-                        },
-                        正式: {
-                            父母: `值此${festival}之际，衷心祝愿父母大人身体健康，生活愉快！`,
-                            子女: `亲爱的孩子，${festival}快乐！愿你在未来的日子里学业有成，前程似锦！`,
-                            配偶: `亲爱的，${festival}快乐！愿你在未来的日子里学业有成，前程似锦！`,
-                            朋友: `朋友，${festival}快乐！愿你在新的一年里事业顺利，家庭幸福！`,
-                            老师: `尊敬的老师，${festival}快乐！感谢您的辛勤付出和教导，祝您身体健康，工作顺利！`,
-                            同事: `值此${festival}之际，向各位同事致以诚挚的问候和祝福！愿我们在新的一年里合作愉快，共创佳绩！`,
-                            领导: `尊敬的领导，${festival}快乐！感谢您的关心和指导，祝您身体健康，工作顺利，家庭幸福！`,
-                            客户: `尊敬的客户，${festival}快乐！感谢您一直以来对我们的信任和支持，我们将继续为您提供优质的产品和服务！`,
-                            长辈: `尊敬的${relationship}，${festival}快乐！祝您身体健康，生活愉快，WAYS胜意！`,
-                            晚辈: `亲爱的${relationship}，${festival}快乐！愿你在成长的道路上勇往直前，实现自己的理想和目标！`
-                        },
-                        深情: {
-                            父母: `亲爱的爸爸妈妈，${festival}到了。感谢你们的养育之恩，你们的爱是我一生的财富。愿你们健康长寿，幸福安康！`,
-                            子女: `我的宝贝，${festival}快乐！看着你一天天长大，是我最大的幸福。愿永远保持一颗善良的心，勇敢面对未来的挑战！`,
-                            配偶: `亲爱的，${festival}快乐！谢谢你陪我走过的每一个日日夜夜，你的爱让我的生命变得完整。愿我们永远相爱，直到永远！`,
-                            朋友: `朋友，${festival}快乐！虽然我们不能经常见面，但你永远是我心中最重要的朋友。愿我们的友谊长存，无论何时何地，都能彼此牵挂！`,
-                            老师: `敬爱的老师，${festival}快乐！您的教诲如明灯照亮我前行的道路，您的关爱如春风温暖我的心灵。感谢您的辛勤付出，祝您永远健康快乐！`,
-                            同事: `各位同事，${festival}快乐！感谢你们在工作中的支持和帮助，让我在这个团队中感受到温暖和力量。愿我们在新的一年里继续携手共进，创造更加美好的未来！`,
-                            领导: `尊敬的领导，${festival}快乐！感谢您的信任和指导，让我在工作中不断成长和进步。您的榜样力量激励着我不断努力，我会以更加饱满的热情投入到工作中，不辜负您的期望！`,
-                            客户: `尊敬的客户，${festival}快乐！感谢您对我们的信任和支持，您的满意是我们最大的追求。我们将继续秉承“客户至上”的服务理念，为您提供更加优质的产品和服务！`,
-                            长辈: `亲爱的${relationship}，${festival}快乐！您的关爱和教诲如同一座灯塔，照亮我前行的道路。感谢您为我们所做的一切，祝您身体健康，幸福长寿！`,
-                            晚辈: `亲爱的${relationship}，${festival}快乐！看着你一天天长大，我感到无比欣慰。愿你在成长的道路上充满阳光和快乐，实现自己的梦想，创造美好的未来！`
-                        },
-                        激励: {
-                            父母: `亲爱的爸爸妈妈，${festival}到了。你们一直是我前进的动力，你们的坚强和乐观影响着我。愿你们在新的一年里身体健康，继续为我树立榜样！`,
-                            子女: `我的宝贝，${festival}快乐！生活就像一场马拉松，重要的不是你跑得多快，而是你能坚持多久。愿你在未来的日子里勇敢面对挑战，永不放弃！`,
-                            配偶: `亲爱的，${festival}快乐！感谢你在我遇到困难时的鼓励和支持，让我有勇气面对一切挑战。愿我们在新的一年里相互扶持，共同成长，创造更加美好的生活！`,
-                            朋友: `朋友，${festival}快乐！人生没有回头路，只有不断向前才能看到更美的风景。愿你在新的一年里勇敢追求自己的梦想，永不言弃！`,
-                            老师: `敬爱的老师，${festival}快乐！您不仅教会了我知识，更教会了我如何做人。您的教诲如同一盏明灯，照亮我前行的道路。愿您在新的一年里身体健康，工作顺利，桃李满天下！`,
-                            同事: `各位同事，${festival}快乐！我们正处在一个充满机遇和挑战的时代，只有不断学习和进步，才能跟上时代的步伐。愿我们在新的一年里携手共进，共同成长，创造更加辉煌的业绩！`,
-                            领导: `尊敬的领导，${festival}快乐！感谢您的信任和支持，让我有机会在工作中锻炼和成长。在您的带领下，我们团队充满了活力和创造力。愿您在新的一年里身体健康，工作顺利，带领我们创造更加美好的未来！`,
-                            客户: `尊敬的客户，${festival}快乐！感谢您对我们的信任和支持，您的需求是我们不断创新和进步的动力。在新的一年里，我们将继续努力，为您提供更加优质的产品和服务，与您携手共创美好未来！`,
-                            长辈: `亲爱的${relationship}，${festival}快乐！您的一生经历了许多风雨，您的坚韧和智慧是我们最珍贵的财富。愿您在新的一年里身体健康，心情愉快，继续为我们讲述那些充满智慧的故事！`,
-                            晚辈: `亲爱的${relationship}，${festival}快乐！年轻是最大的资本，也是最大的责任。愿你在美好的青春时光里，努力学习，积极进取，为实现自己的人生价值而努力奋斗！`
-                        }
-                    },
-                    medium: {
-                        温馨: {
-                            父母: `亲爱的爸爸妈妈，${festival}到了，愿你们的生活如春日暖阳般温暖，如秋日硕果般丰盛。过去的一年，你们为家庭付出了太多，是你们的爱和支持让我能够勇敢面对生活的挑战。新的一年，愿你们身体健康，心情愉快，所有的付出都能得到回报。`,
-                            子女: `宝贝，${festival}快乐！看着你一天天长大，学会走路，学会说话，学会自己穿衣吃饭，妈妈/爸爸的心里充满了喜悦和感动。你是我们生命中最珍贵的礼物，你的笑容是我们最大的幸福。愿你在新的一年里健康快乐地成长，永远保持一颗善良、勇敢的心。`,
-                            配偶: `亲爱的，${festival}快乐！转眼间，我们已经一起走过了许多个日日夜夜。在这些日子里，我们有欢笑，有泪水，有成功，也有挫折。但无论遇到什么困难，我们都始终相互扶持，相互鼓励。感谢你一直以来的陪伴和支持，你是我生命中最重要的人。愿我们在新的一年里继续相爱，共同创造更加美好的未来。`,
-                            朋友: `亲爱的朋友，${festival}到了，我想对你说一声谢谢！谢谢你在我困难的时候伸出援手，谢谢你在我迷茫的时候给我指引，谢谢你在我开心的时候与我分享快乐。虽然我们不能经常见面，但你永远是我心中最重要的朋友。愿你在新的一年里事业顺利，家庭幸福，身体健康，万事如意！`,
-                            老师: `敬爱的老师，${festival}快乐！您是我人生道路上的引路人，是您教会了我知识，教会了我做人的道理。您的教诲如明灯照亮我前行的道路，您的关爱如春风温暖我的心灵。感谢您的辛勤付出，您的学生将永远铭记您的恩情。愿您在新的一年里身体健康，工作顺利，桃李满天下！`,
-                            同事: `各位同事，${festival}快乐！过去的一年，我们一起努力，一起奋斗，共同完成了许多任务。在这个过程中，我们相互支持，相互帮助，建立了深深的友谊。感谢你们在工作中的配合和支持，让我们的团队更加团结，更加有战斗力。愿我们在新的一年里继续携手共进，共创佳绩！`,
-                            领导: `尊敬的领导，${festival}快乐！感谢您在过去一年里对我的关心和指导，让我在工作中不断成长和进步。您的领导能力和人格魅力让我敬佩不已，您是我学习的榜样。在新的一年里，我将继续努力工作，不辜负您的期望，为公司的发展贡献自己的力量。祝您身体健康，工作顺利，家庭幸福！`,
-                            客户: `尊敬的客户，${festival}快乐！感谢您一直以来对我们公司的信任和支持，您的满意是我们最大的追求。在过去的一年里，我们不断努力，不断创新，为您提供了更好的产品和服务。在新的一年里，我们将继续秉承“客户至上”的服务理念，不断提升服务质量，为您提供更加优质的产品和服务。祝您身体健康，事业顺利，家庭幸福！`,
-                            长辈: `亲爱的${relationship}，${festival}快乐！时光飞逝，转眼间又到了${festival}。每当这个时候，我都会想起您对我的关爱和教导。您的一生经历了许多风雨，您的坚韧和智慧是我们最珍贵的财富。在新的一年里，愿您身体健康，心情愉快，生活充满阳光。我们会常来看望您，陪伴您度过更多美好的时光。`,
-                            晚辈: `亲爱的${relationship}，${festival}快乐！看着你一天天长大，变得越来越懂事，我感到无比欣慰。你是我们家族的希望，是未来的栋梁之材。在新的一年里，希望你能够努力学习，积极向上，培养良好的品德和习惯。记住，无论遇到什么困难，都要勇敢面对，永不放弃。相信自己，你一定能够实现自己的梦想！`
-                        },
-                        // 其他语气和长度的模板类似，这里省略...
-                    },
-                    long: {
-                        温馨: {
-                            父母: `亲爱的爸爸妈妈，${festival}到了，我想借这个机会对你们说一声谢谢。谢谢你们把我带到这个世界上，谢谢你们含辛茹苦地把我养大，谢谢你们在我成长的道路上给予我的关爱和支持。从小到大，你们总是把最好的东西留给我，自己却省吃俭用。为了让我能够接受良好的教育，你们付出了很多心血。每当我遇到困难和挫折时，你们总是鼓励我、支持我，让我重新找回信心和勇气。你们的爱是无私的，是伟大的，是我一生都无法回报的。如今，我已经长大成人，有了自己的工作和家庭。我会努力工作，好好生活，不辜负你们对我的期望。在新的一年里，我希望你们能够多注意身体，不要太累了。有空的时候，多出去走走，看看外面的世界。你们的健康和幸福，是我最大的心愿。最后，再次祝愿爸爸妈妈${festival}快乐，身体健康，WAYS胜意！`,
-                            // 其他模板类似，这里省略...
-                        }
-                    }
-                };
-                
-                // 选择合适的模板
-                const greetingTemplate = templates[length][tone][recipient];
-                
-                // 替换关键词（如果有）
-                let greeting = greetingTemplate;
-                if (keywords.length > 0) {
-                    const keywordStr = keywords.join('、');
-                    greeting = greeting.replace('，', `，${keywordStr}，`);
-                }
-                
-                return greeting;
-            }
-            
-            // 初始检查
-            if (festivalSelect.value && festivalSelect.value !== '其他') {
-                updateFestivalInfo(festivalSelect.value);
-                updateFestivalBackground(festivalSelect.value);
-            }
-        });
-    </script>
-
     <!-- 分享模态框 -->
     <div id="share-modal" class="modal">
         <div class="modal-content fade-in">
@@ -551,9 +156,324 @@
 
     <!-- 添加AI交互区域 -->
     <div class="ai-container">
-    <textarea id="ai-input" placeholder="输入文本进行分析..."></textarea>
-    <button onclick="analyzeText()">AI分析</button>
-    <div id="ai-result"></div>
+        <textarea id="ai-input" placeholder="输入文本进行分析..."></textarea>
+        <button onclick="analyzeText()">AI分析</button>
+        <div id="ai-result"></div>
     </div>
+
+    <script>
+        // 节日信息数据，包含背景图片URL
+        const festivalInfo = {
+            '春节': {
+                description: '春节，即农历新年，是中国最重要的传统节日。源自殷商时期岁首祈岁祭祀，传承至今包含扫尘、守岁、拜年、贴春联等习俗，承载着团圆和睦的文化内涵。',
+                tag: '团圆安康',
+                keywords: ['福', '春联', '鞭炮', '红包', '年夜饭', '拜年'],
+                background: 'https://example.com/chunjie.jpg'
+            },
+            '元宵节': {
+                description: '元宵节，又称上元节、小正月、元夕或灯节，时间为每年农历正月十五。正月是农历的元月，古人称“夜”为“宵”，正月十五是一年中第一个月圆之夜，所以称正月十五为“元宵节”。',
+                tag: '张灯结彩',
+                keywords: ['汤圆', '花灯', '猜灯谜', '赏月'],
+                background: 'https://example.com/yuanxiao.jpg'
+            },
+            '清明节': {
+                description: '清明节源自上古春祭，兼具自然节气与人文节日内涵。扫墓祭祖与踏青郊游的节俗传统，体现中国人对生命循环的哲学思考。',
+                tag: '慎终追远',
+                keywords: ['祭扫', '踏青', '插柳', '寒食', '思念', '重生'],
+                background: 'https://example.com/qingming.jpg'
+            },
+            '端午节': {
+                description: '端午节，又称端阳节、龙舟节、重午节、重五节、天中节等，日期在每年农历五月初五，是集拜神祭祖、祈福辟邪、欢庆娱乐和饮食为一体的民俗大节。',
+                tag: '龙舟竞渡',
+                keywords: ['粽子', '龙舟', '艾草', '雄黄', '屈原'],
+                background: 'https://example.com/duanwu.jpg'
+            },
+            '七夕': {
+                description: '七夕节，又称七巧节、七姐节、女儿节、乞巧节、七娘会、七夕祭、牛公牛婆日、巧夕等，是中国民间的传统节日。七夕节由星宿崇拜衍化而来，为传统意义上的七姐诞，因拜祭“七姐”活动在七月七晩上举行，故名“七夕”。',
+                tag: '浪漫爱情',
+                keywords: ['牛郎', '织女', '银河', '乞巧', '爱情'],
+                background: 'https://example.com/qixi.jpg'
+            },
+            '中秋节': {
+                description: '中秋节源自天象崇拜，盛行于唐宋。祭月、赏月、吃月饼、玩花灯等习俗，承载着中国人对家庭团圆、生活美满的精神寄托。',
+                tag: '花好月圆',
+                keywords: ['月饼', '玉兔', '嫦娥', '赏月', '团圆', '思念'],
+                background: 'https://example.com/zhongqiu.jpg'
+            },
+            '重阳节': {
+                description: '重阳节，是中国民间传统节日，节期在每年农历九月初九。“九”数在《易经》中为阳数，“九九”两阳数相重，故曰“重阳”；因日与月皆逢九，故又称为“重九”。九九归真，一元肇始，古人认为九九重阳是吉祥的日子。古时民间在重阳节有登高祈福、拜神祭祖及饮宴祈寿等习俗。传承至今，又添加了敬老等内涵。',
+                tag: '登高敬老',
+                keywords: ['登高', '茱萸', '菊花', '敬老', '长寿'],
+                background: 'https://example.com/chongyang.jpg'
+            }
+        };
+
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function () {
+            // 获取元素
+            const festivalSelect = document.getElementById('festival');
+            const otherFestivalContainer = document.getElementById('other-festival-container');
+            const otherFestivalInput = document.getElementById('other-festival');
+            const recipientSelect = document.getElementById('recipient');
+            const otherRecipientContainer = document.getElementById('other-recipient-container');
+            const otherRecipientInput = document.getElementById('other-recipient');
+            const generateBtn = document.getElementById('generate-btn');
+            const loading = document.getElementById('loading');
+            const resultContainer = document.getElementById('result-container');
+            const resultContent = document.getElementById('result-content');
+            const copyBtn = document.getElementById('copy-btn');
+            const regenerateBtn = document.getElementById('regenerate-btn');
+            const festivalTitle = document.getElementById('festival-title');
+            const festivalDescription = document.getElementById('festival-description');
+            const festivalTag = document.getElementById('festival-tag');
+            const festivalKeywords = document.getElementById('festival-keywords');
+            const keywordsList = festivalKeywords.querySelector('.keywords-list');
+            const backgroundContainer = document.getElementById('background-container');
+            const shareBtn = document.getElementById('share-btn');
+            const shareModal = document.getElementById('share-modal');
+            const closeBtn = document.querySelector('.close');
+
+            // 添加淡入效果
+            document.querySelectorAll('.fade-in').forEach(element => {
+                if (element.style.display !== 'none') {
+                    element.style.opacity = '0';
+                    setTimeout(() => {
+                        element.style.opacity = '1';
+                    }, 100);
+                }
+            });
+
+            // 处理其他节日输入框显示逻辑
+            festivalSelect.addEventListener('change', function () {
+                if (this.value === '其他') {
+                    otherFestivalContainer.style.display = 'block';
+                    // 恢复默认背景
+                    backgroundContainer.style.backgroundImage = '';
+                    backgroundContainer.classList.remove('festival-background');
+                } else {
+                    otherFestivalContainer.style.display = 'none';
+                    // 显示节日信息
+                    updateFestivalInfo(this.value);
+                    // 更新背景图片
+                    updateFestivalBackground(this.value);
+                }
+            });
+
+            // 处理其他祝福对象输入框显示逻辑
+            recipientSelect.addEventListener('change', function () {
+                if (this.value === '其他') {
+                    otherRecipientContainer.style.display = 'block';
+                } else {
+                    otherRecipientContainer.style.display = 'none';
+                }
+            });
+
+            // 更新节日信息
+            function updateFestivalInfo(festival) {
+                if (festivalInfo[festival]) {
+                    festivalTitle.textContent = festival;
+                    festivalDescription.textContent = festivalInfo[festival].description;
+                    festivalTag.textContent = festivalInfo[festival].tag;
+
+                    // 清空关键词列表
+                    keywordsList.innerHTML = '';
+
+                    // 添加关键词
+                    festivalInfo[festival].keywords.forEach(keyword => {
+                        const span = document.createElement('span');
+                        span.className = 'keyword';
+                        span.textContent = keyword;
+                        keywordsList.appendChild(span);
+                    });
+
+                    // 显示节日信息
+                    document.getElementById('festival-info').style.display = 'block';
+                } else {
+                    // 隐藏节日信息
+                    document.getElementById('festival-info').style.display = 'none';
+                }
+            }
+
+            // 更新节日背景
+            function updateFestivalBackground(festival) {
+                if (festivalInfo[festival] && festivalInfo[festival].background) {
+                    // 添加背景图片
+                    backgroundContainer.style.backgroundImage = `url(${festivalInfo[festival].background})`;
+                    // 添加动画类
+                    backgroundContainer.classList.add('festival-background');
+                } else {
+                    // 恢复默认背景
+                    backgroundContainer.style.backgroundImage = '';
+                    backgroundContainer.classList.remove('festival-background');
+                }
+            }
+
+            // 生成祝福语按钮点击事件
+            generateBtn.addEventListener('click', function () {
+                // 验证表单
+                if (!validateForm()) {
+                    return;
+                }
+
+                // 显示加载状态
+                showLoading(true);
+
+                // 模拟API调用延迟
+                setTimeout(() => {
+                    // 生成祝福语
+                    const greeting = generateGreeting();
+
+                    // 显示结果
+                    resultContent.textContent = greeting;
+                    resultContainer.style.display = 'block';
+
+                    // 隐藏加载状态
+                    showLoading(false);
+                }, 1500);
+            });
+
+            // 复制按钮点击事件
+            copyBtn.addEventListener('click', function () {
+                const textToCopy = resultContent.textContent;
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    // 显示复制成功提示
+                    const originalText = copyBtn.innerHTML;
+                    copyBtn.innerHTML = '<i class="fas fa-check"></i> 已复制';
+                    setTimeout(() => {
+                        copyBtn.innerHTML = originalText;
+                    }, 2000);
+                });
+            });
+
+            // 重新生成按钮点击事件
+            regenerateBtn.addEventListener('click', function () {
+                generateBtn.click();
+            });
+
+            // 分享按钮点击事件
+            shareBtn.addEventListener('click', function () {
+                shareModal.style.display = 'flex';
+            });
+
+            // 关闭模态框
+            closeBtn.addEventListener('click', function () {
+                shareModal.style.display = 'none';
+            });
+
+            // 显示/隐藏加载状态
+            function showLoading(show) {
+                loading.style.display = show ? 'flex' : 'none';
+                generateBtn.disabled = show;
+            }
+
+            // 验证表单
+            function validateForm() {
+                let isValid = true;
+
+                // 验证节日
+                if (!festivalSelect.value || (festivalSelect.value === '其他' && !otherFestivalInput.value.trim())) {
+                    isValid = false;
+                    showError(festivalSelect, '请选择或输入节日');
+                } else {
+                    clearError(festivalSelect);
+                }
+
+                // 验证祝福对象
+                if (!recipientSelect.value || (recipientSelect.value === '其他' && !otherRecipientInput.value.trim())) {
+                    isValid = false;
+                    showError(recipientSelect, '请选择或输入祝福对象');
+                } else {
+                    clearError(recipientSelect);
+                }
+
+                // 验证祝福语气
+                if (!document.getElementById('tone').value) {
+                    isValid = false;
+                    showError(document.getElementById('tone'), '请选择祝福语气');
+                } else {
+                    clearError(document.getElementById('tone'));
+                }
+
+                // 验证祝福语长度
+                if (!document.getElementById('length').value) {
+                    isValid = false;
+                    showError(document.getElementById('length'), '请选择祝福语长度');
+                } else {
+                    clearError(document.getElementById('length'));
+                }
+
+                return isValid;
+            }
+
+            // 显示错误提示
+            function showError(element, message) {
+                // 添加错误样式
+                element.classList.add('error');
+
+                // 检查是否已存在错误提示元素
+                let errorElement = element.nextElementSibling;
+                if (!errorElement || !errorElement.classList.contains('error-message')) {
+                    errorElement = document.createElement('div');
+                    errorElement.className = 'error-message';
+                    element.parentNode.insertBefore(errorElement, element.nextSibling);
+                }
+
+                errorElement.textContent = message;
+            }
+
+            // 清除错误提示
+            function clearError(element) {
+                element.classList.remove('error');
+
+                // 移除错误提示元素
+                const errorElement = element.nextElementSibling;
+                if (errorElement && errorElement.classList.contains('error-message')) {
+                    errorElement.remove();
+                }
+            }
+
+            // 生成祝福语（实际应用中应调用API）
+            function generateGreeting() {
+                const festival = festivalSelect.value === '其他' ? otherFestivalInput.value.trim() : festivalSelect.value;
+                const recipient = recipientSelect.value === '其他' ? otherRecipientInput.value : recipientSelect.value;
+                const relationship = document.getElementById('relationship').value || '';
+                const tone = document.getElementById('tone').value;
+                const length = document.getElementById('length').value;
+                const keywords = document.getElementById('keywords').value.split(',').map(k => k.trim()).filter(k => k);
+
+                // 祝福语模板库（实际应用中应更丰富）
+                const templates = {
+                    short: {
+                        温馨: {
+                            父母: `${festival}到了，愿您健康长寿，幸福安康！`,
+                            子女: `宝贝，${festival}快乐！愿你无忧无虑，茁壮成长！`,
+                            朋友: `祝你${festival}开心，一切顺遂！`
+                        }
+                    }
+                };
+
+                let greeting = templates[length][tone][relationship] || `在${festival}，给${recipient}送上最美好的祝福！`;
+
+                if (keywords.length > 0) {
+                    const keywordStr = keywords.join('、');
+                    greeting = greeting.replace('，', `，${keywordStr}，`);
+                }
+
+                return greeting;
+            }
+
+            // 初始检查
+            if (festivalSelect.value && festivalSelect.value !== '其他') {
+                updateFestivalInfo(festivalSelect.value);
+                updateFestivalBackground(festivalSelect.value);
+            }
+        });
+
+        function analyzeText() {
+            // 这里可以添加AI分析的逻辑
+            const inputText = document.getElementById('ai-input').value;
+            document.getElementById('ai-result').textContent = `你输入的文本是：${inputText}`;
+        }
+    </script>
 </body>
-</html>
+
