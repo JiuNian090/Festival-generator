@@ -18,37 +18,13 @@ const festivalInfo = {
     }
 };
 
-// 祝福语模板
-// 原代码片段（第23行）
-const blessingTemplates = {
-  '春节': {
-    '家人': [
-      '在这春意盎然的新年里，愿{{relationship}}健康长寿，万事如意，阖家幸福安康！新年快乐！',
-      '辞旧迎新之际，祝愿{{relationship}}新年快乐，身体健康，平安喜乐，福寿绵长！'
-    ],
-    '子女': [
-      '新春佳节，愿我的{{relationship}}在新的一年里学业进步，健康成长，笑容常在，快乐无忧！',
-      '新年到，祝福我的{{relationship}}新的一年里聪明伶俐，活泼可爱，前程似锦，幸福美满！'
-    ],
-    '朋友': [
-      '春节快乐！愿{{relationship}}在新的一年里事业顺利，爱情甜蜜，友谊长存，万事如意！',
-      '新春佳节，祝福我的{{relationship}}身体健康，工作顺利，笑口常开，好运连连！'
-    ]
-  }
-};
-// 应改为
+
 const blessingTemplates = {
   // 保持原有结构
 };
 
 // 页面加载完成后执行
 document.addEventListener('DOMContentLoaded', function() {
-    // 关系选择器事件绑定
-    document.getElementById('relationship').addEventListener('change', function() {
-        generateBlessing();
-    });
-
-    // 获取元素
     const festivalSelect = document.getElementById('festival');
     const otherFestivalContainer = document.getElementById('other-festival-container');
     const otherFestivalInput = document.getElementById('other-festival');
