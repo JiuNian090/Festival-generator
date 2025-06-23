@@ -3,610 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>智能节日祝福语生成器</title>
-    <meta name="description" content="智能生成节日祝福语，满足不同节日和对象需求。">
-    <meta name="keywords" content="节日祝福语, 智能生成, 节日祝福">
-    <link rel="icon" href="favicon.ico">
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.cn"></script>
-    <!-- Font Awesome -->
-    <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <!-- Inter Fonts -->
-    <link href="https://fonts.geekzu.org/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Tailwind 配置 -->
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#165DFF',
-                        secondary: '#FF7D00',
-                        success: '#00B42A',
-                        danger: '#F53F3F',
-                        warning: '#FF7D00',
-                        info: '#86909C',
-                        light: '#F2F3F5',
-                        dark: '#1D2129',
-                    },
-                    fontFamily: {
-                        inter: ['Inter', 'sans-serif'],
-                    },
-                }
-            }
-        }
-    </script>
-    
-    <!-- 自定义工具类 -->
-    <style type="text/tailwindcss">
-        @layer utilities {
-            .content-auto {
-                content-visibility: auto;
-            }
-            .text-shadow {
-                text-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            }
-            .text-shadow-lg {
-                text-shadow: 0 4px 8px rgba(0,0,0,0.12), 0 2px 4px rgba(0,0,0,0.08);
-            }
-            .bg-blur {
-                backdrop-filter: blur(8px);
-            }
-            .animate-float {
-                animation: float 6s ease-in-out infinite;
-            }
-            @keyframes float {
-                0% { transform: translateY(0px); }
-                50% { transform: translateY(-20px); }
-                100% { transform: translateY(0px); }
-            }
-            .animate-pulse-slow {
-                animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-            }
-        }
-    </style>
-    
-    <!-- 全局样式 -->
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            scroll-behavior: smooth;
-        }
-        
-        .keyword {
-            display: inline-block;
-            padding: 4px 12px;
-            margin: 4px;
-            background-color: rgba(22, 93, 255, 0.1);
-            color: #165DFF;
-            border-radius: 999px;
-            font-size: 14px;
-            transition: all 0.2s ease;
-        }
-        
-        .keyword:hover {
-            background-color: rgba(22, 93, 255, 0.2);
-            transform: translateY(-2px);
-        }
-        
-        .result-card {
-            transition: all 0.3s ease;
-        }
-        
-        .result-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-        }
-        
-        .btn-primary {
-            background-color: #165DFF;
-            color: white;
-            transition: all 0.2s ease;
-        }
-        
-        .btn-primary:hover {
-            background-color: #0E42CC;
-            transform: translateY(-2px);
-        }
-        
-        .btn-secondary {
-            background-color: #FF7D00;
-            color: white;
-            transition: all 0.2s ease;
-        }
-        
-        .btn-secondary:hover {
-            background-color: #D96B00;
-            transform: translateY(-2px);
-        }
-        
-        .btn-outline {
-            border: 1px solid #165DFF;
-            color: #165DFF;
-            transition: all 0.2s ease;
-        }
-        
-        .btn-outline:hover {
-            background-color: rgba(22, 93, 255, 0.1);
-            transform: translateY(-2px);
-        }
-        
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 50;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.4);
-            transition: opacity 0.3s ease;
-        }
-        
-        .modal-content {
-            background-color: #fefefe;
-            margin: 10% auto;
-            padding: 20px;
-            border-radius: 12px;
-            width: 90%;
-            max-width: 600px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            animation: modal-fade-in 0.3s ease;
-        }
-        
-        @keyframes modal-fade-in {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            transition: color 0.2s ease;
-        }
-        
-        .close:hover,
-        .close:focus {
-            color: #F53F3F;
-            text-decoration: none;
-            cursor: pointer;
-        }
-        
-        .toast {
-            visibility: hidden;
-            min-width: 250px;
-            margin-left: -125px;
-            background-color: #333;
-            color: #fff;
-            text-align: center;
-            border-radius: 8px;
-            padding: 16px;
-            position: fixed;
-            z-index: 100;
-            left: 50%;
-            bottom: 30px;
-            transition: visibility 0s, opacity 0.5s linear;
-        }
-        
-        .toast.show {
-            visibility: visible;
-            opacity: 1;
-        }
-        
-        .toast.hide {
-            visibility: hidden;
-            opacity: 0;
-        }
-        
-        .api-settings-message {
-            padding: 10px 15px;
-            margin: 10px 0;
-            border-radius: 6px;
-            font-size: 14px;
-            animation: fade-in 0.3s ease;
-        }
-        
-        .api-settings-message.success {
-            background-color: rgba(0, 180, 42, 0.1);
-            color: #00B42A;
-        }
-        
-        .api-settings-message.error {
-            background-color: rgba(245, 63, 63, 0.1);
-            color: #F53F3F;
-        }
-        
-        .api-settings-message.info {
-            background-color: rgba(134, 144, 156, 0.1);
-            color: #86909C;
-        }
-        
-        .api-settings-message.fade-out {
-            animation: fade-out 0.3s ease forwards;
-        }
-        
-        @keyframes fade-in {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        @keyframes fade-out {
-            from { opacity: 1; transform: translateY(0); }
-            to { opacity: 0; transform: translateY(-10px); }
-        }
-        
-        .status {
-            display: inline-block;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: 500;
-        }
-        
-        .status.success {
-            background-color: rgba(0, 180, 42, 0.1);
-            color: #00B42A;
-        }
-        
-        .status.error {
-            background-color: rgba(245, 63, 63, 0.1);
-            color: #F53F3F;
-        }
-        
-        .status.warning {
-            background-color: rgba(255, 125, 0, 0.1);
-            color: #FF7D00;
-        }
-        
-        .festival-background {
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            transition: background-image 0.5s ease;
-            position: relative;
-        }
-        
-        .festival-background::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.3);
-            z-index: 0;
-        }
-        
-        .festival-background > * {
-            position: relative;
-            z-index: 1;
-        }
-        
-        .input-error {
-            border-color: #F53F3F;
-            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
-        }
-        
-        @keyframes shake {
-            10%, 90% { transform: translateX(-1px); }
-            20%, 80% { transform: translateX(2px); }
-            30%, 50%, 70% { transform: translateX(-4px); }
-            40%, 60% { transform: translateX(4px); }
-        }
-        
-        /* 响应式调整 */
-        @media (max-width: 768px) {
-            .modal-content {
-                margin: 5% auto;
-                width: 95%;
-            }
-        }
-    </style>
+    <title>智能祝福生成器</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body class="bg-light">
-    <div class="container mx-auto py-8">
-    <!-- 背景装饰 -->
-    <div class="fixed inset-0 -z-10 overflow-hidden">
-        <div class="absolute top-0 left-0 w-96 h-96 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
-        <div class="absolute top-0 right-0 w-96 h-96 bg-indigo-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
-        <div class="absolute bottom-0 left-1/4 w-96 h-96 bg-purple-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
-    </div>
-    
-    <!-- 导航栏 -->
-    <nav class="sticky top-0 z-40 bg-white/80 backdrop-blur-md shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0 flex items-center">
-                        <i class="fa fa-gift text-primary text-2xl mr-2"></i>
-                        <span class="text-xl font-bold text-gray-900">祝福语生成器</span>
-                    </div>
-                </div>
-                <div class="flex items-center">
-                    <button id="api-settings-btn" class="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors duration-150">
-                        <i class="fa fa-cog mr-2"></i>
-                        <span>API设置</span>
-                    </button>
-                </div>
-            </div>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1 class="logo">🎁 智能祝福生成</h1>
         </div>
-    </nav>
-    
-    <!-- 主容器 -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <!-- 头部区域 -->
-        <header class="text-center mb-12">
-            <h1 class="text-[clamp(2rem,5vw,3.5rem)] font-bold text-gray-900 mb-4 leading-tight">
-                智能节日<span class="text-primary">祝福语</span>生成器
-            </h1>
-            <p class="text-lg text-gray-600 max-w-2xl mx-auto">
-                只需简单几步，即可为您的亲友生成个性化、富有创意的节日祝福语
-            </p>
-        </header>
-        
-        <!-- 内容区域 -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- 左侧表单区域 -->
-            <div class="lg:col-span-2 bg-white rounded-2xl shadow-lg p-6 md:p-8 transition-all duration-300 hover:shadow-xl">
-                <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
-                    <i class="fa fa-pencil-square-o text-primary mr-2"></i>
-                    自定义祝福语
-                </h2>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <div class="card">
+                <h2 class="title">生成专属节日祝福</h2>
                 
-                <form id="greeting-form" class="space-y-6">
-                    <!-- 节日选择 -->
-                    <div class="space-y-2">
-                        <label for="festival" class="block text-sm font-medium text-gray-700">选择节日</label>
-                        <div class="relative">
-                            <select id="festival" name="festival" class="block w-full pl-3 pr-10 py-3 text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-lg transition-colors duration-150">
-                                <option value="">请选择节日</option>
-                                <option value="春节">春节</option>
-                                <option value="元宵节">元宵节</option>
-                                <option value="清明节">清明节</option>
-                                <option value="端午节">端午节</option>
-                                <option value="七夕">七夕</option>
-                                <option value="中秋节">中秋节</option>
-                                <option value="重阳节">重阳节</option>
-                                <option value="其他">其他节日</option>
-                            </select>
-                            <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                                <i class="fa fa-chevron-down text-gray-400"></i>
-                            </div>
-                        </div>
-                        <div id="other-festival-container" class="hidden mt-2">
-                            <input type="text" id="other-festival" name="other-festival" placeholder="请输入其他节日名称" class="block w-full pl-3 pr-10 py-3 text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-lg transition-colors duration-150">
-                        </div>
-                    </div>
+                <div class="input-group">
+                    <input type="text" id="nickname" class="input-field" placeholder="自定义昵称">
+                    <select id="festival" class="input-field">
+                        <option value="">选择节日</option>
+                        <option value="spring">春节</option>
+                        <option value="mid-autumn">中秋节</option>
+                        <option value="dragon-boat">端午节</option>
+                        <option value="christmas">圣诞节</option>
+                    </select>
                     
-                    <!-- 祝福对象 -->
-                    <div class="space-y-2">
-                        <label for="recipient" class="block text-sm font-medium text-gray-700">祝福对象</label>
-                        <div class="relative">
-                            <select id="recipient" name="recipient" class="block w-full pl-3 pr-10 py-3 text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-lg transition-colors duration-150">
-                                <option value="">请选择祝福对象</option>
-                                <option value="父母">父母</option>
-                                <option value="伴侣">伴侣</option>
-                                <option value="朋友">朋友</option>
-                                <option value="老师">老师</option>
-                                <option value="同学">同学</option>
-                                <option value="同事">同事</option>
-                                <option value="领导">领导</option>
-                                <option value="其他">其他</option>
-                            </select>
-                            <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                                <i class="fa fa-chevron-down text-gray-400"></i>
-                            </div>
-                        </div>
-                        <div id="other-recipient-container" class="hidden mt-2">
-                            <input type="text" id="other-recipient" name="other-recipient" placeholder="请输入其他祝福对象" class="block w-full pl-3 pr-10 py-3 text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-lg transition-colors duration-150">
-                        </div>
-                    </div>
-                    
-                    <!-- 关系描述 -->
-                    <div class="space-y-2">
-                        <label for="relationship" class="block text-sm font-medium text-gray-700">关系描述 (可选)</label>
-                        <input type="text" id="relationship" name="relationship" placeholder="例如：亲爱的爸爸、敬爱的老师" class="block w-full pl-3 pr-10 py-3 text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-lg transition-colors duration-150">
-                    </div>
-                    
-                    <!-- 祝福语气 -->
-                    <div class="space-y-2">
-                        <label for="tone" class="block text-sm font-medium text-gray-700">祝福语气</label>
-                        <div class="relative">
-                            <select id="tone" name="tone" class="block w-full pl-3 pr-10 py-3 text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-lg transition-colors duration-150">
-                                <option value="">请选择祝福语气</option>
-                                <option value="温馨">温馨</option>
-                                <option value="幽默">幽默</option>
-                                <option value="正式">正式</option>
-                                <option value="深情">深情</option>
-                                <option value="励志">励志</option>
-                                <option value="活泼">活泼</option>
-                            </select>
-                            <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                                <i class="fa fa-chevron-down text-gray-400"></i>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- 祝福语长度 -->
-                    <div class="space-y-2">
-                        <label for="length" class="block text-sm font-medium text-gray-700">祝福语长度</label>
-                        <div class="relative">
-                            <select id="length" name="length" class="block w-full pl-3 pr-10 py-3 text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-lg transition-colors duration-150">
-                                <option value="">请选择祝福语长度</option>
-                                <option value="short">简短 (10-20字)</option>
-                                <option value="medium">中等 (30-50字)</option>
-                                <option value="long">较长 (80-120字)</option>
-                            </select>
-                            <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                                <i class="fa fa-chevron-down text-gray-400"></i>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- 关键词 -->
-                    <div class="space-y-2">
-                        <label for="keywords" class="block text-sm font-medium text-gray-700">关键词 (可选)</label>
-                        <input type="text" id="keywords" name="keywords" placeholder="例如：健康、快乐、平安 (多个关键词用逗号分隔)" class="block w-full pl-3 pr-10 py-3 text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-lg transition-colors duration-150">
-                    </div>
-                    
-                    <!-- 生成按钮 -->
-                    <div class="pt-2">
-                        <button type="button" id="generate-btn" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-base font-medium text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all duration-200 transform hover:scale-[1.02]">
-                            <i class="fa fa-magic mr-2"></i>
-                            生成祝福语
-                        </button>
-                    </div>
-                </form>
-            </div>
-            
-            <!-- 右侧结果区域 -->
-            <div class="lg:col-span-1 space-y-6">
-                <!-- 节日信息卡片 -->
-                <div id="festival-info" class="bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl">
-                    <div id="background-container" class="h-48 festival-background flex items-center justify-center">
-                        <h2 id="festival-title" class="text-3xl font-bold text-white text-shadow-lg"></h2>
-                    </div>
-                    <div class="p-6">
-                        <p id="festival-description" class="text-gray-700 mb-4"></p>
-                        <div class="flex items-center justify-between mb-4">
-                            <span class="text-sm font-medium text-gray-500">节日标签</span>
-                            <span id="festival-tag" class="text-sm font-medium text-primary"></span>
-                        </div>
-                        <div id="festival-keywords">
-                            <h3 class="text-sm font-medium text-gray-500 mb-2">推荐关键词</h3>
-                            <div class="keywords-list"></div>
-                        </div>
-                    </div>
+                    <select id="recipient" class="input-field">
+                        <option value="">选择对象</option>
+                        <option value="friend">朋友</option>
+                        <option value="family">家人</option>
+                        <option value="lover">爱人</option>
+                        <option value="colleague">同事</option>
+                    </select>
                 </div>
-                
-                <!-- 结果卡片 -->
-                <div id="result-container" class="bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl hidden">
-                    <div class="p-6">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                            <i class="fa fa-heart text-primary mr-2"></i>
-                            生成的祝福语
-                        </h3>
-                        <div class="bg-gray-50 rounded-lg p-4 mb-4">
-                            <p id="result-content" class="text-gray-800 leading-relaxed"></p>
-                        </div>
-                        <div class="flex space-x-2">
-                            <button id="copy-btn" class="flex-1 flex justify-center py-2 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all duration-200">
-                                <i class="fa fa-copy mr-1"></i>
-                                复制
-                            </button>
-                            <button id="regenerate-btn" class="flex-1 flex justify-center py-2 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-secondary hover:bg-secondary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary transition-all duration-200">
-                                <i class="fa fa-refresh mr-1"></i>
-                                重新生成
-                            </button>
-                        </div>
+
+                <button id="generateBtn" class="cta-button">生成祝福</button>
+
+                <div id="result" class="result-box">
+                    <div class="result-content">
+                        <i class="fas fa-comment-alt"></i>
+                        <p id="message"></p>
                     </div>
-                </div>
-                
-                <!-- 分享按钮 -->
-                <div class="hidden" id="share-container">
-                    <button id="share-btn" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-base font-medium text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all duration-200">
-                        <i class="fa fa-share-alt mr-2"></i>
-                        分享祝福语
-                    </button>
                 </div>
             </div>
         </div>
     </main>
-    
-    <!-- 加载中模态框 -->
-    <div id="loading" class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm hidden">
-        <div class="bg-white rounded-xl p-8 max-w-md w-full mx-4 text-center">
-            <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary mb-4"></div>
-            <h3 class="text-lg font-medium text-gray-900 mb-2">正在生成祝福语...</h3>
-            <p class="text-gray-500">请稍候，AI正在为您创作专属祝福语...</p>
-        </div>
-    </div>
-    
-    <!-- 分享模态框 -->
-    <div id="share-modal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2 class="text-xl font-bold text-gray-900 mb-4">分享祝福语</h2>
-            <p class="text-gray-600 mb-6">选择您想分享的方式</p>
+
+    <!-- API配置面板 -->
+    <div class="config-overlay" id="configOverlay">
+        <div class="config-card">
+            <h3 class="config-title">API配置</h3>
             
-            <div class="grid grid-cols-2 gap-4 mb-6">
-                <button id="weixin-share" class="flex flex-col items-center justify-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors duration-150">
-                    <i class="fa fa-weixin text-green-600 text-3xl mb-2"></i>
-                    <span class="text-sm font-medium text-gray-700">微信</span>
-                </button>
-                <button id="weibo-share" class="flex flex-col items-center justify-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors duration-150">
-                    <i class="fa fa-weibo text-red-500 text-3xl mb-2"></i>
-                    <span class="text-sm font-medium text-gray-700">微博</span>
-                </button>
-                <button id="qq-share" class="flex flex-col items-center justify-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors duration-150">
-                    <i class="fa fa-qq text-blue-500 text-3xl mb-2"></i>
-                    <span class="text-sm font-medium text-gray-700">QQ</span>
-                </button>
-                <button id="link-share" class="flex flex-col items-center justify-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors duration-150">
-                    <i class="fa fa-link text-gray-600 text-3xl mb-2"></i>
-                    <span class="text-sm font-medium text-gray-700">复制链接</span>
-                </button>
+            <div class="input-group">
+                <input type="text" id="apiUrl" class="input-field" placeholder="API端点URL">
+                <input type="text" id="apiKey" class="input-field" placeholder="API密钥">
+                <input type="text" id="modelName" class="input-field" placeholder="模型名称（可选）">
             </div>
-            
-            <div id="wechat-qrcode-container" class="hidden">
-                <h3 class="text-md font-medium text-gray-700 mb-3">微信扫码分享</h3>
-                <div id="qrcode-container" class="flex justify-center p-4 bg-gray-50 rounded-lg mb-4">
-                    <!-- 二维码将在这里生成 -->
-                </div>
-                <p class="text-sm text-gray-500">请使用微信扫描上方二维码</p>
+
+            <div class="config-buttons">
+                <button id="saveConfig" class="cta-button">保存配置</button>
+                <button id="resetConfig" class="cta-button secondary">重置配置</button>
             </div>
         </div>
     </div>
-    
-    <!-- API设置模态框 -->
-    <div id="api-settings-modal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2 class="text-xl font-bold text-gray-900 mb-4">AI API设置</h2>
-            <p class="text-gray-600 mb-6">配置您想使用的AI提供商和API密钥</p>
-            
-            <div class="space-y-4">
-                <div class="space-y-2">
-                    <label for="api-provider" class="block text-sm font-medium text-gray-700">选择AI提供商</label>
-                    <div class="relative">
-                        <select id="api-provider" name="api-provider" class="block w-full pl-3 pr-10 py-3 text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-lg transition-colors duration-150">
-                            <option value="deepseek">DeepSeek</option>
-                            <option value="openai">OpenAI</option>
-                            <option value="anthropic">Anthropic</option>
-                        </select>
-                        <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                            <i class="fa fa-chevron-down text-gray-400"></i>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="space-y-2">
-                    <label for="api-key" class="block text-sm font-medium text-gray-700">API密钥</label>
-                    <div class="flex items-center">
-                        <input type="text" id="api-key" name="api-key" placeholder="输入您的API密钥" class="flex-1 block w-full pl-3 pr-10 py-3 text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-lg transition-colors duration-150">
-                        <div id="api-settings-status" class="ml-2"></div>
-                    </div>
-                </div>
-                
-                <div class="pt-2 flex space-x-2">
-                    <button id="save-api-settings" class="flex-1 flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-base font-medium text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all duration-200">
-                        <i class="fa fa-save mr-2"></i>
-                        保存设置
-                    </button>
-                    <button id="reset-api-settings" class="flex-1 flex justify-center py-3 px-4 border border-gray-300 rounded-lg shadow-sm text-base font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 transition-all duration-200">
-                        <i class="fa fa-refresh mr-2"></i>
-                        重置
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- 提示消息 -->
-    <div id="share-toast" class="toast"></div>
-    
-    <!-- JavaScript -->
-    <script src="script.js"></script>
+
+    <button id="configBtn" class="config-button">
+        <i class="fas fa-cog"></i>
+    </button>
+
+    <script src="app.js"></script>
 </body>
+</html>
