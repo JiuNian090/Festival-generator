@@ -86,26 +86,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // AI配置 - 默认配置，将被环境变量和用户设置覆盖
     const DEFAULT_AI_CONFIG = {
-        openai: {
-            enabled: false,
-            endpoint: 'https://api.openai.com/v1/chat/completions',
-            model: 'gpt-3.5-turbo',
-            apiKey: 'YOUR_OPENAI_API_KEY'
-        },
-        anthropic: {
-            enabled: false,
-            endpoint: 'https://api.anthropic.com/v1/complete',
-            model: 'claude-2',
-            apiKey: 'YOUR_ANTHROPIC_API_KEY'
-        },
-        deepseek: {
-            enabled: true,
-            endpoint: 'https://api.deepseek.com/v1/chat/completions',
-            model: 'deepseek-chat',
-            apiKey: 'YOUR_DEEPSEEK_API_KEY'
-        },
-        defaultProvider: 'deepseek'
-    };
+    // 使用Cloudflare Worker作为API代理
+    deepseek: {
+        enabled: true,
+        endpoint: '/api/proxy',
+        model: 'deepseek-chat',
+        apiKey: '' // API密钥现在由Cloudflare Worker管理
+    },
+    defaultProvider: 'deepseek'
+};
     
     // 初始化AI配置
     let AI_CONFIG = JSON.parse(JSON.stringify(DEFAULT_AI_CONFIG));
