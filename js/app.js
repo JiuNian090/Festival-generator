@@ -24,37 +24,54 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // 渲染节日选择界面
-    function renderHolidaySelection() {
-        holidaySelection.innerHTML = '';
+function renderHolidaySelection() {
+    // 默认显示第一个分类
+    const firstCategory = document.querySelector('.category-tab[data-category]')?.dataset.category || 'traditional';
+    renderFilteredHolidays(firstCategory);
+}
 
-        // 创建节日分类标签
-        const categories = [
-            { id: 'traditional', name: '中国传统节日' },
-            { id: 'legal', name: '法定节假日' },
-            { id: 'western', name: '西方引进节日' },
-            { id: 'professional', name: '行业性节日' }
-        ];
+// 根据分类渲染节日
+function renderFilteredHolidays(category) {
+    holidaySelection.innerHTML = '';
+    const holidaysInCategory = holidays[category] || [];
 
-        categories.forEach(category => {
-            const categoryDiv = document.createElement('div');
-            categoryDiv.className = 'holiday-category';
-            categoryDiv.innerHTML = `<h3>${category.name}</h3>`;
+    holidaysInCategory.forEach(holiday => {
+        const holidayCard = createOptionCard(
+            holiday.id,
+            holiday.name,
+            holiday.description,
+            holiday.icon,
+            'holiday',
+            holiday.subcategories
+        );
+        holidaySelection.appendChild(holidayCard);
+    });
+}
 
-            const holidaysInCategory = holidays[category.id] || [];
-            holidaysInCategory.forEach(holiday => {
-                const holidayCard = createOptionCard(
-                    holiday.id,
-                    holiday.name,
-                    holiday.description,
-                    holiday.icon,
-                    'holiday'
-                );
-                categoryDiv.appendChild(holidayCard);
-            });
+// 渲染职业选择界面
+function renderProfessionSelection() {
+    // 默认显示第一个分类
+    const firstCategory = document.querySelector('#recipient-selection .category-tab')?.dataset.category || 'family';
+    renderFilteredProfessions(firstCategory);
+}
 
-            holidaySelection.appendChild(categoryDiv);
-        });
-    }
+// 根据分类渲染职业
+function renderFilteredProfessions(category) {
+    recipientSelection.innerHTML = '';
+    const professionsInCategory = professions.filter(p => p.category === category);
+
+    professionsInCategory.forEach(profession => {
+        const professionCard = createOptionCard(
+            profession.id,
+            profession.name,
+            profession.description,
+            profession.icon,
+            'profession',
+            profession.subcategories
+        );
+        recipientSelection.appendChild(professionCard);
+    });
+}
 
     // 渲染职业选择界面
     function renderProfessionSelection() {
@@ -108,7 +125,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // 创建选择卡片
-    function createOptionCard(id, name, description, icon = null, type) {
+    function createOptionCard(id, name, description, icon = null, type, subcategories = null) {
         const card = document.createElement('div');
         card.className = 'option-card';
         card.dataset.id = id;
@@ -116,13 +133,26 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const iconHtml = icon ? `<div class="option-icon">${icon}</div>` : '';
 
-        card.innerHTML = `
+        let cardContent = `
             ${iconHtml}
             <h3>${name}</h3>
             <p>${description}</p>
         `;
 
-        card.addEventListener('click', function() {
+        // 如果有子分类，添加子菜单
+        if (subcategories && subcategories.length) {
+            card.classList.add('has-submenu');
+            let submenuHtml = '<div class="submenu">';
+            subcategories.forEach(sub => {
+                submenuHtml += `<div class="submenu-item" data-id="${sub.id}">${sub.name}</div>`;
+            });
+            submenuHtml += '</div>';
+            cardContent += submenuHtml;
+        }
+
+        card.innerHTML = cardContent;
+
+        card.addEventListener('click', function(e) {
             // 移除同类型卡片的选中状态
             document.querySelectorAll(`.option-card[data-type="${type}"]`).forEach(c => {
                 c.classList.remove('selected');
@@ -305,11 +335,48 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // 设置事件监听器
-    function setupEventListeners() {
-        generateBtn.addEventListener('click', generateBlessing);
-        copyBtn.addEventListener('click', copyToClipboard);
-        shareBtn.addEventListener('click', generateShareLink);
+function setupEventListeners() {
+    generateBtn.addEventListener('click', generateBlessing);
+    copyBtn.addEventListener('click', copyToClipboard);
+    shareBtn.addEventListener('click', generateShareLink);
+
+    // 折叠面板交互
+    document.querySelectorAll('.collapsible-header').forEach(header => {
+        header.addEventListener('click', function() {
+            this.classList.toggle('active');
+            const content = this.nextElementSibling;
+            content.classList.toggle('active');
+        });
+    });
+
+    // 默认展开第一个面板
+    const firstCollapsible = document.querySelector('.collapsible-header');
+    if (firstCollapsible) {
+        firstCollapsible.click();
     }
+
+    // 分类标签切换
+    document.querySelectorAll('.category-tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+            const category = this.dataset.category;
+            const tabContainer = this.parentElement;
+            const selectionCard = this.closest('.selection-card');
+
+            // 更新标签状态
+            tabContainer.querySelectorAll('.category-tab').forEach(t => {
+                t.classList.remove('active');
+            });
+            this.classList.add('active');
+
+            // 根据类型筛选内容
+            if (selectionCard.id === 'holiday-selection') {
+                renderFilteredHolidays(category);
+            } else if (selectionCard.id === 'recipient-selection') {
+                renderFilteredProfessions(category);
+            }
+        });
+    });
+}
 
     // 初始化应用
     init();

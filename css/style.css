@@ -1,11 +1,12 @@
 :root {
-    --primary-red: #e63946;
-    --primary-gold: #ffb703;
-    --dark-bg: #1d3557;
-    --light-bg: #f1faee;
-    --accent-blue: #457b9d;
-    --text-dark: #1d3557;
-    --text-light: #f1faee;
+    --primary-red: #D92B2B;
+    --primary-gold: #FFD700;
+    --gold-gradient: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+    --red-gradient: linear-gradient(135deg, #D92B2B 0%, #A61F1F 100%);
+    --light-bg: #F5F5F5;
+    --text-dark: #333333;
+    --text-light: #FFFFFF;
+    --shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
 
 * {
@@ -16,10 +17,10 @@
 }
 
 body {
-    background-color: var(--dark-bg);
-    color: var(--text-light);
+    background-color: var(--light-bg);
+    color: var(--text-dark);
     line-height: 1.6;
-    padding: 20px;
+    padding: 0;
 }
 
 .container {
@@ -29,18 +30,23 @@ body {
 
 header {
     text-align: center;
-    margin-bottom: 40px;
-    padding: 20px 0;
-    background: linear-gradient(135deg, var(--dark-bg), var(--accent-blue));
-    border-radius: 15px;
-    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    padding: 25px 0;
+    background: var(--red-gradient);
+    border-radius: 0 0 30px 30px;
+    margin-bottom: 30px;
 }
 
 header h1 {
     color: var(--primary-gold);
-    font-size: 2.5rem;
-    margin-bottom: 10px;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    font-size: 2.8rem;
+    margin-bottom: 8px;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    transition: transform 0.3s ease;
+}
+
+header:hover h1 {
+    transform: translateY(-3px);
 }
 
 header p {
@@ -55,19 +61,134 @@ main {
 }
 
 .selection-card {
-    background-color: rgba(255,255,255,0.1);
+    background-color: white;
     border-radius: 15px;
-    padding: 25px;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255,255,255,0.2);
-    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    padding: 15px 25px;
+    box-shadow: var(--shadow);
+    margin-bottom: 20px;
+    overflow: hidden;
+    transition: all 0.3s ease;
 }
 
-.selection-card h2 {
-    color: var(--primary-gold);
-    margin-bottom: 20px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid var(--primary-gold);
+.collapsible-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    padding: 12px 15px;
+    background: var(--red-gradient);
+    color: white;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.collapsible-header:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.collapsible-header::after {
+    content: '▼';
+    font-size: 0.8rem;
+    transition: transform 0.3s ease;
+}
+
+.collapsible-header.active::after {
+    transform: rotate(180deg);
+}
+
+.collapsible-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease;
+}
+
+.collapsible-content.active {
+    max-height: 500px;
+}
+
+/* 一级分类标签 */
+.category-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+.category-tab {
+    padding: 8px 15px;
+    background: white;
+    border: 2px solid var(--primary-red);
+    border-radius: 20px;
+    color: var(--primary-red);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: bold;
+}
+
+.category-tab.active {
+    background: var(--primary-red);
+    color: white;
+}
+
+/* 子选择菜单 */
+.submenu {
+    position: absolute;
+    top: 0;
+    left: 100%;
+    min-width: 200px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    padding: 15px;
+    margin-left: 10px;
+    z-index: 10;
+    display: none;
+}
+
+.has-submenu:hover .submenu {
+    display: block;
+}
+
+.submenu-item {
+    padding: 8px 10px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    cursor: pointer;
+    background: var(--gold-gradient);
+    color: var(--text-dark);
+    font-weight: bold;
+    transition: all 0.2s ease;
+}
+
+.submenu-item:hover {
+    transform: translateX(3px);
+}
+
+/* 自定义输入框 */
+.custom-input {
+    width: 100%;
+    padding: 12px 15px;
+    border-radius: 8px;
+    border: 2px solid #ddd;
+    background-color: var(--light-bg);
+    color: var(--text-dark);
+    font-size: 1rem;
+    margin-top: 15px;
+    transition: all 0.3s ease;
+}
+
+.custom-input:focus {
+    outline: none;
+    border-color: var(--primary-gold);
+    box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.2);
+}
+
+.custom-input::placeholder {
+    color: #999;
+    font-style: italic;
 }
 
 .selection-content {
@@ -88,17 +209,20 @@ main {
 
 .result-content {
     min-height: 150px;
-    background-color: rgba(255,255,255,0.05);
+    background: var(--gold-gradient);
     border-radius: 10px;
-    padding: 20px;
+    padding: 25px;
     margin: 20px 0;
-    font-size: 1.2rem;
+    font-size: 1.3rem;
     line-height: 1.8;
-    color: var(--light-bg);
+    color: var(--text-dark);
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    position: relative;
+    overflow: hidden;
 }
 
 .btn {
@@ -112,11 +236,15 @@ main {
 }
 
 .primary-btn {
-    background-color: var(--primary-red);
+    background: var(--red-gradient);
     color: white;
     margin: 20px auto;
     display: block;
-    min-width: 200px;
+    min-width: 220px;
+    font-size: 1.1rem;
+    padding: 14px 28px;
+    border: 2px solid var(--primary-gold);
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
 }
 
 .primary-btn:hover {
@@ -126,9 +254,15 @@ main {
 }
 
 .secondary-btn {
-    background-color: var(--accent-blue);
-    color: white;
+    background: white;
+    color: var(--primary-red);
     margin: 0 10px;
+    border: 2px solid var(--primary-red);
+}
+
+.secondary-btn:hover {
+    background: var(--primary-red);
+    color: white;
 }
 
 .secondary-btn:hover {
@@ -148,8 +282,8 @@ footer {
     text-align: center;
     margin-top: 50px;
     padding: 20px;
-    color: var(--light-bg);
-    opacity: 0.7;
+    color: var(--text-dark);
+    opacity: 0.9;
 }
 
 /* 响应式设计 */
@@ -201,14 +335,21 @@ footer {
 
 /* 节日和职业选择卡片样式 */
 .option-card {
-    flex: 1 1 calc(33.333% - 15px);
-    background-color: rgba(255,255,255,0.05);
+    flex: 1 1 calc(25% - 15px);
+    background-color: white;
     border-radius: 10px;
     padding: 15px;
     cursor: pointer;
     transition: all 0.3s ease;
     text-align: center;
-    border: 2px solid transparent;
+    border: 2px solid #eee;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.option-card:hover {
+    border-color: var(--primary-gold);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
 
 .option-card:hover {
@@ -221,9 +362,26 @@ footer {
     background-color: rgba(255, 183, 3, 0.1);
 }
 
+.option-card {
+    position: relative;
+}
+
 .option-card h3 {
-    color: var(--primary-gold);
+    color: var(--primary-red);
     margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.option-card .emoji {
+    font-size: 1.5rem;
+}
+
+.option-card.selected {
+    border-color: var(--primary-gold);
+    background-color: rgba(255, 215, 0, 0.1);
 }
 
 .option-card p {

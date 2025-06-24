@@ -17,25 +17,42 @@
             <section class="generator-section">
                 <!-- 节日选择区域 -->
                 <div class="selection-card" id="holiday-selection">
-                    <h2>选择节日</h2>
-                    <div class="selection-content">
-                        <!-- 节日选择内容将通过JS动态生成 -->
+                    <div class="collapsible-header">选择节日</div>
+                    <div class="collapsible-content">
+                        <div class="category-tabs">
+                            <div class="category-tab active" data-category="traditional">中国传统节日</div>
+                            <div class="category-tab" data-category="legal">法定节假日</div>
+                            <div class="category-tab" data-category="western">西方引进节日</div>
+                            <div class="category-tab" data-category="professional">行业性节日</div>
+                        </div>
+                        <div class="selection-content">
+                            <!-- 节日选择内容将通过JS动态生成 -->
+                        </div>
                     </div>
                 </div>
 
                 <!-- 对象选择区域 -->
                 <div class="selection-card" id="recipient-selection">
-                    <h2>选择祝福对象</h2>
-                    <div class="selection-content">
-                        <!-- 对象选择内容将通过JS动态生成 -->
+                    <div class="collapsible-header">选择祝福对象</div>
+                    <div class="collapsible-content">
+                        <div class="category-tabs">
+                            <div class="category-tab active" data-category="family">家人</div>
+                            <div class="category-tab" data-category="friend">朋友</div>
+                            <div class="category-tab" data-category="colleague">同事</div>
+                            <div class="category-tab" data-category="teacher">恩师</div>
+                            <div class="category-tab" data-category="lover">恋人</div>
+                        </div>
+                        <div class="selection-content">
+                            <!-- 对象选择内容将通过JS动态生成 -->
+                        </div>
                     </div>
                 </div>
 
                 <!-- 自定义区域 -->
                 <div class="selection-card" id="customization">
-                    <h2>自定义祝福</h2>
-                    <div class="selection-content">
-                        <!-- 自定义内容将通过JS动态生成 -->
+                    <div class="collapsible-header">自定义祝福</div>
+                    <div class="collapsible-content">
+                        <input type="text" class="custom-input" id="custom-message" placeholder="想加专属小话？写在这里～" maxlength="50">
                     </div>
                 </div>
 
