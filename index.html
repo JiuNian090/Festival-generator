@@ -3,75 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>智能祝福生成器</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>节日祝福语生成器</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <header class="header">
-        <div class="container">
-            <h1 class="logo">🎁 智能祝福生成</h1>
-        </div>
-    </header>
+    <div class="container">
+        <header>
+            <h1>节日祝福语生成器</h1>
+            <p>为不同节日和对象生成贴心祝福</p>
+        </header>
 
-    <main class="main">
-        <div class="container">
-            <div class="card">
-                <h2 class="title">生成专属节日祝福</h2>
-                
-                <div class="input-group">
-                    <input type="text" id="nickname" class="input-field" placeholder="自定义昵称">
-                    <select id="festival" class="input-field">
-                        <option value="">选择节日</option>
-                        <option value="spring">春节</option>
-                        <option value="mid-autumn">中秋节</option>
-                        <option value="dragon-boat">端午节</option>
-                        <option value="christmas">圣诞节</option>
-                    </select>
-                    
-                    <select id="recipient" class="input-field">
-                        <option value="">选择对象</option>
-                        <option value="friend">朋友</option>
-                        <option value="family">家人</option>
-                        <option value="lover">爱人</option>
-                        <option value="colleague">同事</option>
-                    </select>
-                </div>
-
-                <button id="generateBtn" class="cta-button">生成祝福</button>
-
-                <div id="result" class="result-box">
-                    <div class="result-content">
-                        <i class="fas fa-comment-alt"></i>
-                        <p id="message"></p>
+        <main>
+            <section class="generator-section">
+                <!-- 节日选择区域 -->
+                <div class="selection-card" id="holiday-selection">
+                    <h2>选择节日</h2>
+                    <div class="selection-content">
+                        <!-- 节日选择内容将通过JS动态生成 -->
                     </div>
                 </div>
-            </div>
-        </div>
-    </main>
 
-    <!-- API配置面板 -->
-    <div class="config-overlay" id="configOverlay">
-        <div class="config-card">
-            <h3 class="config-title">API配置</h3>
-            
-            <div class="input-group">
-                <input type="text" id="apiUrl" class="input-field" placeholder="API端点URL">
-                <input type="text" id="apiKey" class="input-field" placeholder="API密钥">
-                <input type="text" id="modelName" class="input-field" placeholder="模型名称（可选）">
-            </div>
+                <!-- 对象选择区域 -->
+                <div class="selection-card" id="recipient-selection">
+                    <h2>选择祝福对象</h2>
+                    <div class="selection-content">
+                        <!-- 对象选择内容将通过JS动态生成 -->
+                    </div>
+                </div>
 
-            <div class="config-buttons">
-                <button id="saveConfig" class="cta-button">保存配置</button>
-                <button id="resetConfig" class="cta-button secondary">重置配置</button>
-            </div>
-        </div>
+                <!-- 自定义区域 -->
+                <div class="selection-card" id="customization">
+                    <h2>自定义祝福</h2>
+                    <div class="selection-content">
+                        <!-- 自定义内容将通过JS动态生成 -->
+                    </div>
+                </div>
+
+                <!-- 生成按钮 -->
+                <button id="generate-btn" class="btn primary-btn">生成祝福语</button>
+
+                <!-- 祝福语显示区域 -->
+                <div class="result-card" id="result-container">
+                    <h2>您的祝福语</h2>
+                    <div class="result-content" id="blessing-result">
+                        <!-- 生成的祝福语将显示在这里 -->
+                    </div>
+                    <div class="action-buttons">
+                        <button id="copy-btn" class="btn secondary-btn">复制到剪贴板</button>
+                        <button id="share-btn" class="btn secondary-btn">生成分享链接</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>节日祝福语生成器 &copy; 2023</p>
+        </footer>
     </div>
 
-    <button id="configBtn" class="config-button">
-        <i class="fas fa-cog"></i>
-    </button>
-
-    <script src="app.js"></script>
+    <script src="js/holidays.js"></script>
+    <script src="js/professions.js"></script>
+    <script src="js/templates.js"></script>
+    <script src="js/app.js"></script>
 </body>
 </html>
