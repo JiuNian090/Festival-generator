@@ -39,7 +39,8 @@ const App = () => {
     setTimeout(() => {
       // 简单的祝福语生成逻辑
       const festival = festivals.find(f => f.id === activeFestival) || { name: activeFestival };
-      const wish = `${festival.name}来临之际，向${recipient || '您'}致以最诚挚的祝福！愿您在这个特别的日子里${customDescription ? customDescription : '万事如意，幸福安康'}。`;
+      // 调用外部生成函数生成祝福
+      const wish = generateWish(festival, recipientType, customDescription);
       setWishes(wish);
       setIsGenerating(false);
       // 保存到历史记录
@@ -97,14 +98,18 @@ const App = () => {
 
               {/* 祝福对象输入 */}
               <div className="mb-6">
-                <label className="block text-sm font-medium mb-2">祝福对象</label>
-                <input
-                  type="text"
-                  placeholder="例如：父母、朋友、同事"
+                <label className="block text-sm font-medium mb-2">祝福对象类型</label>
+                <select
                   className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary/50"
-                  value={recipient}
-                  onChange={(e) => setRecipient(e.target.value)}
-                />
+                  value={recipientType}
+                  onChange={(e) => setRecipientType(e.target.value)}
+                >
+                  <option value="family">家人</option>
+                  <option value="friend">朋友</option>
+                  <option value="colleague">同事</option>
+                  <option value="teacher">老师</option>
+                  <option value="other">其他</option>
+                </select>
               </div>
 
               {/* 自定义描述 */}

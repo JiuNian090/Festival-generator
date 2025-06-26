@@ -1,6 +1,23 @@
 // 节日数据文件 - 包含所有节日类型和相关信息
 
 const festivals = [
+  // 新增国际节日
+  {
+    id: 'valentine',
+    name: '情人节',
+    category: 'international',
+    elements: ['玫瑰','巧克力','浪漫约会','情书'],
+    description: '西方传统爱情节日',
+    date: '2月14日'
+  },
+  {
+    id: 'halloween',
+    name: '万圣节',
+    category: 'international',
+    elements: ['南瓜灯','糖果','变装派对','鬼怪'],
+    description: '西方传统狂欢节日',
+    date: '10月31日'
+  },
   // 中国传统节日
   {
     id: 'spring',
