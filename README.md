@@ -1,6 +1,6 @@
 # 节日祝福语生成器
 
-![节日祝福语生成器](https://picsum.photos/800/400?random=1)
+![节日祝福语生成器](https://img3.wallspic.com/previews/1/0/8/4/14801/14801-fireworks-festival-new_year-explosive_material-victory_day-x750.jpg)
 
 ### 开源协议
 本项目采用 MIT 许可证开源，详情请参见 [LICENSE](LICENSE) 文件。
@@ -37,8 +37,8 @@
 
 ```bash
 # 克隆仓库
-git clone https://github.com/yourusername/festival-wishes-generator.git
-cd festival-wishes-generator
+git clone https://github.com/JiuNian090/Festival-generator.git
+cd Festival-generator
 
 # 安装依赖
 npm install
