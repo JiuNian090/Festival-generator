@@ -1,6 +1,6 @@
 # 节日祝福语生成器
 
-![节日祝福语生成器]([https://img3.wallspic.com/previews/1/0/8/4/14801/14801-fireworks-festival-new_year-explosive_material-victory_day-x750.jpg])
+![节日祝福语生成器](https://img3.wallspic.com/previews/1/0/8/4/14801/14801-fireworks-festival-new_year-explosive_material-victory_day-x750.jpg)
 
 ### 开源协议
 本项目采用 MIT 许可证开源，详情请参见 [LICENSE](LICENSE) 文件。
