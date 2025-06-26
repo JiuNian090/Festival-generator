@@ -1,118 +1,119 @@
 # 节日祝福语生成器
 
-一个精美的节日祝福语生成网页，支持多种节日和职业的智能祝福匹配，纯前端实现，无需后端服务。
+![节日祝福语生成器](https://picsum.photos/800/400?random=1)
 
-## ✨ 功能特点
+## 项目介绍
 
-- **多节日支持**：包含中国传统节日、法定节假日、西方引进节日和行业性节日
-- **职业匹配**：根据不同职业智能生成合适的祝福语
-- **自定义祝福**：支持添加敬语和自定义描述
-- **一键分享**：复制祝福语或生成分享链接
-- **响应式设计**：适配桌面和移动设备
-- **喜庆高端UI**：红色金色为主的节日风格设计
+节日祝福语生成器是一个精美的单页应用，帮助用户快速生成个性化节日祝福。它基于React 18和Tailwind CSS构建，融合了中国传统节日元素与现代UI设计，提供直观的操作界面和精美的视觉体验。
 
-## 🚀 快速开始
+## 功能特点
 
-### 本地运行
+- **多维度祝福语生成**：基于节日类型、祝福对象和自定义描述生成个性化祝福语
+- **丰富的节日分类**：包含中国传统节日、法定节日与纪念日等多种类型
+- **精美的视觉设计**：国风元素与现代UI结合，响应式设计适配各种设备
+- **高级生成模式**：支持基础/高级两种生成模式，多种风格和长度选择
+- **本地存储**：自动保存历史生成记录，支持主题切换
 
-1. 克隆本仓库到本地
+## 技术栈
+
+- React 18
+- Tailwind CSS v3
+- Framer Motion (动画效果)
+- React Router (路由管理)
+- LocalForage (本地存储)
+
+## 快速开始
+
+### 环境要求
+- Node.js 16.x 或更高版本
+- npm 或 yarn
+
+### 安装步骤
+
 ```bash
-git clone https://github.com/yourusername/festival-generator.git
-cd festival-generator
+# 克隆仓库
+git clone https://github.com/yourusername/festival-wishes-generator.git
+cd festival-wishes-generator
+
+# 安装依赖
+npm install
+
+# 本地开发
+npm start
+
+# 构建生产版本
+npm run build
 ```
 
-2. 启动本地服务器（需要Node.js环境）
+## 部署指南
+
+### GitHub Pages部署
+
+1. 修改package.json，添加homepage字段：
+```json
+"homepage": "https://github.com/JiuNian090/Festival-generator"
+```
+
+2. 安装部署依赖：
 ```bash
-npx serve -l 3000
+npm install --save-dev gh-pages
 ```
 
-3. 在浏览器中访问 http://localhost:3000
-
-### 项目结构
-
-```
-festival-generator/
-├── index.html         # 主页面
-├── css/
-│   └── style.css      # 样式文件
-├── js/
-│   ├── app.js         # 主应用逻辑
-│   ├── holidays.js    # 节日数据
-│   ├── professions.js # 职业数据
-│   └── templates.js   # 祝福语模板
-├── assets/            # 图片等静态资源
-└── README.md          # 项目说明文档
+3. 添加部署脚本到package.json：
+```json
+"scripts": {
+  "predeploy": "npm run build",
+  "deploy": "gh-pages -d build"
+}
 ```
 
-## 📝 自定义祝福语
+4. 执行部署命令：
+```bash
+npm run deploy
+```
 
-### 添加新节日
-
-1. 打开 `js/holidays.js` 文件
-2. 在对应节日分类数组中添加新节日对象，包含id、name、description等属性
-
-### 添加新职业
-
-1. 打开 `js/professions.js` 文件
-2. 在professions数组中添加新职业对象，包含id、name、honorifics、adjectives等属性
-
-### 添加祝福语模板
-
-1. 打开 `js/templates.js` 文件
-2. 在templates对象中添加对应节日ID的模板数组，使用{{honorific}}、{{recipient}}、{{description}}作为占位符
-
-## 🌐 部署指南
-
-### 通过Cloudflare Pages部署
+### Cloudflare Pages部署
 
 1. 将代码推送到GitHub仓库
+2. 在Cloudflare Pages中导入GitHub仓库
+3. 构建命令：`npm run build`
+4. 输出目录：`build`
+5. 点击部署并配置自定义域名
 
-2. 登录Cloudflare账户，进入Pages页面
+## 功能使用
 
-3. 点击"Create a project"，选择连接到GitHub仓库
+1. **基本使用**：
+   - 选择节日类型
+   - 输入祝福对象
+   - 添加自定义描述
+   - 点击"生成祝福语"按钮
 
-4. 选择仓库后，配置构建设置：
-   - 构建命令：无需填写
-   - 构建输出目录：/ (根目录)
+2. **高级功能**：
+   - 切换高级模式添加古诗词引用和高级表达
+   - 选择不同风格（温馨/幽默/正式/俏皮）
+   - 调整祝福语长度（短/中/长）
+   - 使用收藏功能保存喜欢的祝福语
 
-5. 点击"Save and Deploy"，等待部署完成
+## 自定义扩展
 
-6. 部署成功后，Cloudflare会提供一个域名，通过该域名即可访问网站
+### 添加自定义节日
 
-## 📄 许可证
+1. 打开`src/data/festivals.js`文件
+2. 按照现有格式添加新节日数据
+3. 重新启动应用使更改生效
 
-本项目采用MIT许可证，详情如下：
+### 集成AI功能
 
-```
-MIT License
+1. 在`src/services/api.js`中配置API密钥
+2. 启用高级生成模式时会自动调用AI API
+3. 确保API密钥配置正确且网络环境可访问
 
-Copyright (c) 2023 Festival Generator
+## 无障碍支持
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+- 键盘导航支持：所有交互元素可通过Tab键访问
+- 高对比度模式：支持浅色/深色主题切换
+- 语义化HTML结构：使用适当的ARIA属性
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+## 许可证
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-```
-
-完整许可证文本请参见 <mcfile name="LICENSE" path="d:\Code\Git\Festival-generator\LICENSE"></mcfile>
-
-## 💻 技术栈
-
-- HTML5
-- CSS3
-- JavaScript
-- 响应式设计
-- 本地存储和URL参数
+本项目采用MIT许可证 - 详情参见LICENSE文件
