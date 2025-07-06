@@ -1,15 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useTransition } from 'react';
+import { generateWish } from './utils/wishGenerator';
 import { motion } from 'framer-motion';
 import './styles/index.css';
 
 const App = () => {
   // 状态管理
   const [activeFestival, setActiveFestival] = useState('');
-  const [recipient, setRecipient] = useState('');
+  const [recipientType, setRecipientType] = useState('family');
   const [customDescription, setCustomDescription] = useState('');
   const [wishes, setWishes] = useState('');
-  const [isGenerating, setIsGenerating] = useState(false);
   const [history, setHistory] = useState([]);
+  const [isPending, startTransition] = useTransition();
   const [themeMode, setThemeMode] = useState('light');
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [generationMode, setGenerationMode] = useState('basic'); // basic or advanced
@@ -34,21 +35,16 @@ const App = () => {
 
   // 生成祝福语
   const generateWishes = () => {
-    setIsGenerating(true);
-    // 模拟API请求延迟
-    setTimeout(() => {
-      // 简单的祝福语生成逻辑
+    startTransition(() => {
       const festival = festivals.find(f => f.id === activeFestival) || { name: activeFestival };
-      // 调用外部生成函数生成祝福
       const wish = generateWish(festival, recipientType, customDescription);
       setWishes(wish);
-      setIsGenerating(false);
       // 保存到历史记录
       setHistory(prev => [
         ...prev,
-        { id: Date.now(), festival: festival.name, recipient, wish, date: new Date().toLocaleString() }
+        { id: Date.now(), festival: festival.name, recipientType, wish, date: new Date().toLocaleString() }
       ].slice(-10)); // 只保留最近10条记录
-    }, 1500);
+    });
   };
 
   // 切换主题
@@ -182,10 +178,10 @@ const App = () => {
               {/* 生成按钮 */}
               <button
                 onClick={generateWishes}
-                disabled={!activeFestival || !recipient || isGenerating}
-                className={`w-full py-3 px-6 rounded-lg font-medium transition-all duration-300 ${isGenerating ? 'bg-gray-400 cursor-not-allowed' : 'bg-primary text-white hover:bg-primary/90 hover:shadow-lg'}`}
+                disabled={!activeFestival || !recipientType || isPending}
+                className={`w-full py-3 px-6 rounded-lg font-medium transition-all duration-300 ${isPending ? 'bg-gray-400 cursor-not-allowed' : 'bg-primary text-white hover:bg-primary/90 hover:shadow-lg'}`}
               >
-                {isGenerating ? '生成中...' : '生成祝福语'}
+                {isPending ? '生成中...' : '生成祝福语'}
               </button>
             </div>
           </div>
@@ -195,7 +191,7 @@ const App = () => {
             {/* 生成结果卡片 */}
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 transition-all duration-300 hover:shadow-xl">
               <h2 className="text-xl font-semibold mb-4 font-source-sans">生成的祝福语</h2>
-              {isGenerating ? (
+              {isPending ? (
                 <div className="flex flex-col items-center justify-center py-12">
                   <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4"></div>
                   <p className="text-gray-600 dark:text-gray-400">正在挥毫泼墨创作中...</p>
