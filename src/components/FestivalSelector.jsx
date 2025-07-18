@@ -30,25 +30,25 @@ const FestivalSelector = ({ festivals, selectedFestival, onSelectFestival }) => 
  >
       <div onClick={() => setIsExpanded(!isExpanded)} className="p-6 cursor-pointer flex justify-between items-center">
        <label className="block text-lg font-medium text-primary dark:text-primary-light">
-         选择节日 {selectedFestival ? `- ${selectedFestival}` : ''}
+         请选择节日类型 {selectedFestival ? `- 当前: ${selectedFestival}` : ''}
        </label>
        <ChevronDownIcon className={`w-5 h-5 text-gray-500 dark:text-gray-400 transition-transform ${isExpanded ? 'transform rotate-180' : ''}`} />
      </div>
-     <div className={`px-6 pb-6 transition-all duration-300 overflow-hidden ${isExpanded ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
-       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 justify-items-stretch mt-2">
+     <div className="px-6 pb-6 transition-all duration-300">
+       <div className="flex flex-wrap gap-2 mb-4">
         {Object.entries(groupedFestivals).map(([category, items]) => (
-          <div key={category} className="border rounded-lg p-4 bg-white dark:bg-gray-800 shadow-sm w-full">
-            <h3 className="font-semibold mb-2 text-gray-900 dark:text-white">
+          <div key={category} className="relative group">
+            <button className="px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-200 transform hover:scale-105 transition-colors text-sm whitespace-nowrap">
               {categoryNames[category] || category}
-            </h3>
-            <div className="flex flex-wrap gap-2">
+            </button>
+            <div className="absolute left-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-2 hidden group-hover:block z-10 border border-gray-200 dark:border-gray-700">
               {items.map(festival => (
                 <button
                   key={festival.id}
                   onClick={() => onSelectFestival(festival.id, festival.name)}
-                  className={`px-3 py-1 rounded-full text-sm transition-all ${selectedFestival === festival.id
+                  className={`w-full text-left px-3 py-1.5 rounded text-sm transition-all ${selectedFestival === festival.id
                     ? 'bg-blue-500 text-white hover:bg-blue-600'
-                    : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600'}
+                    : 'hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200 border-l-2 border-transparent hover:border-blue-500'}
                   `}
                 >
                   {festival.name}
@@ -58,6 +58,11 @@ const FestivalSelector = ({ festivals, selectedFestival, onSelectFestival }) => 
           </div>
         ))}
       </div>
+      {selectedFestival && (
+        <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+          已选择: {selectedFestival}
+        </div>
+      )}
      </div>
       </motion.div>
   );
