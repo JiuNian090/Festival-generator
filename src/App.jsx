@@ -1,6 +1,16 @@
-import React, { useState, useEffect, useTransition } from 'react';
+import React, { useState, useTransition } from 'react';
 import { generateWish } from './utils/wishGenerator';
 import { motion } from 'framer-motion';
+import { useTheme } from './contexts/ThemeContext';
+import { useToast } from './components/UI/Toast';
+import festivals from './data/festivals';
+import recipients from './data/recipients';
+
+// 传递recipients给RecipientSelector组件
+import FestivalSelector from './components/FestivalSelector';
+import RecipientSelector from './components/RecipientSelector';
+import AdvancedSettings from './components/AdvancedSettings';
+import HistoryList from './components/HistoryList';
 import './styles/index.css';
 
 const App = () => {
@@ -11,27 +21,14 @@ const App = () => {
   const [wishes, setWishes] = useState('');
   const [history, setHistory] = useState([]);
   const [isPending, startTransition] = useTransition();
-  const [themeMode, setThemeMode] = useState('light');
+  const { theme, toggleTheme } = useTheme();
+  const { showToast } = useToast();
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [generationMode, setGenerationMode] = useState('basic'); // basic or advanced
   const [styleMode, setStyleMode] = useState('warm'); // warm/humorous/formal/playful
   const [lengthMode, setLengthMode] = useState('medium'); // short/medium/long
 
-  // 节日数据
-  const festivals = [
-    // 中国传统节日
-    { id: 'spring', name: '春节', category: 'traditional', elements: ['团圆', '红包', '春联', '鞭炮', '年夜饭'] },
-    { id: 'lantern', name: '元宵节', category: 'traditional', elements: ['元宵', '灯笼', '猜灯谜'] },
-    { id: 'tombSweeping', name: '清明节', category: 'traditional', elements: ['扫墓', '踏青', '缅怀先人'] },
-    { id: 'dragonBoat', name: '端午节', category: 'traditional', elements: ['粽子', '龙舟', '艾草'] },
-    { id: 'midAutumn', name: '中秋节', category: 'traditional', elements: ['月亮', '月饼', '团圆'] },
-    { id: 'doubleSeventh', name: '七夕节', category: 'traditional', elements: ['牛郎织女', '鹊桥', '爱情'] },
-    // 法定节日与纪念日
-    { id: 'labor', name: '劳动节', category: 'national', elements: ['劳动', '奋斗', '贡献'] },
-    { id: 'nationalDay', name: '国庆节', category: 'national', elements: ['国旗', '阅兵', '爱国'] },
-    { id: 'teachersDay', name: '教师节', category: 'national', elements: ['桃李', '园丁', '感恩'] },
-    // 更多节日将在后续添加
-  ];
+  // 节日数据已从data/festivals.js导入
 
   // 生成祝福语
   const generateWishes = () => {
@@ -47,14 +44,30 @@ const App = () => {
     });
   };
 
-  // 切换主题
-  const toggleTheme = () => {
-    setThemeMode(prev => prev === 'light' ? 'dark' : 'light');
-    document.documentElement.classList.toggle('dark');
+  // 处理复制历史记录
+  const handleCopyHistory = (text) => {
+    navigator.clipboard.writeText(text).then(() => {
+      showToast('祝福语已复制到剪贴板');
+    }).catch(() => {
+      showToast('复制失败，请手动复制', 'error');
+    });
   };
 
+  // 处理删除历史记录
+  const handleDeleteHistory = (id) => {
+    if (id === 'all') {
+      setHistory([]);
+      showToast('所有历史记录已清空');
+    } else {
+      setHistory(history.filter(item => item.id !== id));
+      showToast('记录已删除');
+    }
+  };
+
+  // 从ThemeContext获取主题切换方法
+
   return (
-    <div className={`min-h-screen flex flex-col ${themeMode === 'dark' ? 'bg-gray-900 text-white' : 'bg-neutral text-dark'}`}>
+    <div className={`min-h-screen flex flex-col ${theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-gray-50 text-gray-900'}`}>
       {/* 头部区域 */}
       <header className="py-6 px-4 md:px-8 bg-white dark:bg-gray-800 shadow-md transition-all duration-300">
         <div className="container mx-auto flex justify-between items-center">
@@ -64,49 +77,32 @@ const App = () => {
             className="p-2 rounded-full bg-primary/10 hover:bg-primary/20 transition-colors"
             aria-label="切换主题"
           >
-            {themeMode === 'light' ? '🌙 切换深色' : '☀️ 切换浅色'}
+            {theme === 'light' ? '🌙 切换深色' : '☀️ 切换浅色'}
           </button>
         </div>
       </header>
 
       {/* 主内容区域 */}
-      <main className="flex-grow container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <main className="flex-grow container mx-auto px-4 py-8 flex justify-center">
+        <div className="w-full max-w-2xl">
           {/* 左侧控制面板 */}
           <div className="lg:col-span-1 space-y-6">
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 transition-all duration-300 hover:shadow-xl">
               <h2 className="text-xl font-semibold mb-4 font-source-sans">生成设置</h2>
 
               {/* 节日选择器 */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium mb-2">节日类型</label>
-                <select
-                  className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary/50"
-                  value={activeFestival}
-                  onChange={(e) => setActiveFestival(e.target.value)}
-                >
-                  <option value="">-- 请选择节日 --</option>
-                  {festivals.map(festival => (
-                    <option key={festival.id} value={festival.id}>{festival.name}</option>
-                  ))}
-                </select>
-              </div>
+              <FestivalSelector
+          festivals={festivals}
+          selectedFestival={activeFestival}
+          onSelectFestival={setActiveFestival}
+        />
 
               {/* 祝福对象输入 */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium mb-2">祝福对象类型</label>
-                <select
-                  className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary/50"
-                  value={recipientType}
-                  onChange={(e) => setRecipientType(e.target.value)}
-                >
-                  <option value="family">家人</option>
-                  <option value="friend">朋友</option>
-                  <option value="colleague">同事</option>
-                  <option value="teacher">老师</option>
-                  <option value="other">其他</option>
-                </select>
-              </div>
+              <RecipientSelector
+        recipients={recipients}
+        selectedRecipient={recipientType}
+        onSelectRecipient={setRecipientType}
+      />
 
               {/* 自定义描述 */}
               <div className="mb-6">
@@ -123,56 +119,22 @@ const App = () => {
               {/* 高级选项切换 */}
               <div className="mb-6">
                 <button
-                  className="text-sm text-primary hover:underline"
                   onClick={() => setShowAdvanced(!showAdvanced)}
+                  className="text-sm text-primary hover:text-primary/80 flex items-center"
                 >
-                  {showAdvanced ? '收起高级选项' : '显示高级选项'}
+                  {showAdvanced ? '收起高级设置' : '展开高级设置'} {showAdvanced ? '↑' : '↓'}
                 </button>
 
-                {showAdvanced && (
-                  <div className="mt-4 space-y-4 animate-fadeIn">
-                    <div>
-                      <label className="block text-sm font-medium mb-2">生成模式</label>
-                      <div className="flex space-x-4">
-                        <label className="inline-flex items-center">
-                          <input type="radio" name="generationMode" value="basic" checked={generationMode === 'basic'} onChange={() => setGenerationMode('basic')} className="mr-2" />
-                          基础模式
-                        </label>
-                        <label className="inline-flex items-center">
-                          <input type="radio" name="generationMode" value="advanced" checked={generationMode === 'advanced'} onChange={() => setGenerationMode('advanced')} className="mr-2" />
-                          高级模式
-                        </label>
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium mb-2">风格选择</label>
-                      <select
-                        className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary/50"
-                        value={styleMode}
-                        onChange={(e) => setStyleMode(e.target.value)}
-                      >
-                        <option value="warm">温馨风格</option>
-                        <option value="humorous">幽默风格</option>
-                        <option value="formal">正式风格</option>
-                        <option value="playful">俏皮风格</option>
-                      </select>
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium mb-2">祝福语长度</label>
-                      <select
-                        className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary/50"
-                        value={lengthMode}
-                        onChange={(e) => setLengthMode(e.target.value)}
-                      >
-                        <option value="short">简短 (30-50字)</option>
-                        <option value="medium">中等 (80-120字)</option>
-                        <option value="long">长篇 (150-200字)</option>
-                      </select>
-                    </div>
-                  </div>
-                )}
+                <AdvancedSettings
+                  showAdvanced={showAdvanced}
+                  onToggle={() => setShowAdvanced(!showAdvanced)}
+                  generationMode={generationMode}
+                  onGenerationModeChange={setGenerationMode}
+                  styleMode={styleMode}
+                  onStyleModeChange={setStyleMode}
+                  lengthMode={lengthMode}
+                  onLengthModeChange={setLengthMode}
+                />
               </div>
 
               {/* 生成按钮 */}
@@ -224,24 +186,11 @@ const App = () => {
             </div>
 
             {/* 历史记录区域 */}
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 transition-all duration-300 hover:shadow-xl">
-              <h2 className="text-xl font-semibold mb-4 font-source-sans">历史记录</h2>
-              {history.length === 0 ? (
-                <p className="text-gray-500 dark:text-gray-400 text-center py-6">暂无历史记录</p>
-              ) : (
-                <div className="space-y-3 max-h-60 overflow-y-auto pr-2">
-                  {history.map(item => (
-                    <div key={item.id} className="p-3 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-neutral/50 dark:hover:bg-gray-700/50 transition-colors">
-                      <div className="flex justify-between items-start">
-                        <h3 className="font-medium">{item.festival} - {item.recipient}</h3>
-                        <span className="text-sm text-gray-500 dark:text-gray-400">{item.date}</span>
-                      </div>
-                      <p className="text-sm mt-1 line-clamp-2">{item.wish}</p>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+            <HistoryList
+          history={history}
+          onDeleteHistory={handleDeleteHistory}
+          onCopyHistory={handleCopyHistory}
+        />
           </div>
         </div>
       </main>

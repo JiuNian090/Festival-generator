@@ -2,7 +2,13 @@
 
 // 基础祝福语模板库
 const basicTemplates = {
-  // 传统节日模板
+  // 默认模板 - 当分类不存在时使用
+  default: [
+    '{festival}快乐！愿{recipient}的生活充满阳光与欢笑，{elements}！',
+    '在这个特别的{festival}，送上我最诚挚的祝福：愿{recipient}幸福安康，{elements}！',
+    '祝福{recipient}在{festival}收获满满，{elements}，万事如意！'
+  ],
+  // 国际节日模板
   international: [
     '{festival}快乐！愿{recipient}的生活像{elements}般绚烂多彩，幸福美满！',
     '在{festival}这个特别的日子，祝愿{recipient}收获{elements}般的甜蜜与惊喜！',
@@ -28,31 +34,35 @@ const basicTemplates = {
   ]
 };
 
-// 祝福对象修饰词库
-// 删除重复声明，已在文件下方声明该变量，此处注释掉
+// 祝福对象修饰词库 - 根据关系亲疏和节日类型提供多样化选择
 const recipientModifiers = {
-  friend: ['亲爱的', '挚友'],
-  family: ['亲爱的', '尊敬的'],
-  colleague: ['尊敬的', '亲爱的'],
-  teacher: ['敬爱的', '尊敬的'],
-  default: ['亲爱的']
+  friend: ['亲爱的', '挚友', '亲爱的朋友', '我亲爱的'],
+  family: ['亲爱的', '尊敬的', '挚爱的', '我最亲爱的'],
+  colleague: ['尊敬的', '亲爱的', '敬爱的', '亲爱的同事'],
+  teacher: ['敬爱的', '尊敬的', '亲爱的老师', '我敬爱的'],
+  default: ['亲爱的', '尊敬的', '敬爱的']
 };
 
 // 生成祝福语的核心函数
-function generateWish(festival, recipientType, customDescription) {
+export function generateWish(festival, recipientType, customDescription) {
   // 获取节日分类
-  // 如果有自定义描述，使用自定义描述
-  const description = customDescription || festival.elements.join('、');
-  // 获取节日分类
-  const category = festival.category || 'default';
-  // 获取祝福对象修饰词
+  // 获取节日分类并验证
+  const category = festival?.category || 'default';
+  // 获取祝福对象修饰词并验证
   const modifier = recipientModifiers[recipientType] || recipientModifiers.default;
   const randomModifier = modifier[Math.floor(Math.random() * modifier.length)];
+  // 获取节日元素，确保有默认值
+  const defaultElements = ['阳光', '欢笑', '温暖', '喜悦'];
+  const elements = festival?.elements?.length ? festival.elements : defaultElements;
+  // 获取自定义描述或使用默认元素组合
+  const description = customDescription || elements.join('、');
   // 获取对应节日类型的模板
   let templates;
   if (festival.mode === 'advanced') {
+    // 高级模式：优先使用高级模板，否则回退到基础模板
     templates = advancedTemplates[category] || basicTemplates[category] || basicTemplates.default;
   } else {
+    // 基础模式：使用基础模板
     templates = basicTemplates[category] || basicTemplates.default;
   }
   // 随机选择一个模板
@@ -61,7 +71,9 @@ function generateWish(festival, recipientType, customDescription) {
   return template
     .replace('{recipient}', randomModifier + ' ' + recipientType)
     .replace('{festival}', festival.name)
-    .replace('{elements}', description);
+    .replace('{elements}', description)
+    // 添加随机表情符号增强祝福效果
+    + ' ' + ['🎉', '祝福您！', '😊', '愿您开心！', '🌟'][Math.floor(Math.random() * 5)];
 }
 
 // 高级模式模板（包含古诗词引用和高级表达）
